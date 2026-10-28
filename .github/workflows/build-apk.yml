@@ -26,12 +26,22 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Prepare Web Assets Folder
+        run: |
+          mkdir -p www
+          # Ha van index.html a gyökérben, áthelyezzük a www-be, ha nem, létrehozunk egy alap index-et
+          if [ -f "index.html" ]; then
+            cp index.html www/
+          else
+            echo "<h1>Tactical Manager 2026</h1>" > www/index.html
+          fi
+
       - name: Create Capacitor Config
         run: |
           echo '{
             "appId": "com.tacticalmanager.app",
             "appName": "Tactical Manager 2026",
-            "webDir": ".",
+            "webDir": "www",
             "bundledWebRuntime": false
           }' > capacitor.config.json
 
