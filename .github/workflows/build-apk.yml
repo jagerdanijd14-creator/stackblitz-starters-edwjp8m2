@@ -17,11 +17,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Install Dependencies
         run: npm install
@@ -29,7 +29,6 @@ jobs:
       - name: Prepare Web Assets Folder
         run: |
           mkdir -p www
-          # Ha van index.html a gyökérben, áthelyezzük a www-be, ha nem, létrehozunk egy alap index-et
           if [ -f "index.html" ]; then
             cp index.html www/
           else
