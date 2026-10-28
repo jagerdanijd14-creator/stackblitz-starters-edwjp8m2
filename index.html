@@ -14,11 +14,10 @@
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Outfit:wght@600;800;900&display=swap">
     
-    <!-- Firebase SDK-k & Te saját konfigurációd (Redirect módszerrel) -->
+    <!-- Firebase SDK-k -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
         const firebaseConfig = {
@@ -33,32 +32,7 @@
 
         window.firebaseApp = initializeApp(firebaseConfig);
         window.db = getFirestore(window.firebaseApp);
-        window.auth = getAuth(window.firebaseApp);
         window.analytics = getAnalytics(window.firebaseApp);
-        window.GoogleAuthProvider = GoogleAuthProvider;
-        window.signInWithRedirect = signInWithRedirect;
-        window.getRedirectResult = getRedirectResult;
-        window.onAuthStateChanged = onAuthStateChanged;
-
-        // Ellenőrizzük, hogy visszatért-e a felhasználó a Google átirányításból
-        window.addEventListener('DOMContentLoaded', () => {
-            getRedirectResult(window.auth)
-                .then((result) => {
-                    if (result && result.user) {
-                        console.log("Sikeres bejelentkezés (Redirect):", result.user.displayName);
-                        showToast(`Üdvözöllek, ${result.user.displayName}!`);
-                        let splash = document.getElementById('splash-screen');
-                        if (splash) {
-                            splash.style.opacity = '0';
-                            setTimeout(() => splash.classList.add('hidden'), 400);
-                        }
-                    }
-                })
-                .catch((error) => {
-                    console.error("Redirect bejelentkezési hiba:", error);
-                    showToast("⚠️ Bejelentkezési hiba történt.");
-                });
-        });
     </script>
 
     <style>
@@ -330,7 +304,6 @@
             filter: drop-shadow(0 3px 8px rgba(16, 185, 129, 0.3));
         }
 
-        /* Fekvő Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -525,14 +498,14 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.3.6</div>
+    <div class="version-badge">v1.3.7</div>
 
     <audio id="bg-audio" loop preload="auto">
         <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=energetic-hip-hop-sport-112071.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- SplashScreen: azonnal kattintható és fixen 2 másodperc múlva válik aktívvá -->
-    <div id="splash-screen" onclick="startAppWithAudio()">
+    <!-- SplashScreen: 2 másodperc után kattintásra belép a főmenübe -->
+    <div id="splash-screen" onclick="startAppDirectly()">
         <img src="https://www.dropbox.com/scl/fi/b8p0linr5z3s5jf32pkxw/file_00000000e41881f49ae16355c8824db0.png?rlkey=gvhib7sumek2mm2g51vhqqd2k&st=vqichxld&raw=1" alt="Loading Logo" class="splash-logo">
         <div class="spinner" id="splash-spinner"></div>
         <div class="loading-text" id="splash-text">Betöltés...</div>
@@ -607,7 +580,7 @@
         </div>
     </div>
 
-    <!-- Játékmenü (Dashboard - Fekvő elrendezés) -->
+    <!-- Játékmenü (Dashboard) -->
     <div id="game-dashboard" class="card wide-dashboard hidden">
         <div class="header" style="margin-bottom: 6px;">
             <div class="studio-tag" id="dash-date">Szezon 1 (2026/2027)</div>
@@ -834,7 +807,7 @@
     <div id="squad-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Vezetőedző / Taktika</div>
-            <h1 class="main-title" id="squad-view-title" style="font-size: 1rem;">Kezdőcsapat & Cserék (Kattints kettőre a cseréhez)</h1>
+            <h1 class="main-title" id="squad-view-title" style="font-size: 1rem;">Kezdőcsapat & Cserék</h1>
         </div>
 
         <div class="pitch-container">
@@ -1075,7 +1048,7 @@
             document.getElementById('settings-modal').classList.add('hidden');
         }
 
-        // SplashScreen logika: Fixen 2 másodpercet tölt, mutatja a spinnert, majd kattinthatóvá válik
+        // SplashScreen logika: Fixen 2 másodpercet tölt, majd kattintásra elindul
         window.addEventListener('load', () => {
             let spinner = document.getElementById('splash-spinner');
             let txt = document.getElementById('splash-text');
@@ -1084,19 +1057,14 @@
 
             setTimeout(() => {
                 if (spinner) spinner.style.display = 'none';
-                if (txt) txt.innerText = "Kattints a folytatáshoz (Google Bejelentkezés)...";
+                if (txt) txt.innerText = "Kattints a folytatáshoz...";
             }, 2000);
         });
 
-        // Átirányításos Google Bejelentkezés mobilra
-        function startAppWithAudio() {
+        // Direkt továbblépés bejelentkezési hiba nélkül
+        function startAppDirectly() {
             let spinner = document.getElementById('splash-spinner');
             if (spinner && spinner.style.display !== 'none') return; // Még tart a 2 mp töltés
-
-            if (!navigator.onLine) {
-                showToast("❌ Nincs internetkapcsolat!");
-                return;
-            }
 
             if (!isMusicPlaying) {
                 isMusicPlaying = true;
@@ -1108,14 +1076,10 @@
                 }
             }
 
-            if (window.auth && window.GoogleAuthProvider && window.signInWithRedirect) {
-                const provider = new window.GoogleAuthProvider();
-                window.signInWithRedirect(window.auth, provider).catch((error) => {
-                    console.error("Bejelentkezési hiba:", error);
-                    showToast("⚠️ Hiba a Google bejelentkezésnél.");
-                });
-            } else {
-                showToast("Kérlek várj, a Firebase inicializálódik...");
+            let splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.classList.add('hidden'), 400);
             }
         }
 
@@ -1258,7 +1222,7 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tactical_manager_db_v136')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tactical_manager_db_v137')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0;
         let currentLeagueIdx = 0;
@@ -1360,7 +1324,7 @@
                 inbox: inboxMessages,
                 managerStats: managerStats
             };
-            localStorage.setItem('tactical_manager_db_v136', JSON.stringify(saveObj));
+            localStorage.setItem('tactical_manager_db_v137', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
