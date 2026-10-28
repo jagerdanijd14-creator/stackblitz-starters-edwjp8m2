@@ -1,4 +1,4 @@
-name: Build Android APK
+Name: Build Android APK
 
 on:
   push:
@@ -61,6 +61,15 @@ jobs:
                   }
               }
           }" >> android/build.gradle
+
+      - name: Copy Custom App Icon
+        run: |
+          if [ -f "icon.png" ]; then
+            mkdir -p android/app/src/main/res/mipmap-xxhdpi
+            cp icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+            cp icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+            echo "Egyedi ikon sikeresen bemásolva az APK-ba!"
+          fi
 
       - name: Sync Capacitor
         run: npx cap sync android
