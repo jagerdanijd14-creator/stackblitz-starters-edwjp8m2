@@ -485,7 +485,7 @@
     <div id="toast-notification">Játék sikeresen elmentve!</div>
     <div class="version-badge">v1.4.0</div>
 
-    <!-- Zenelejátszó több ingyenes zeneszámmal -->
+    <!-- Zenelejátszó -->
     <audio id="bg-audio" preload="auto"></audio>
 
     <!-- SplashScreen -->
@@ -961,7 +961,7 @@
     </div>
 
     <script>
-        // Lejtszólétszó ingyenes háttérzenék listája
+        // Lejátszási lista ingyenes háttérzenékből
         const musicTracks = [
             { title: "1. Energetic Sport", url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=energetic-hip-hop-sport-112071.mp3" },
             { title: "2. Action Rock Drive", url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a81630.mp3?filename=action-sport-rock-10332.mp3" },
@@ -973,19 +973,27 @@
         const bgAudio = document.getElementById('bg-audio');
         bgAudio.volume = 0.35;
 
-        function loadTrack(idx) {
+        function loadTrack(idx, autoPlay = false) {
             currentTrackIdx = idx;
             bgAudio.src = musicTracks[currentTrackIdx].url;
+            bgAudio.load();
             let lbl = document.getElementById('current-track-lbl');
-            if(lbl) lbl.innerText = musicTracks[currentTrackIdx].title;
+            if (lbl) lbl.innerText = musicTracks[currentTrackIdx].title;
+
+            if (autoPlay && isMusicPlaying) {
+                bgAudio.play().catch(e => console.log("Autoplay hiba:", e));
+            }
         }
 
-        bgAudio.addEventListener('ended', () => { nextTrack(); });
+        // Automatikus továbblépés a következő számra
+        bgAudio.addEventListener('ended', () => {
+            currentTrackIdx = (currentTrackIdx + 1) % musicTracks.length;
+            loadTrack(currentTrackIdx, true);
+        });
 
         function nextTrack() {
             currentTrackIdx = (currentTrackIdx + 1) % musicTracks.length;
-            loadTrack(currentTrackIdx);
-            if (isMusicPlaying) { bgAudio.play().catch(e => console.log(e)); }
+            loadTrack(currentTrackIdx, true);
         }
 
         function toggleMusicFromSettings() {
@@ -994,8 +1002,11 @@
             if (isMusicPlaying) {
                 btn.innerText = "Be";
                 btn.style.background = "var(--logo-green)";
-                if(!bgAudio.src) loadTrack(0);
-                bgAudio.play().catch(e => console.log(e));
+                if (!bgAudio.src || bgAudio.src === window.location.href) {
+                    loadTrack(0, true);
+                } else {
+                    bgAudio.play().catch(e => console.log(e));
+                }
             } else {
                 btn.innerText = "Ki";
                 btn.style.background = "var(--btn-grey)";
@@ -1007,11 +1018,11 @@
         function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
 
         window.addEventListener('load', () => {
-            loadTrack(0);
+            loadTrack(0, false);
             let spinner = document.getElementById('splash-spinner');
             let txt = document.getElementById('splash-text');
-            if(spinner) spinner.style.display = 'block';
-            if(txt) txt.innerText = "Betöltés...";
+            if (spinner) spinner.style.display = 'block';
+            if (txt) txt.innerText = "Betöltés...";
 
             setTimeout(() => {
                 if (spinner) spinner.style.display = 'none';
