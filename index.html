@@ -491,7 +491,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.5.1</div>
+    <div class="version-badge">v1.5.2</div>
 
     <!-- Zenelejátszó -->
     <audio id="bg-audio" preload="auto"></audio>
@@ -649,7 +649,7 @@
         </div>
     </div>
 
-    <!-- Élő Meccs Nézet (Élő Időmúlással, Szünet és Folytatás gombokkal) -->
+    <!-- Élő Meccs Nézet -->
     <div id="live-match-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag" id="live-match-league-title">BAJNOKI MÉRKŐZÉS</div>
@@ -703,7 +703,7 @@
         </div>
     </div>
 
-    <!-- Különálló Tabella Nézet -->
+    <!-- Tabella Nézet -->
     <div id="standings-only-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Bajnoki Állás</div>
@@ -722,7 +722,7 @@
         </div>
     </div>
 
-    <!-- Különálló Meccsek/Fordulók Nézet -->
+    <!-- Meccsek/Fordulók Nézet -->
     <div id="fixtures-only-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Sorsolás & Eredmények</div>
@@ -823,28 +823,24 @@
         </div>
     </div>
 
-    <!-- Játékoskeret & Taktika ALMENÜS NÉZET -->
+    <!-- Játékoskeret & Taktika Nézet -->
     <div id="squad-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 3px;">
             <div class="studio-tag">Vezetőedző / Taktika</div>
             <h1 class="main-title" id="squad-view-title" style="font-size: 0.9rem;">Keret & Taktika</h1>
         </div>
 
-        <!-- Almenü fülek -->
         <div class="tabs-row" style="margin-bottom: 4px;">
             <button class="tab-btn active" id="squad-tab-lineup" onclick="switchSquadTab('lineup')">🏟️ Felállás</button>
             <button class="tab-btn" id="squad-tab-formation" onclick="switchSquadTab('formation')">📋 Formáció</button>
             <button class="tab-btn" id="squad-tab-list" onclick="switchSquadTab('list')">👥 Keret</button>
         </div>
 
-        <!-- 1. Felállás fül -->
         <div id="squad-content-lineup" style="width: 100%;">
             <div class="pitch-container">
                 <div class="pitch-line-center"></div>
                 <div class="pitch-circle-center"></div>
-                <div class="pitch-grid" id="pitch-grid-wrapper">
-                    <!-- Dinamikusan renderelve a formáció alapján -->
-                </div>
+                <div class="pitch-grid" id="pitch-grid-wrapper"></div>
             </div>
             <div class="squad-section-title">Cserék (Substitutes):</div>
             <div class="squad-box-container" id="subs-container-box"></div>
@@ -852,7 +848,6 @@
             <div class="squad-box-container" id="reserves-container-box"></div>
         </div>
 
-        <!-- 2. Formáció fül -->
         <div id="squad-content-formation" class="hidden" style="width: 100%;">
             <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px; margin-bottom: 4px;">
                 <div style="font-size: 0.75rem; font-weight: 700; color: var(--logo-green); margin-bottom: 6px;">Válassz Formációt:</div>
@@ -868,7 +863,6 @@
             </div>
         </div>
 
-        <!-- 3. Keret (Játékoslista fix fejléccel) fül -->
         <div id="squad-content-list" class="hidden" style="width: 100%;">
             <div style="overflow-y: auto; width: 100%; max-height: 250px;">
                 <table class="table-styled">
@@ -1064,7 +1058,7 @@
         function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
         function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
 
-        // Max 10 másodperces időkorlát a SplashScreenhez, hogy soha ne ragadhasson be
+        // Max 10 másodperces időkorlát a SplashScreenhez
         let splashDismissed = false;
 
         function startAppDirectly() {
@@ -1088,7 +1082,6 @@
             if (spinner) spinner.style.display = 'block';
             if (txt) txt.innerText = "Betöltés...";
 
-            // 2 másodperc után szövegváltás
             setTimeout(() => {
                 if (!splashDismissed) {
                     if (spinner) spinner.style.display = 'none';
@@ -1096,7 +1089,6 @@
                 }
             }, 2000);
 
-            // 10 másodperces szigorú időkorlát (Max 10mp, ha nem kattint, automatikusan továbblép)
             setTimeout(() => {
                 if (!splashDismissed) {
                     startAppDirectly();
@@ -1152,35 +1144,31 @@
             `;
         }
 
-        function generateSquad() {
-            const namePools = {
-                "England": {
-                    first: ["Oliver", "George", "Harry", "Jack", "Charlie", "Leo", "Thomas", "Oscar", "William", "Henry", "James", "Noah", "Archie", "Lucas", "Ethan", "Mason", "Alexander"],
-                    last: ["Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Johnson", "Davies", "Robinson", "Wright", "Thompson", "Evans", "Walker", "White", "Roberts", "Green", "Hall"]
-                },
-                "France": {
-                    first: ["Lucas", "Gabriel", "Léo", "Raphaël", "Arthur", "Louis", "Jules", "Maël", "Noah", "Adam", "Ethan", "Hugo", "Liam", "Nathan", "Paul", "Enzo", "Aaron"],
-                    last: ["Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard", "Petit", "Durand", "Leroy", "Moreau", "Simon", "Laurent", "Lefebvre", "Michel", "Garcia", "Roux", "David"]
-                },
-                "Germany": {
-                    first: ["Noah", "Matteo", "Elias", "Leon", "Paul", "Finn", "Elijah", "Louis", "Luca", "Ben", "Henry", "Emil", "Lian", "Friedrich", "Maximilian", "Felix", "Jonas"],
-                    last: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann", "Schäfer", "Koch", "Bauer", "Richter", "Klein", "Wolf", "Schröder"]
-                },
-                "Spain": {
-                    first: ["Mateo", "Lucas", "Martín", "Sofía", "Leo", "Daniel", "Alejandro", "Álvaro", "Manuel", "Pablo", "Adrián", "Enzo", "Ángel", "Thiago", "Marco", "Iker", "Diego"],
-                    last: ["García", "Rodríguez", "González", "Fernández", "López", "Martínez", "Sánchez", "Pérez", "Gómez", "Martín", "Jiménez", "Ruiz", "Hernández", "Díaz", "Moreno", "Álvarez", "Romero"]
-                },
-                "Brazil": {
-                    first: ["Miguel", "Arthur", "Gael", "Théo", "Heitor", "Davi", "Bernardo", "Gabriel", "Enzo", "Pedro", "Lucas", "Matheus", "Rafael", "Bruno", "Thiago", "Vitor", "Cauã"],
-                    last: ["Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Alves", "Pereira", "Lima", "Gomes", "Costa", "Ribeiro", "Martins", "Carvalho", "Araújo", "Melo", "Barbosa"]
-                },
-                "Netherlands": {
-                    first: ["Daan", "Noah", "Liam", "Lucas", "Sem", "Milan", "Levi", "Finn", "Bram", "Ties", "Julian", "Mason", "Noud", "James", "Benjamin", "Stijn", "Luuk"],
-                    last: ["de Jong", "Jansen", "de Vries", "van Dijk", "Bakker", "Janssen", "Visser", "Smit", "Meijer", "de Boer", "Mulder", "de Groot", "Bos", "Vos", "Peters", "Hendriks", "van Leeuwen"]
-                }
-            };
+        // Bővített névgenerátor országonként
+        const namePools = {
+            "England": {
+                first: ["Oliver", "George", "Harry", "Jack", "Charlie", "Leo", "Thomas", "Oscar", "William", "Henry", "James", "Noah", "Archie", "Lucas", "Ethan", "Mason", "Alexander", "Daniel", "Jacob", "Logan"],
+                last: ["Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Johnson", "Davies", "Robinson", "Wright", "Thompson", "Evans", "Walker", "White", "Roberts", "Green", "Hall", "Wood", "Jackson", "Clarke"]
+            },
+            "France": {
+                first: ["Lucas", "Gabriel", "Léo", "Raphaël", "Arthur", "Louis", "Jules", "Maël", "Noah", "Adam", "Ethan", "Hugo", "Liam", "Nathan", "Paul", "Enzo", "Aaron", "Antoine", "Mathieu", "Clément"],
+                last: ["Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard", "Petit", "Durand", "Leroy", "Moreau", "Simon", "Laurent", "Lefebvre", "Michel", "Garcia", "Roux", "David", "Bertrand", "Rousseau", "Girard"]
+            },
+            "Germany": {
+                first: ["Noah", "Matteo", "Elias", "Leon", "Paul", "Finn", "Elijah", "Louis", "Luca", "Ben", "Henry", "Emil", "Lian", "Friedrich", "Maximilian", "Felix", "Jonas", "Lukas", "Niklas", "Tim"],
+                last: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann", "Schäfer", "Koch", "Bauer", "Richter", "Klein", "Wolf", "Schröder", "Neumann", "Schwarz", "Zimmermann"]
+            },
+            "Spain": {
+                first: ["Mateo", "Lucas", "Martín", "Sofía", "Leo", "Daniel", "Alejandro", "Álvaro", "Manuel", "Pablo", "Adrián", "Enzo", "Ángel", "Thiago", "Marco", "Iker", "Diego", "Carlos", "Javier", "Gonzalo"],
+                last: ["García", "Rodríguez", "González", "Fernández", "López", "Martínez", "Sánchez", "Pérez", "Gómez", "Martín", "Jiménez", "Ruiz", "Hernández", "Díaz", "Moreno", "Álvarez", "Romero", "Navarro", "Torres", "Domínguez"]
+            },
+            "Italy": {
+                first: ["Leonardo", "Francesco", "Alessandro", "Lorenzo", "Mattia", "Andrea", "Gabriele", "Riccardo", "Tommaso", "Edoardo", "Emanuele", "Federico", "Matteo", "Giuseppe", "Niccolò", "Giovanni", "Pietro", "Davide", "Christian", "Luca"],
+                last: ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Mancini", "Costa", "Giordano", "Rizzo", "Lombardi", "Moretti"]
+            }
+        };
 
-            let nationalities = ["England", "France", "Germany", "Spain", "Brazil", "Netherlands"];
+        function generateSquadForCountry(countryName) {
             let rawPlayers = [];
 
             function getRandomName(nat) {
@@ -1191,20 +1179,16 @@
             }
 
             for(let i=0; i<4; i++) {
-                let nat = nationalities[Math.floor(Math.random()*nationalities.length)];
-                rawPlayers.push({ name: getRandomName(nat), nat: nat, pos: "GK", age: Math.floor(Math.random()*15) + 19, skill: Math.floor(Math.random()*22) + 65, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "GK", age: Math.floor(Math.random()*15) + 19, skill: Math.floor(Math.random()*22) + 65, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
             }
             for(let i=0; i<8; i++) {
-                let nat = nationalities[Math.floor(Math.random()*nationalities.length)];
-                rawPlayers.push({ name: getRandomName(nat), nat: nat, pos: "DEF", age: Math.floor(Math.random()*15) + 18, skill: Math.floor(Math.random()*24) + 63, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "DEF", age: Math.floor(Math.random()*15) + 18, skill: Math.floor(Math.random()*24) + 63, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
             }
             for(let i=0; i<8; i++) {
-                let nat = nationalities[Math.floor(Math.random()*nationalities.length)];
-                rawPlayers.push({ name: getRandomName(nat), nat: nat, pos: "MID", age: Math.floor(Math.random()*16) + 18, skill: Math.floor(Math.random()*25) + 62, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "MID", age: Math.floor(Math.random()*16) + 18, skill: Math.floor(Math.random()*25) + 62, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
             }
             for(let i=0; i<5; i++) {
-                let nat = nationalities[Math.floor(Math.random()*nationalities.length)];
-                rawPlayers.push({ name: getRandomName(nat), nat: nat, pos: "ATT", age: Math.floor(Math.random()*14) + 19, skill: Math.floor(Math.random()*25) + 66, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "ATT", age: Math.floor(Math.random()*14) + 19, skill: Math.floor(Math.random()*25) + 66, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
             }
 
             let gks = rawPlayers.filter(p => p.pos === 'GK').sort((a,b) => b.skill - a.skill);
@@ -1219,6 +1203,15 @@
             return [...starters, ...subs, ...reserves];
         }
 
+        function buildLeagueTeams(countryName, teamNames) {
+            return teamNames.map(name => ({
+                name: name,
+                players: generateSquadForCountry(countryName),
+                formation: "4-4-2"
+            }));
+        }
+
+        // BŐVÍTETT ALAPÉRTELMEZETT ADATBÁZIS (5 ORSZÁG - VALÓS CSAPATSZÁMOKKAL)
         const defaultDB = [
             {
                 country: "England",
@@ -1226,24 +1219,83 @@
                     {
                         name: "Premier Alliance",
                         level: 1,
-                        teams: [
-                            { name: "London City FC", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Northampton United", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Westbridge Athletic", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Capital Rovers", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Ironbridge Wanderers", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Crown FC", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Blue Star Brighton", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Redwood Albion", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Thames Dynamo", players: generateSquad(), formation: "4-4-2" },
-                            { name: "Yorkshire Phoenix", players: generateSquad(), formation: "4-4-2" }
-                        ]
+                        teams: buildLeagueTeams("England", [
+                            "London City FC", "Northampton United", "Westbridge Athletic", "Capital Rovers",
+                            "Ironbridge Wanderers", "Crown FC", "Blue Star Brighton", "Redwood Albion",
+                            "Thames Dynamo", "Yorkshire Phoenix", "East Coast Mariners", "Highland FC",
+                            "Midland Lions", "Northern Shield", "Southern Knights", "Blackfriars FC",
+                            "Oldbury Athletic", "Riverbank Rangers", "Silverstone FC", "Wessex Victoria"
+                        ])
+                    }
+                ]
+            },
+            {
+                country: "Spain",
+                leagues: [
+                    {
+                        name: "Primera Division",
+                        level: 1,
+                        teams: buildLeagueTeams("Spain", [
+                            "Real Capital FC", "Costa Sol Athletic", "Catalonia Rovers", "Andalucia FC",
+                            "Valencia Tigers", "Sevilla Stars", "Basque Athletic", "Galicia Mariners",
+                            "Islas Real", "Madrid Union", "Sol FC", "Espana Victoria",
+                            "Aragon FC", "Castilla Wanderers", "Navarra Athletic", "Cordoba Lions",
+                            "Toledo Imperial", "Granada Knights", "Girona Coast", "Palma FC"
+                        ])
+                    }
+                ]
+            },
+            {
+                country: "Germany",
+                leagues: [
+                    {
+                        name: "Bundes Liga Pro",
+                        level: 1,
+                        teams: buildLeagueTeams("Germany", [
+                            "Bavaria München", "Rheinland Borussia", "Capital Berlin FC", "Saxony Red Bulls",
+                            "Hanseatic Hamburg", "Black Forest Stuttgart", "Westphalia Express", "Frankfurt Eagle FC",
+                            "Ruhr Union", "Lower Saxony Wolves", "Bremen Mariners", "Cologne FC",
+                            "Swabia FC", "Palatinate Rovers", "Nuremberg Iron", "Augsburg Lions",
+                            "Bochum Miners", "Mainz City"
+                        ])
+                    }
+                ]
+            },
+            {
+                country: "Italy",
+                leagues: [
+                    {
+                        name: "Serie Premium",
+                        level: 1,
+                        teams: buildLeagueTeams("Italy", [
+                            "Milano Eagle FC", "Turin Zebras", "Roma Imperial", "Napoli Coast FC",
+                            "Florence Violet", "Lombardy Blue Stars", "Liguria Genoa", "Bologna Red-Blue",
+                            "Verona Knights", "Atalanta Goddess", "Udine Black-White", "Sardinia FC",
+                            "Sicily Palermo", "Venice Gondolas", "Parma Cross", "Torino Bulls",
+                            "Empoli City", "Lecce Lions", "Monza Circuit", "Salerno Sea"
+                        ])
+                    }
+                ]
+            },
+            {
+                country: "France",
+                leagues: [
+                    {
+                        name: "Ligue Élite",
+                        level: 1,
+                        teams: buildLeagueTeams("France", [
+                            "Paris Saint-Capitale", "Riviera Coast FC", "Rhône Olympic", "Marseille Port",
+                            "Lille North FC", "Brittany Rennes", "Monaco Crown", "Alsace Strasbourg",
+                            "Normandy Lens", "Loire Nantes", "Toulouse Violet", "Montpellier South",
+                            "Reims Kings", "Auvergne Clermont", "Brest Mariners", "Lorient Coast",
+                            "Metz Dragons", "Nice Azure"
+                        ])
                     }
                 ]
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v151')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v152')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1356,7 +1408,7 @@
                 inbox: inboxMessages,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v151', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v152', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -1749,7 +1801,7 @@
                 let myPlayers = activeCareerTeam.players;
                 container.innerHTML = `
                     <div style="font-size:0.62rem; color:var(--text-muted); margin-bottom:4px; text-align:center;">
-                        ${windowActive ? '🟢 Átigazolási időszak van (Július/Augusztus/Január).' : '🟡 Nincs átigazolási időszak.'}
+                        ${windowActive ? '🟢 Átigazolási időszak van.' : '🟡 Nincs átigazolási időszak.'}
                     </div>
                     <table class="table-styled">
                         <thead><tr><th>Játékos</th><th>Poszt</th><th>Skill</th><th>Kor</th><th>Érték</th><th>Állapot</th><th>Akció</th></tr></thead>
@@ -2565,7 +2617,7 @@
             else if (modalActionType === "edit_league") db[currentCountryIdx].leagues[currentLeagueIdx].name = val;
             else if (modalActionType === "add_team") {
                 let league = db[currentCountryIdx].leagues[currentLeagueIdx];
-                league.teams.push({ name: val, players: generateSquad(), formation: "4-4-2" });
+                league.teams.push({ name: val, players: generateSquadForCountry(db[currentCountryIdx].country), formation: "4-4-2" });
                 league.fixtures = generateFixtures(league.teams);
                 league.table = league.teams.map(t => ({ name: t.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }));
             } else if (modalActionType === "edit_team_name") {
