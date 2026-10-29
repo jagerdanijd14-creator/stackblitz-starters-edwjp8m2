@@ -491,7 +491,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.5.0</div>
+    <div class="version-badge">v1.5.1</div>
 
     <!-- Zenelejátszó -->
     <audio id="bg-audio" preload="auto"></audio>
@@ -1064,22 +1064,12 @@
         function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
         function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
 
-        window.addEventListener('load', () => {
-            loadTrack(0, false);
-            let spinner = document.getElementById('splash-spinner');
-            let txt = document.getElementById('splash-text');
-            if (spinner) spinner.style.display = 'block';
-            if (txt) txt.innerText = "Betöltés...";
-
-            setTimeout(() => {
-                if (spinner) spinner.style.display = 'none';
-                if (txt) txt.innerText = "Kattints a folytatáshoz...";
-            }, 2000);
-        });
+        // Max 10 másodperces időkorlát a SplashScreenhez, hogy soha ne ragadhasson be
+        let splashDismissed = false;
 
         function startAppDirectly() {
-            let spinner = document.getElementById('splash-spinner');
-            if (spinner && spinner.style.display !== 'none') return;
+            if (splashDismissed) return;
+            splashDismissed = true;
 
             let splash = document.getElementById('splash-screen');
             if (splash) {
@@ -1090,6 +1080,29 @@
                 toggleMusicFromSettings();
             }
         }
+
+        window.addEventListener('load', () => {
+            loadTrack(0, false);
+            let spinner = document.getElementById('splash-spinner');
+            let txt = document.getElementById('splash-text');
+            if (spinner) spinner.style.display = 'block';
+            if (txt) txt.innerText = "Betöltés...";
+
+            // 2 másodperc után szövegváltás
+            setTimeout(() => {
+                if (!splashDismissed) {
+                    if (spinner) spinner.style.display = 'none';
+                    if (txt) txt.innerText = "Kattints a folytatáshoz...";
+                }
+            }, 2000);
+
+            // 10 másodperces szigorú időkorlát (Max 10mp, ha nem kattint, automatikusan továbblép)
+            setTimeout(() => {
+                if (!splashDismissed) {
+                    startAppDirectly();
+                }
+            }, 10000);
+        });
 
         function showToast(msg) {
             let toast = document.getElementById('toast-notification');
@@ -1230,7 +1243,7 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v150')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v151')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1247,7 +1260,6 @@
         let currentBidTarget = null;
         let currentSquadTab = 'lineup';
 
-        // Élő meccs motor állapotok
         let liveMatchData = {
             active: false,
             matchObj: null,
@@ -1344,7 +1356,7 @@
                 inbox: inboxMessages,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v150', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v151', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -1650,7 +1662,6 @@
             showToast("⚠️ Ajánlat elutasítva.");
         }
 
-        // --- Átigazolási időszak naptári hónapok alapján (Július, Augusztus, Január) ---
         function isTransferWindowActive() {
             let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
             let nextInfo = getNextUnplayedMatchInfo();
@@ -1986,7 +1997,6 @@
             startLiveMatch(nextInfo);
         }
 
-        // --- Élő Meccs Motor (Valós idejű, Szünet és Folytatás gombokkal) ---
         function startLiveMatch(nextInfo) {
             let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
             let match = nextInfo.match;
@@ -2026,10 +2036,7 @@
             document.getElementById('btn-resume-match').style.display = 'none';
             document.getElementById('btn-finish-live-match').classList.add('hidden');
 
-            // Előre kiszámoljuk a végeredményt és a gólszerzőket
             precalculateMatchOutcome();
-
-            // Időzítő indítása: 1 mp = 1 perc a meccsben
             liveMatchData.timer = setInterval(runLiveMatchTick, 1000);
         }
 
@@ -2053,7 +2060,6 @@
                 match.awayScore = baseHome + (Math.random() < 0.4 ? 1 : 0);
             }
 
-            // Gólesemények percekre bontva
             let allGoals = [];
             for (let i = 0; i < match.homeScore; i++) {
                 let min = Math.floor(Math.random() * 85) + 3;
@@ -2076,13 +2082,11 @@
             liveMatchData.minute++;
             let min = liveMatchData.minute;
 
-            document.getElementById('live-match-clock.innerText` = `${min < 10 ? '0' + min : min}:00`;
             let clockEl = document.getElementById('live-match-clock');
             if (clockEl) clockEl.innerText = `${min < 10 ? '0' + min : min}:00`;
 
             let commContainer = document.getElementById('live-match-commentary');
 
-            // Megnézzük, van-e ebben a percben gól
             let goalEvent = liveMatchData.scheduledGoals.find(g => g.minute === min);
             if (goalEvent) {
                 if (goalEvent.team === liveMatchData.matchObj.home) liveMatchData.homeScore++;
@@ -2107,7 +2111,6 @@
                 if (match.homeScore > match.awayScore && match.home === activeCareerTeam.name) managerStats.wins++;
                 if (match.awayScore > match.homeScore && match.away === activeCareerTeam.name) managerStats.wins++;
 
-                // Szimuláljuk a többi meccset is a fordulóban
                 let rIdx = getNextUnplayedMatchInfo() ? getNextUnplayedMatchInfo().roundIdx : 0;
                 league.fixtures[rIdx].forEach(m => {
                     if (!m.played) {
@@ -2139,7 +2142,6 @@
         }
 
         function openTeamSquadDuringMatch() {
-            // Megállítjuk a meccset, míg a taktikán/cseréken van a játékos
             if (!liveMatchData.isPaused) togglePauseLiveMatch();
             openTeamSquad();
         }
@@ -2300,11 +2302,11 @@
             }
         }
 
-        // --- Keret & Taktika almenüs kezelés (Dinamikus formációval) ---
         function openTeamSquad() {
             activeCareerTeam = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx].teams[activeCareerTeamIdx];
             selectedPlayerIndexForSwap = null;
             document.getElementById('game-dashboard').classList.add('hidden');
+            document.getElementById('live-match-view').classList.add('hidden');
             document.getElementById('squad-view').classList.remove('hidden');
             switchSquadTab('lineup');
         }
@@ -2380,7 +2382,6 @@
             let gridWrapper = document.getElementById('pitch-grid-wrapper');
             gridWrapper.innerHTML = '';
 
-            // Dinamikus sorok renderelése formáció szerint
             if (form === "4-4-2") {
                 gridWrapper.innerHTML = `
                     <div class="pitch-row" id="pitch-row-att"></div>
