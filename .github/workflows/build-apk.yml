@@ -62,21 +62,28 @@ jobs:
               }
           }" >> android/build.gradle
 
-      - name: Copy Custom App Icon
-        run: |
-          if [ -f "icon.png" ]; then
-            for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
-              mkdir -p android/app/src/main/res/mipmap-$density
-              cp icon.png android/app/src/main/res/mipmap-$density/ic_launcher.png
-              cp icon.png android/app/src/main/res/mipmap-$density/ic_launcher_round.png 2>/dev/null || true
-            done
-            mkdir -p android/app/src/main/res/drawable
-            cp icon.png android/app/src/main/res/drawable/ic_launcher_foreground.png
-            echo "Egyedi ikon sikeresen felülírva minden méretben!"
-          fi
-
       - name: Sync Capacitor
         run: npx cap sync android
+
+      - name: Force Overwrite Custom App Icon
+        run: |
+          if [ -f "icon.png" ]; then
+            RES_DIR="android/app/src/main/res"
+            
+            # Töröljük az adaptív ikon XML fájlokat, hogy ne bírálják felül a PNG-t
+            find "$RES_DIR" -name "ic_launcher.xml" -delete
+            find "$RES_DIR" -name "ic_launcher_round.xml" -delete
+            
+            # Minden mipmap mappába bemásoljuk és átnevezzük az ikont
+            for folder in mipmap-mdpi mipmap-hdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
+              mkdir -p "$RES_DIR/$folder"
+              cp icon.png "$RES_DIR/$folder/ic_launcher.png"
+              cp icon.png "$RES_DIR/$folder/ic_launcher_round.png"
+              cp icon.png "$RES_DIR/$folder/ic_launcher_foreground.png"
+            done
+            
+            echo "Egyedi ikon sikeresen rákényszerítve az APK-ra!"
+          fi
 
       - name: Build APK
         working-directory: ./android
