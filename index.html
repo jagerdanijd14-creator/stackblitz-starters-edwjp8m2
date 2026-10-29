@@ -1898,13 +1898,11 @@ container.innerHTML = <div style="display: grid; grid-template-columns: repeat(2
 document.getElementById('achievements-view').classList.add('hidden');
 document.getElementById('game-dashboard').classList.remove('hidden');
 }
-​// Kijavított, pontos meccskeresés a soron következő lejátszatlan fordulóra
-function getNextUnplayedMatchInfo() {
+​function getNextUnplayedMatchInfo() {
 let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
 ensureLeagueSetup();
 for (let r = 0; r < league.fixtures.length; r++) {
 let round = league.fixtures[r];
-// Ellenőrizzük, hogy ebben a fordulóban van-e még lejátszatlan meccs
 let myMatchInRound = round.find(m => !m.played && (m.home === activeCareerTeam.name || m.away === activeCareerTeam.name));
 if (myMatchInRound) {
 return { roundIdx: r, match: myMatchInRound };
@@ -2146,8 +2144,7 @@ updateLeagueTableAfterMatch(match, league);
 ​if (match.homeScore > match.awayScore && match.home === activeCareerTeam.name) managerStats.wins++;
 if (match.awayScore > match.homeScore && match.away === activeCareerTeam.name) managerStats.wins++;
 ​checkAndGenerateJobOffers();
-​// FONTOS FIX: Az EGÉSZ AKTUÁLIS FORDULÓ többi meccsét is azonnal leszimuláljuk szinkronban
-let currentRound = league.fixtures[liveMatchData.roundIdx];
+​let currentRound = league.fixtures[liveMatchData.roundIdx];
 if (currentRound) {
 currentRound.forEach(m => {
 if (!m.played) {
