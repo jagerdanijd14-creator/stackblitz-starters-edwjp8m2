@@ -166,7 +166,7 @@
             border-radius: 16px;
             padding: 12px 14px;
             width: 100%;
-            max-width: 400px;
+            max-width: 410px;
             max-height: 97vh;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(16, 185, 129, 0.06);
             backdrop-filter: blur(12px);
@@ -177,9 +177,9 @@
             overflow-y: auto;
         }
 
-        .card.wide-dashboard { max-width: 410px; }
-        .card.extra-wide { max-width: 410px; }
-        .card.editor-card { max-width: 410px; }
+        .card.wide-dashboard { max-width: 420px; }
+        .card.extra-wide { max-width: 420px; }
+        .card.editor-card { max-width: 420px; }
         .hidden { display: none !important; }
 
         @keyframes fadeIn {
@@ -345,6 +345,13 @@
             grid-column: span 2;
         }
 
+        .menu-card.job-card {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(3, 105, 161, 0.3));
+            border-color: #38bdf8;
+            grid-column: span 2;
+        }
+        .menu-card.job-card .menu-card-icon { color: #38bdf8; }
+
         .menu-card.danger:hover { background: rgba(239, 68, 68, 0.12); border-color: var(--btn-red); }
 
         .menu-card-icon {
@@ -397,6 +404,48 @@
         .pitch-circle-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%; }
         .pitch-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 6px; z-index: 2; }
         .pitch-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+
+        /* Élő meccs 2D felülnézetes pálya */
+        .live-pitch-canvas-box {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(180deg, #104a28 0%, #0d381e 100%);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 6px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
+        }
+        .live-pitch-center-line { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.3); }
+        .live-pitch-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; }
+        
+        .tactical-token {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transition: all 0.6s linear;
+        }
+        .token-home { background: #38bdf8; border: 1px solid #ffffff; }
+        .token-away { background: #ef4444; border: 1px solid #ffffff; }
+        .token-ball {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #ffffff;
+            transition: all 0.5s linear;
+            z-index: 10;
+        }
 
         .player-card-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s, filter 0.2s; width: 52px; position: relative; }
         .player-card-node:hover { transform: scale(1.06); }
@@ -491,7 +540,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.5.2</div>
+    <div class="version-badge">v1.6.0</div>
 
     <!-- Zenelejátszó -->
     <audio id="bg-audio" preload="auto"></audio>
@@ -590,7 +639,13 @@
             <div class="menu-card table-card" onclick="openStandingsOnlyView()">
                 <div class="menu-card-icon"><i class="fa-solid fa-list-ol"></i></div>
                 <div class="menu-card-title">Tabella</div>
-                <div class="menu-card-desc">Helyezések</div>
+                <div class="menu-card-desc">Összes bajnokság</div>
+            </div>
+
+            <div class="menu-card job-card" onclick="openJobOffersModal()">
+                <div class="menu-card-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <div class="menu-card-title" id="dash-job-title">Állásajánlatok</div>
+                <div class="menu-card-desc">Ajánlatok (0)</div>
             </div>
 
             <div class="menu-card" onclick="openFixturesOnlyView()">
@@ -649,7 +704,7 @@
         </div>
     </div>
 
-    <!-- Élő Meccs Nézet -->
+    <!-- Élő Meccs Nézet (2D Pályával és Staminával) -->
     <div id="live-match-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag" id="live-match-league-title">BAJNOKI MÉRKŐZÉS</div>
@@ -657,20 +712,35 @@
             <div style="font-size: 0.65rem; color: var(--logo-green); font-weight: 700;" id="live-match-clock">00:00</div>
         </div>
 
-        <div style="display: flex; justify-content: space-around; align-items: center; background: rgba(9,13,22,0.6); border: 1px solid var(--card-border); border-radius: 8px; padding: 6px; margin-bottom: 6px; width: 100%;">
+        <div style="display: flex; justify-content: space-around; align-items: center; background: rgba(9,13,22,0.6); border: 1px solid var(--card-border); border-radius: 8px; padding: 4px 6px; margin-bottom: 4px; width: 100%;">
             <div style="text-align: center; flex: 1;">
-                <div id="live-home-emblem" style="width: 28px; height: 28px; margin: 0 auto 2px auto;"></div>
-                <div id="live-home-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.72rem;">Hazai</div>
+                <div id="live-home-emblem" style="width: 24px; height: 24px; margin: 0 auto 2px auto;"></div>
+                <div id="live-home-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.68rem;">Hazai</div>
             </div>
-            <div style="font-family: var(--font-title); font-size: 1.1rem; font-weight: 900; color: #ffffff;" id="live-score-display">0 - 0</div>
+            <div style="font-family: var(--font-title); font-size: 1rem; font-weight: 900; color: #ffffff;" id="live-score-display">0 - 0</div>
             <div style="text-align: center; flex: 1;">
-                <div id="live-away-emblem" style="width: 28px; height: 28px; margin: 0 auto 2px auto;"></div>
-                <div id="live-away-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.72rem;">Vendég</div>
+                <div id="live-away-emblem" style="width: 24px; height: 24px; margin: 0 auto 2px auto;"></div>
+                <div id="live-away-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.68rem;">Vendég</div>
             </div>
         </div>
 
-        <div style="width: 100%; height: 130px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 6px; overflow-y: auto; margin-bottom: 6px; font-size: 0.65rem;" id="live-match-commentary">
-            <div style="color: var(--text-muted); text-align: center;">A mérkőzés elkezdődött...</div>
+        <!-- 2D Felülnézetes Pálya -->
+        <div class="live-pitch-canvas-box" id="live-pitch-box">
+            <div class="live-pitch-center-line"></div>
+            <div class="live-pitch-center-circle"></div>
+            <div class="token-ball" id="match-ball-token" style="top: 50%; left: 50%;"></div>
+            <!-- Dinamikus korongok -->
+            <div id="match-tokens-container"></div>
+        </div>
+
+        <div style="display: flex; gap: 6px; width: 100%; margin-bottom: 4px;">
+            <div style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 5px; height: 95px; overflow-y: auto; font-size: 0.62rem;" id="live-match-commentary">
+                <div style="color: var(--text-muted); text-align: center;">A mérkőzés elkezdődött...</div>
+            </div>
+            <div style="width: 140px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 4px; height: 95px; overflow-y: auto; font-size: 0.58rem;" id="live-match-stamina-panel">
+                <div style="font-weight: 700; color: var(--logo-green); margin-bottom: 2px; text-align: center;">Stamina (Erő)</div>
+                <div id="live-stamina-list"></div>
+            </div>
         </div>
 
         <div class="button-group">
@@ -680,6 +750,18 @@
                 <button class="btn btn-secondary" onclick="openTeamSquadDuringMatch()" style="flex: 1;">👥 Cserék / Taktika</button>
             </div>
             <button class="btn btn-primary hidden" id="btn-finish-live-match" onclick="finishLiveMatch()"><span>Tovább a Dashboardra</span><i class="fa-solid fa-arrow-right btn-icon"></i></button>
+        </div>
+    </div>
+
+    <!-- Állásajánlatok Modál -->
+    <div id="job-offers-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-title">💼 Menedzseri Állásajánlatok</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); text-align: center; margin-bottom: 2px;">Válts csapatot a teljesítményed alapján!</div>
+            <div style="width: 100%; max-height: 200px; overflow-y: auto;" id="job-offers-container"></div>
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="closeJobOffersModal()">Bezárás</button>
+            </div>
         </div>
     </div>
 
@@ -703,13 +785,21 @@
         </div>
     </div>
 
-    <!-- Tabella Nézet -->
+    <!-- Különálló Tabella Nézet (Összes Bajnokság Váltóval) -->
     <div id="standings-only-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
-            <div class="studio-tag">Bajnoki Állás</div>
+            <div class="studio-tag">Nemzetközi Tabellák</div>
             <h1 class="main-title" style="font-size: 1rem;">Tabella</h1>
         </div>
-        <div style="overflow-x: auto; width: 100%; margin-bottom: 6px;">
+        
+        <!-- Ország / Bajnokság Váltó Sáv -->
+        <div class="nav-row" style="margin-bottom: 6px;">
+            <button class="nav-btn" onclick="changeStandingsCountry(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="nav-label" id="standings-lbl-country">Ország / Bajnokság</div>
+            <button class="nav-btn" onclick="changeStandingsCountry(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div style="overflow-x: auto; width: 100%; margin-bottom: 6px; max-height: 220px;">
             <table class="table-styled">
                 <thead>
                     <tr><th>#</th><th>Csapat</th><th>M</th><th>Gy</th><th>D</th><th>V</th><th>RG</th><th>KG</th><th>GK</th><th>P</th></tr>
@@ -867,7 +957,7 @@
             <div style="overflow-y: auto; width: 100%; max-height: 250px;">
                 <table class="table-styled">
                     <thead>
-                        <tr><th>Játékos</th><th>Poszt</th><th>Skill</th><th>Kor</th><th>Gól</th><th>Sárga</th><th>Piros</th></tr>
+                        <tr><th>#</th><th>Játékos</th><th>Poszt</th><th>Skill</th><th>Kor</th><th>Gól</th><th>Sárga</th><th>Piros</th></tr>
                     </thead>
                     <tbody id="squad-full-list-tbody"></tbody>
                 </table>
@@ -983,6 +1073,8 @@
             <div style="display: flex; flex-direction: column; gap: 3px;">
                 <label style="font-size: 0.65rem; color: var(--text-muted);">Játékos Neve:</label>
                 <input type="text" id="p-name" class="modal-input" placeholder="pl. Kovács Péter">
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Mezszám:</label>
+                <input type="number" id="p-number" class="modal-input" placeholder="9" min="1" max="99">
                 <label style="font-size: 0.65rem; color: var(--text-muted);">Nemzetiség:</label>
                 <select id="p-nat" class="modal-input">
                     <option value="">Válassz...</option><option value="England">England</option><option value="France">France</option><option value="Germany">Germany</option><option value="Spain">Spain</option><option value="Brazil">Brazil</option><option value="Netherlands">Netherlands</option>
@@ -1144,7 +1236,6 @@
             `;
         }
 
-        // Bővített névgenerátor országonként
         const namePools = {
             "England": {
                 first: ["Oliver", "George", "Harry", "Jack", "Charlie", "Leo", "Thomas", "Oscar", "William", "Henry", "James", "Noah", "Archie", "Lucas", "Ethan", "Mason", "Alexander", "Daniel", "Jacob", "Logan"],
@@ -1178,17 +1269,27 @@
                 return `${f} ${l}`;
             }
 
+            let usedNumbers = [];
+            function getUniqueNumber() {
+                let num = Math.floor(Math.random() * 98) + 1;
+                while (usedNumbers.includes(num)) {
+                    num = Math.floor(Math.random() * 98) + 1;
+                }
+                usedNumbers.push(num);
+                return num;
+            }
+
             for(let i=0; i<4; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "GK", age: Math.floor(Math.random()*15) + 19, skill: Math.floor(Math.random()*22) + 65, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "GK", age: Math.floor(Math.random()*15) + 19, skill: Math.floor(Math.random()*22) + 65, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
             }
             for(let i=0; i<8; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "DEF", age: Math.floor(Math.random()*15) + 18, skill: Math.floor(Math.random()*24) + 63, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "DEF", age: Math.floor(Math.random()*15) + 18, skill: Math.floor(Math.random()*24) + 63, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
             }
             for(let i=0; i<8; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "MID", age: Math.floor(Math.random()*16) + 18, skill: Math.floor(Math.random()*25) + 62, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "MID", age: Math.floor(Math.random()*16) + 18, skill: Math.floor(Math.random()*25) + 62, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
             }
             for(let i=0; i<5; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), nat: countryName, pos: "ATT", age: Math.floor(Math.random()*14) + 19, skill: Math.floor(Math.random()*25) + 66, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "ATT", age: Math.floor(Math.random()*14) + 19, skill: Math.floor(Math.random()*25) + 66, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
             }
 
             let gks = rawPlayers.filter(p => p.pos === 'GK').sort((a,b) => b.skill - a.skill);
@@ -1211,7 +1312,6 @@
             }));
         }
 
-        // BŐVÍTETT ALAPÉRTELMEZETT ADATBÁZIS (5 ORSZÁG - VALÓS CSAPATSZÁMOKKAL)
         const defaultDB = [
             {
                 country: "England",
@@ -1295,7 +1395,7 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v152')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v160')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1303,6 +1403,7 @@
         let activeCareerCountryIdx = null, activeCareerLeagueIdx = null, activeCareerTeamIdx = null, activeCareerTeam = null;
         let currentSeasonYear = 1, teamBudget = 15000000;
         let inboxMessages = [];
+        let jobOffers = [];
         let managerStats = { wins: 0, trophies: 0, bestPosition: 99 };
         let viewingRoundIndex = 0;
         let selectedPlayerIndexForSwap = null;
@@ -1311,6 +1412,7 @@
         let currentTransferTab = 'buy';
         let currentBidTarget = null;
         let currentSquadTab = 'lineup';
+        let standingsViewCountryIdx = 0;
 
         let liveMatchData = {
             active: false,
@@ -1323,7 +1425,8 @@
             awayScore: 0,
             isPaused: false,
             timer: null,
-            events: []
+            events: [],
+            homeSide: 'left' // 'left' vagy 'right' térfélcsere miatt
         };
 
         const seasonMonths = [
@@ -1390,7 +1493,14 @@
                     }
                     l.teams.forEach(t => {
                         if (!t.formation) t.formation = "4-4-2";
-                        if (t.players) t.players.forEach(p => { if (p.transferListed === undefined) p.transferListed = false; });
+                        if (t.players) {
+                            let numCounter = 1;
+                            t.players.forEach(p => { 
+                                if (p.transferListed === undefined) p.transferListed = false; 
+                                if (p.stamina === undefined) p.stamina = 100;
+                                if (p.number === undefined) p.number = numCounter++;
+                            });
+                        }
                     });
                 });
             });
@@ -1406,9 +1516,10 @@
                 seasonYear: currentSeasonYear,
                 budget: teamBudget,
                 inbox: inboxMessages,
+                jobOffers: jobOffers,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v152', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v160', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -1465,6 +1576,7 @@
                     seasonYear: currentSeasonYear,
                     budget: teamBudget,
                     inbox: inboxMessages,
+                    jobOffers: jobOffers,
                     managerStats: managerStats,
                     dbSnapshot: db
                 };
@@ -1484,6 +1596,7 @@
                     currentSeasonYear = parsed.seasonYear || 1;
                     teamBudget = parsed.budget || 15000000;
                     inboxMessages = parsed.inbox || [];
+                    jobOffers = parsed.jobOffers || [];
                     managerStats = parsed.managerStats || { wins: 0, trophies: 0, bestPosition: 99 };
                     activeCareerTeam = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx].teams[activeCareerTeamIdx];
 
@@ -1496,6 +1609,7 @@
                     document.getElementById('dash-budget').innerText = `Kassza: ${formatMoney(teamBudget)}`;
                     updateDashboardMatchCard();
                     updateInboxBadge();
+                    updateJobOffersBadge();
                     showToast(`📂 Játék betöltve!`);
                 } catch(e) { showToast("❌ Hiba a betöltéskor."); }
             }
@@ -1585,11 +1699,12 @@
                 { id: 1, sender: "Ligaszövetség", title: "Üdv a bajnokságban!", text: `Köszöntünk a(z) ${l.name} mezőnyében! Vezesd győzelemre a ${activeCareerTeam.name} csapatát!`, unread: true },
                 { id: 2, sender: "Igazgatóság", title: "Átigazolási büdzsé", text: "Megkaptad a szezonra szóló $15.000.000 transzfer kasszát.", unread: true }
             ];
+            jobOffers = [];
             managerStats = { wins: 0, trophies: 0, bestPosition: 99 };
             
             db.forEach(country => country.leagues.forEach(league => league.teams.forEach(team => {
                 if (team.players) {
-                    team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; });
+                    team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; p.stamina = 100; });
                 }
             })));
 
@@ -1601,6 +1716,7 @@
             document.getElementById('dash-budget').innerText = `Kassza: ${formatMoney(teamBudget)}`;
             updateDashboardMatchCard();
             updateInboxBadge();
+            updateJobOffersBadge();
         }
 
         function exitToMainMenu() {
@@ -1613,6 +1729,7 @@
             document.getElementById('stats-view').classList.add('hidden');
             document.getElementById('achievements-view').classList.add('hidden');
             document.getElementById('live-match-view').classList.add('hidden');
+            document.getElementById('job-offers-modal').classList.add('hidden');
             document.getElementById('main-menu').classList.remove('hidden');
         }
 
@@ -1620,6 +1737,83 @@
             let unreadCount = inboxMessages.filter(m => m.unread).length;
             let titleEl = document.getElementById('dash-inbox-title');
             titleEl.innerText = unreadCount > 0 ? `Levelek (${unreadCount})` : `Levelek (0)`;
+        }
+
+        function updateJobOffersBadge() {
+            let titleEl = document.getElementById('dash-job-title');
+            titleEl.innerText = jobOffers.length > 0 ? `Állások (${jobOffers.length})` : `Állásajánlatok`;
+        }
+
+        function openJobOffersModal() {
+            renderJobOffersList();
+            document.getElementById('job-offers-modal').classList.remove('hidden');
+        }
+
+        function closeJobOffersModal() {
+            document.getElementById('job-offers-modal').classList.add('hidden');
+        }
+
+        function checkAndGenerateJobOffers() {
+            // Generáljon állásajánlatot a menedzser teljesítménye (győzelmek vagy jó helyezés) alapján
+            if (Math.random() < 0.35 && jobOffers.length < 3) {
+                let randCountryIdx = Math.floor(Math.random() * db.length);
+                let randLeagueIdx = Math.floor(Math.random() * db[randCountryIdx].leagues.length);
+                let league = db[randCountryIdx].leagues[randLeagueIdx];
+                let randTeam = league.teams[Math.floor(Math.random() * league.teams.length)];
+
+                if (randTeam.name !== activeCareerTeam.name) {
+                    jobOffers.push({
+                        id: Date.now(),
+                        teamName: randTeam.name,
+                        leagueName: league.name,
+                        countryName: db[randCountryIdx].country,
+                        cIdx: randCountryIdx,
+                        lIdx: randLeagueIdx,
+                        tIdx: league.teams.indexOf(randTeam)
+                    });
+                    updateJobOffersBadge();
+                    showToast(`💼 Új állásajánlat érkezett: ${randTeam.name}!`);
+                }
+            }
+        }
+
+        function renderJobOffersList() {
+            let container = document.getElementById('job-offers-container');
+            container.innerHTML = '';
+            if (jobOffers.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.68rem; padding:10px;">Jelenleg nincsenek állásajánlatok. Teljesíts jobban a csapataiddal!</div>';
+                return;
+            }
+            jobOffers.forEach((job, idx) => {
+                let div = document.createElement('div');
+                div.className = 'slot-card';
+                div.innerHTML = `
+                    <div class="slot-info">
+                        <span class="slot-title">${job.teamName} (${job.countryName})</span>
+                        <span class="slot-details">Bajnokság: ${job.leagueName}</span>
+                    </div>
+                    <div class="slot-actions">
+                        <button class="btn btn-primary" style="padding:3px 6px; font-size:0.6rem;" onclick="acceptJobOffer(${idx})">Elfogad</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function acceptJobOffer(idx) {
+            let job = jobOffers[idx];
+            activeCareerCountryIdx = job.cIdx;
+            activeCareerLeagueIdx = job.lIdx;
+            activeCareerTeamIdx = job.tIdx;
+            activeCareerTeam = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx].teams[activeCareerTeamIdx];
+            jobOffers = [];
+            closeJobOffersModal();
+
+            document.getElementById('dash-team-name').innerText = activeCareerTeam.name;
+            saveToLocalStorage();
+            updateJobOffersBadge();
+            updateDashboardMatchCard();
+            showToast(`🎉 Sikeresen átvetted a(z) ${activeCareerTeam.name} irányítását!`);
         }
 
         function openInboxView() {
@@ -1785,7 +1979,7 @@
                         <tbody>
                             ${filtered.map((p) => `
                                 <tr>
-                                    <td><strong>${p.name}</strong></td>
+                                    <td><strong>#${p.number || ''} ${p.name}</strong></td>
                                     <td>${p.originTeam}</td>
                                     <td>${p.pos}</td>
                                     <td style="color:var(--logo-green); font-weight:700;">${p.skill}</td>
@@ -1810,7 +2004,7 @@
                                 let estPrice = p.skill * 120000;
                                 return `
                                     <tr>
-                                        <td><strong>${p.name}</strong></td>
+                                        <td><strong>#${p.number || ''} ${p.name}</strong></td>
                                         <td>${p.pos}</td>
                                         <td style="color:var(--logo-green); font-weight:700;">${p.skill}</td>
                                         <td>${p.age}</td>
@@ -1881,7 +2075,7 @@
                 }
 
                 delete p.originTeam; delete p.teamObj; delete p.playerIndex; delete p.price;
-                p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false;
+                p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; p.stamina = 100;
                 activeCareerTeam.players.push(p);
 
                 saveToLocalStorage();
@@ -1946,19 +2140,19 @@
             if (currentStatsTab === 'scorers') {
                 let filtered = allPlayers.filter(p => (p.goals || 0) > 0).sort((a, b) => b.goals - a.goals);
                 if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
-                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Gól</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:var(--logo-green);">${p.goals}</td></tr>`).join('')}</tbody></table>`;
+                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Gól</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>#${p.number||''} ${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:var(--logo-green);">${p.goals}</td></tr>`).join('')}</tbody></table>`;
             } else if (currentStatsTab === 'yellow') {
                 let filtered = allPlayers.filter(p => (p.yellowCards || 0) > 0).sort((a, b) => b.yellowCards - a.yellowCards);
                 if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
-                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Sárga</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#fbbf24;">${p.yellowCards}</td></tr>`).join('')}</tbody></table>`;
+                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Sárga</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>#${p.number||''} ${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#fbbf24;">${p.yellowCards}</td></tr>`).join('')}</tbody></table>`;
             } else if (currentStatsTab === 'red') {
                 let filtered = allPlayers.filter(p => (p.redCards || 0) > 0).sort((a, b) => b.redCards - a.redCards);
                 if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
-                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Piros</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#ef4444;">${p.redCards}</td></tr>`).join('')}</tbody></table>`;
+                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Piros</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>#${p.number||''} ${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#ef4444;">${p.redCards}</td></tr>`).join('')}</tbody></table>`;
             } else if (currentStatsTab === 'clean') {
                 let gks = allPlayers.filter(p => p.pos === 'GK' && (p.cleanSheets || 0) > 0).sort((a, b) => b.cleanSheets - a.cleanSheets);
                 if (gks.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
-                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Kapus</th><th>Csapat</th><th>Gól nélküli</th></tr></thead><tbody>${gks.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#38bdf8;">${p.cleanSheets}</td></tr>`).join('')}</tbody></table>`;
+                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Kapus</th><th>Csapat</th><th>Gól nélküli</th></tr></thead><tbody>${gks.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>#${p.number||''} ${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#38bdf8;">${p.cleanSheets}</td></tr>`).join('')}</tbody></table>`;
             }
         }
 
@@ -2028,6 +2222,7 @@
                 cardDesc.innerText = `vs ${opponent} (${nextInfo.roundIdx + 1}. F.)`;
             }
             updateInboxBadge();
+            updateJobOffersBadge();
         }
 
         function handleDashboardMainCardClick() {
@@ -2044,6 +2239,9 @@
                 openTeamSquad();
                 return;
             }
+
+            // Meccs előtt mindenki staminája 100%
+            activeCareerTeam.players.forEach(p => p.stamina = 100);
 
             simulateBotOffersForListedPlayers();
             startLiveMatch(nextInfo);
@@ -2066,7 +2264,8 @@
                 awayScore: 0,
                 isPaused: false,
                 timer: null,
-                events: []
+                events: [],
+                homeSide: 'left'
             };
 
             document.getElementById('game-dashboard').classList.add('hidden');
@@ -2089,6 +2288,7 @@
             document.getElementById('btn-finish-live-match').classList.add('hidden');
 
             precalculateMatchOutcome();
+            renderLiveStaminaPanel();
             liveMatchData.timer = setInterval(runLiveMatchTick, 1000);
         }
 
@@ -2116,17 +2316,82 @@
             for (let i = 0; i < match.homeScore; i++) {
                 let min = Math.floor(Math.random() * 85) + 3;
                 let scorer = getRandomPlayerFromTeam(liveMatchData.homeTeam, 'ATT');
-                allGoals.push({ minute: min, team: match.home, text: `⚽ GÓL! ${scorer.name} (${match.home}) talált be!` });
+                allGoals.push({ minute: min, team: match.home, text: `⚽ GÓL! #${scorer.number||''} ${scorer.name} (${match.home}) talált be!` });
                 scorer.goals = (scorer.goals || 0) + 1;
             }
             for (let i = 0; i < match.awayScore; i++) {
                 let min = Math.floor(Math.random() * 85) + 3;
                 let scorer = getRandomPlayerFromTeam(liveMatchData.awayTeam, 'ATT');
-                allGoals.push({ minute: min, team: match.away, text: `⚽ GÓL! ${scorer.name} (${match.away}) talált be!` });
+                allGoals.push({ minute: min, team: match.away, text: `⚽ GÓL! #${scorer.number||''} ${scorer.name} (${match.away}) talált be!` });
                 scorer.goals = (scorer.goals || 0) + 1;
             }
             allGoals.sort((a, b) => a.minute - b.minute);
             liveMatchData.scheduledGoals = allGoals;
+        }
+
+        function renderLiveStaminaPanel() {
+            let container = document.getElementById('live-stamina-list');
+            if (!container || !activeCareerTeam) return;
+            let starters = activeCareerTeam.players.slice(0, 11);
+            container.innerHTML = starters.map(p => `
+                <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                    <span>#${p.number||''} ${p.name.split(' ').pop()}</span>
+                    <span style="color:${p.stamina < 50 ? '#ef4444' : 'var(--logo-green);'}">${Math.round(p.stamina)}%</span>
+                </div>
+            `).join('');
+        }
+
+        function update2DPitchTokens(minute) {
+            let container = document.getElementById('match-tokens-container');
+            let ballToken = document.getElementById('match-ball-token');
+            if (!container) return;
+            container.innerHTML = '';
+
+            // Stamina csökkentése időarányosan és teljesítmény rontása
+            if (activeCareerTeam && activeCareerTeam.players) {
+                activeCareerTeam.players.forEach(p => {
+                    p.stamina = Math.max(15, 100 - (minute * 0.8));
+                });
+                renderLiveStaminaPanel();
+            }
+
+            // Pálya koordináták kalkulálása a 2D felülnézetes meccsen
+            let ballX = 20 + Math.random() * 60;
+            let ballY = 20 + Math.random() * 60;
+            if (ballToken) {
+                ballToken.style.left = `${ballX}%`;
+                ballToken.style.top = `${ballY}%`;
+            }
+
+            // Kezdő 11 tokenek elhelyezése
+            let homeStarters = liveMatchData.homeTeam.players.slice(0, 11);
+            let awayStarters = liveMatchData.awayTeam.players.slice(0, 11);
+
+            homeStarters.forEach((p, idx) => {
+                let posX = 10 + (idx % 4) * 20 + (Math.random() * 5);
+                let posY = 15 + Math.floor(idx / 4) * 25 + (Math.random() * 5);
+                if (liveMatchData.homeSide === 'right') posX = 90 - posX;
+
+                let div = document.createElement('div');
+                div.className = 'tactical-token token-home';
+                div.style.left = `${posX}%`;
+                div.style.top = `${posY}%`;
+                div.innerText = p.number || (idx + 1);
+                container.appendChild(div);
+            });
+
+            awayStarters.forEach((p, idx) => {
+                let posX = 80 - (idx % 4) * 20 - (Math.random() * 5);
+                let posY = 85 - Math.floor(idx / 4) * 25 - (Math.random() * 5);
+                if (liveMatchData.homeSide === 'right') posX = 90 - posX;
+
+                let div = document.createElement('div');
+                div.className = 'tactical-token token-away';
+                div.style.left = `${posX}%`;
+                div.style.top = `${posY}%`;
+                div.innerText = p.number || (idx + 1);
+                container.appendChild(div);
+            });
         }
 
         function runLiveMatchTick() {
@@ -2136,6 +2401,8 @@
 
             let clockEl = document.getElementById('live-match-clock');
             if (clockEl) clockEl.innerText = `${min < 10 ? '0' + min : min}:00`;
+
+            update2DPitchTokens(min);
 
             let commContainer = document.getElementById('live-match-commentary');
 
@@ -2151,7 +2418,12 @@
                 commContainer.innerHTML += `<div style="color: #fbbf24; font-weight:700; margin: 3px 0;">[${min}'] ${goalEvent.text}</div>`;
                 commContainer.scrollTop = commContainer.scrollHeight;
             } else if (min === 45) {
-                commContainer.innerHTML += `<div style="color: var(--text-muted); margin: 2px 0;">[45'] Vége az első félidőnek.</div>`;
+                // Félidő: Megállás, térfélcsere, csere/taktika ablak megnyitása
+                togglePauseLiveMatch();
+                liveMatchData.homeSide = liveMatchData.homeSide === 'left' ? 'right' : 'left';
+                commContainer.innerHTML += `<div style="color: var(--text-muted); margin: 2px 0;">[45'] Félidő! Térfélcsere történt. Cserélj vagy állíts be taktikát!</div>`;
+                showToast("⏱️ Félidő! Nyílik a keret és taktika.");
+                openTeamSquadDuringMatch();
             } else if (min === 90) {
                 clearInterval(liveMatchData.timer);
                 liveMatchData.matchObj.played = true;
@@ -2162,6 +2434,8 @@
 
                 if (match.homeScore > match.awayScore && match.home === activeCareerTeam.name) managerStats.wins++;
                 if (match.awayScore > match.homeScore && match.away === activeCareerTeam.name) managerStats.wins++;
+
+                checkAndGenerateJobOffers();
 
                 let rIdx = getNextUnplayedMatchInfo() ? getNextUnplayedMatchInfo().roundIdx : 0;
                 league.fixtures[rIdx].forEach(m => {
@@ -2212,7 +2486,7 @@
         function getTeamAverageSkill(teamName, league) {
             let t = league.teams.find(x => x.name === teamName);
             if (!t || !t.players || t.players.length === 0) return 70;
-            let total = t.players.reduce((sum, p) => sum + p.skill, 0);
+            let total = t.players.reduce((sum, p) => sum + (p.skill * (p.stamina / 100)), 0);
             return Math.round(total / t.players.length);
         }
 
@@ -2275,7 +2549,7 @@
             league.table = league.teams.map(t => ({ name: t.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }));
             
             db.forEach(country => country.leagues.forEach(l => l.teams.forEach(team => {
-                if (team.players) team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; });
+                if (team.players) team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; p.stamina = 100; });
             })));
 
             saveToLocalStorage();
@@ -2287,6 +2561,7 @@
         function openStandingsOnlyView() {
             document.getElementById('game-dashboard').classList.add('hidden');
             document.getElementById('standings-only-view').classList.remove('hidden');
+            standingsViewCountryIdx = activeCareerCountryIdx;
             renderStandingsOnly();
         }
         function closeStandingsOnlyView() {
@@ -2294,9 +2569,18 @@
             document.getElementById('game-dashboard').classList.remove('hidden');
         }
 
+        function changeStandingsCountry(dir) {
+            standingsViewCountryIdx = (standingsViewCountryIdx + dir + db.length) % db.length;
+            renderStandingsOnly();
+        }
+
         function renderStandingsOnly() {
-            let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
+            let countryObj = db[standingsViewCountryIdx];
+            let league = countryObj.leagues[0];
             ensureLeagueSetup();
+
+            document.getElementById('standings-lbl-country').innerText = `${countryObj.country} — ${league.name}`;
+
             league.table.sort((a, b) => {
                 if (b.points !== a.points) return b.points - a.points;
                 return (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst);
@@ -2306,7 +2590,7 @@
             tbody.innerHTML = '';
             league.table.forEach((row, idx) => {
                 let tr = document.createElement('tr');
-                if (row.name === activeCareerTeam.name) tr.className = 'my-team';
+                if (row.name === activeCareerTeam.name && standingsViewCountryIdx === activeCareerCountryIdx) tr.className = 'my-team';
                 let gd = row.goalsFor - row.goalsAgainst;
                 tr.innerHTML = `<td>${idx + 1}.</td><td><div class="table-team-cell"><div class="table-emblem-box">${getTeamEmblemSVG(row.name)}</div><span>${row.name}</span></div></td><td>${row.played}</td><td>${row.won}</td><td>${row.drawn}</td><td>${row.lost}</td><td>${row.goalsFor}</td><td>${row.goalsAgainst}</td><td>${gd > 0 ? '+'+gd : gd}</td><td style="font-weight:700; color:var(--logo-green);">${row.points}</td>`;
                 tbody.appendChild(tr);
@@ -2411,6 +2695,7 @@
             activeCareerTeam.players.forEach(p => {
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td>#${p.number || ''}</td>
                     <td><strong>${p.name}</strong></td>
                     <td>${p.pos}</td>
                     <td style="color:var(--logo-green); font-weight:700;">${p.skill}</td>
@@ -2495,7 +2780,7 @@
             return `
                 <div class="player-card-node ${isSelected ? 'selected' : ''}" onclick="handlePlayerClick(${index})">
                     <div class="player-avatar-box">
-                        <div class="player-pos-badge">${player.pos}</div>
+                        <div class="player-pos-badge">${player.number || ''}</div>
                         <i class="fa-solid fa-user"></i>
                         <div class="player-rating-badge">${player.skill}</div>
                     </div>
@@ -2554,7 +2839,7 @@
                 t.players.forEach((p, index) => {
                     let row = document.createElement('div');
                     row.className = 'player-row';
-                    row.innerHTML = `<span><strong>${p.name}</strong> [${p.pos}]</span> <span style="color:var(--logo-green);">Skill: ${p.skill}</span>`;
+                    row.innerHTML = `<span><strong>#${p.number||''} ${p.name}</strong> [${p.pos}]</span> <span style="color:var(--logo-green);">Skill: ${p.skill}</span>`;
                     row.onclick = () => openEditPlayerModal(index);
                     squadContainer.appendChild(row);
                 });
@@ -2632,6 +2917,7 @@
             editingPlayerIdx = null;
             document.getElementById('player-modal-title').innerText = "Új Játékos";
             document.getElementById('p-name').value = "";
+            document.getElementById('p-number').value = Math.floor(Math.random() * 98) + 1;
             document.getElementById('p-nat').selectedIndex = 0;
             document.getElementById('p-pos').selectedIndex = 2;
             document.getElementById('p-age').value = "";
@@ -2646,6 +2932,7 @@
             let p = team.players[index];
             document.getElementById('player-modal-title').innerText = "Játékos Szerkesztése";
             document.getElementById('p-name').value = p.name;
+            document.getElementById('p-number').value = p.number || 10;
             document.getElementById('p-nat').value = p.nat;
             document.getElementById('p-pos').value = p.pos;
             document.getElementById('p-age').value = p.age;
@@ -2658,6 +2945,7 @@
 
         function submitPlayerModal() {
             let name = document.getElementById('p-name').value.trim();
+            let number = parseInt(document.getElementById('p-number').value) || 10;
             let nat = document.getElementById('p-nat').value;
             let pos = document.getElementById('p-pos').value;
             let age = parseInt(document.getElementById('p-age').value);
@@ -2665,9 +2953,10 @@
             if (!name || isNaN(age) || isNaN(skill)) { showToast("Tölts ki minden mezőt!"); return; }
 
             let team = db[currentCountryIdx].leagues[currentLeagueIdx].teams[currentTeamIdx];
-            if (editingPlayerIdx === null) team.players.push({ name, nat, pos, age, skill, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false });
+            if (editingPlayerIdx === null) team.players.push({ name, number, nat, pos, age, skill, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
             else {
                 team.players[editingPlayerIdx].name = name;
+                team.players[editingPlayerIdx].number = number;
                 team.players[editingPlayerIdx].nat = nat;
                 team.players[editingPlayerIdx].pos = pos;
                 team.players[editingPlayerIdx].age = age;
