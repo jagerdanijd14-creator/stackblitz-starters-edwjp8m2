@@ -405,7 +405,7 @@
         .pitch-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 6px; z-index: 2; }
         .pitch-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
 
-        /* Vízszintes 2D Felülnézetes Pálya (Bal és Jobb oldali kapukkal) */
+        /* Vízszintes 2D Felülnézetes Pálya (Bal és Jobb oldali kapukkal) - Vajpuha animációval */
         .live-pitch-horizontal-box {
             width: 100%;
             height: 160px;
@@ -420,9 +420,11 @@
         .live-pitch-v-center-line { position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: rgba(255,255,255,0.3); }
         .live-pitch-v-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; }
         
-        /* Kapuk a széleken */
-        .goal-left { position: absolute; top: 35%; left: 0; width: 6px; height: 30%; background: #ffffff; border-radius: 0 4px 4px 0; box-shadow: 0 0 8px #ffffff; }
-        .goal-right { position: absolute; top: 35%; right: 0; width: 6px; height: 30%; background: #ffffff; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px #ffffff; }
+        /* Kapuk a széleken és 16-osok */
+        .goal-left { position: absolute; top: 35%; left: 0; width: 6px; height: 30%; background: #ffffff; border-radius: 0 4px 4px 0; box-shadow: 0 0 8px #ffffff; z-index: 4; }
+        .goal-right { position: absolute; top: 35%; right: 0; width: 6px; height: 30%; background: #ffffff; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px #ffffff; z-index: 4; }
+        .penalty-box-left { position: absolute; top: 20%; left: 0; width: 22px; height: 60%; border: 2px solid rgba(255,255,255,0.3); border-left: none; }
+        .penalty-box-right { position: absolute; top: 20%; right: 0; width: 22px; height: 60%; border: 2px solid rgba(255,255,255,0.3); border-right: none; }
 
         .tactical-token {
             position: absolute;
@@ -435,21 +437,24 @@
             font-size: 0.5rem;
             font-weight: 800;
             color: #ffffff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            /* Rendkívül folyékony, sima animáció */
-            transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            /* Rendkívül sima, vajpuha mozgási animáció */
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 5;
         }
         .token-home { background: #38bdf8; border: 1px solid #ffffff; }
         .token-away { background: #ef4444; border: 1px solid #ffffff; }
+        /* Különleges szín a kapusoknak */
+        .token-gk { background: #f59e0b !important; border: 2px solid #ffffff !important; box-shadow: 0 0 8px #f59e0b; }
+
         .token-ball {
             position: absolute;
             width: 10px;
             height: 10px;
             background: #ffffff;
             border-radius: 50%;
-            box-shadow: 0 0 8px #ffffff;
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 10px #ffffff;
+            transition: all 0.9s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 10;
         }
 
@@ -546,7 +551,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.6.2</div>
+    <div class="version-badge">v1.6.3</div>
 
     <!-- Zenelejátszó -->
     <audio id="bg-audio" preload="auto"></audio>
@@ -710,7 +715,7 @@
         </div>
     </div>
 
-    <!-- Élő Meccs Nézet (Vízszintes 2D Pályával és Folyékony Animációval) -->
+    <!-- Élő Meccs Nézet (Vízszintes 2D Pályával és Sima Animációval) -->
     <div id="live-match-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag" id="live-match-league-title">BAJNOKI MÉRKŐZÉS</div>
@@ -730,10 +735,12 @@
             </div>
         </div>
 
-        <!-- Vízszintes 2D Felülnézetes Pálya (Kapuk a széleken) -->
+        <!-- Vízszintes 2D Felülnézetes Pálya (Kapuk a széleken, 16-osok és Külön Kapusok) -->
         <div class="live-pitch-horizontal-box" id="live-pitch-box">
             <div class="goal-left"></div>
             <div class="goal-right"></div>
+            <div class="penalty-box-left"></div>
+            <div class="penalty-box-right"></div>
             <div class="live-pitch-v-center-line"></div>
             <div class="live-pitch-v-center-circle"></div>
             <div class="token-ball" id="match-ball-token" style="top: 50%; left: 50%;"></div>
@@ -1400,7 +1407,7 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v162')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v163')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1431,7 +1438,8 @@
             isPaused: false,
             timer: null,
             events: [],
-            homeSide: 'left'
+            homeSide: 'left',
+            isPenaltyMode: false
         };
 
         const seasonMonths = [
@@ -1524,7 +1532,7 @@
                 jobOffers: jobOffers,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v162', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v163', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -2268,7 +2276,8 @@
                 isPaused: false,
                 timer: null,
                 events: [],
-                homeSide: 'left'
+                homeSide: 'left',
+                isPenaltyMode: false
             };
 
             document.getElementById('game-dashboard').classList.add('hidden');
@@ -2316,7 +2325,6 @@
             }
 
             let allEvents = [];
-            // Gólok
             for (let i = 0; i < match.homeScore; i++) {
                 let min = Math.floor(Math.random() * 85) + 3;
                 let scorer = getRandomPlayerFromTeam(liveMatchData.homeTeam, 'ATT');
@@ -2330,34 +2338,23 @@
                 scorer.goals = (scorer.goals || 0) + 1;
             }
 
-            // Szabálytalanságok, büntetők, szabadrúgások, passzok, lövések
-            for (let m = 10; m < 90; m += 12) {
+            for (let m = 12; m < 90; m += 14) {
                 let r = Math.random();
                 if (r < 0.35) {
                     let team = Math.random() < 0.5 ? match.home : match.away;
-                    let p = getRandomPlayerFromTeam(team == match.home ? liveMatchData.homeTeam : liveMatchData.awayTeam);
-                    allEvents.push({ minute: m, type: 'pass', text: `🔄 Szép passzjáték ${team} részéről.` });
+                    allEvents.push({ minute: m, type: 'pass', text: `🔄 Szép passzjáték ${team} részéről a középpályán.` });
                 } else if (r < 0.55) {
                     let team = Math.random() < 0.5 ? match.home : match.away;
                     allEvents.push({ minute: m, type: 'shot', text: `🎯 Veszélyes lövés kapura (${team})!` });
                 } else if (r < 0.70) {
                     let team = Math.random() < 0.5 ? match.home : match.away;
                     let foulTeam = team === match.home ? match.away : match.home;
-                    let foulPlayer = getRandomPlayerFromTeam(foulTeam === match.home ? liveMatchData.homeTeam : liveMatchData.awayTeam);
                     
-                    // 16-oson belül van-e szabálytalanság? (Büntető)
-                    if (Math.random() < 0.25) {
-                        allEvents.push({ minute: m, type: 'penalty', team: team, text: `⚠️ BÜNTETŐ! Szabálytalanság a 16-oson belül ${foulTeam} részéről (${foulPlayer.name})! 11-es!` });
-                        if (Math.random() < 0.8) { // Gól 11-esből
-                            let penaltyTaker = getRandomPlayerFromTeam(team === match.home ? liveMatchData.homeTeam : liveMatchData.awayTeam, 'ATT');
-                            allEvents.push({ minute: m + 1, type: 'goal', team: team, text: `⚽ BÜNTETŐ GÓL! #${penaltyTaker.number||''} ${penaltyTaker.name} értékesíti a tizenegyest!` });
-                            penaltyTaker.goals = (penaltyTaker.goals || 0) + 1;
-                            if (team === match.home) match.homeScore++; else match.awayScore++;
-                        } else {
-                            allEvents.push({ minute: m + 1, type: 'saved', text: `🧤 HÍRES VÉDÉS! A kapus védi a tizenegyest!` });
-                        }
+                    if (Math.random() < 0.30) {
+                        // Vizuális Büntető esemény jelölése
+                        allEvents.push({ minute: m, type: 'penalty_visual', team: team, text: `⚠️ BÜNTETŐ! Szabálytalanság a tizenhatoson belül! Büntetőhöz készül ${team}!` });
                     } else {
-                        allEvents.push({ minute: m, type: 'foul', text: `🟨 Szabálytalanság (${foulTeam}: #${foulPlayer.number||''} ${foulPlayer.name}). Szabadrúgás kifelé.` });
+                        allEvents.push({ minute: m, type: 'foul', text: `🟨 Szabálytalanság és szabadrúgás ${foulTeam} ellen a mezőnyben.` });
                     }
                 }
             }
@@ -2378,13 +2375,57 @@
             `).join('');
         }
 
+        // Valódi Formáció Pozíciók Generálása a Pályán (Vajpuha mozgáshoz)
+        function getFormationCoordinates(formation, index, isHome, homeSide) {
+            // Index 0 a kapus
+            if (index === 0) {
+                let x = isHome ? (homeSide === 'left' ? 5 : 92) : (homeSide === 'left' ? 92 : 5);
+                let y = 50;
+                return { x, y, isGk: true };
+            }
+
+            let line = 'def';
+            let posInLine = 0;
+            let totalInLine = 4;
+
+            if (formation === "4-4-2") {
+                if (index >= 1 && index <= 4) { line = 'def'; posInLine = index - 1; totalInLine = 4; }
+                else if (index >= 5 && index <= 8) { line = 'mid'; posInLine = index - 5; totalInLine = 4; }
+                else { line = 'att'; posInLine = index - 9; totalInLine = 2; }
+            } else if (formation === "4-3-3") {
+                if (index >= 1 && index <= 4) { line = 'def'; posInLine = index - 1; totalInLine = 4; }
+                else if (index >= 5 && index <= 7) { line = 'mid'; posInLine = index - 5; totalInLine = 3; }
+                else { line = 'att'; posInLine = index - 8; totalInLine = 3; }
+            } else if (formation === "3-5-2") {
+                if (index >= 1 && index <= 3) { line = 'def'; posInLine = index - 1; totalInLine = 3; }
+                else if (index >= 4 && index <= 8) { line = 'mid'; posInLine = index - 4; totalInLine = 5; }
+                else { line = 'att'; posInLine = index - 9; totalInLine = 2; }
+            } else if (formation === "5-3-2") {
+                if (index >= 1 && index <= 5) { line = 'def'; posInLine = index - 1; totalInLine = 5; }
+                else if (index >= 6 && index <= 8) { line = 'mid'; posInLine = index - 6; totalInLine = 3; }
+                else { line = 'att'; posInLine = index - 9; totalInLine = 2; }
+            }
+
+            let baseX = 22;
+            if (line === 'mid') baseX = 48;
+            if (line === 'att') baseX = 72;
+
+            if (!isHome) baseX = 100 - baseX;
+            if (homeSide === 'right') baseX = 100 - baseX;
+
+            let spacing = 75 / (totalInLine + 1);
+            let y = spacing * (posInLine + 1) + 12 + (Math.random() * 4 - 2);
+            let x = baseX + (Math.random() * 4 - 2);
+
+            return { x, y, isGk: false };
+        }
+
         function update2DPitchTokens(minute) {
             let container = document.getElementById('match-tokens-container');
             let ballToken = document.getElementById('match-ball-token');
             if (!container) return;
             container.innerHTML = '';
 
-            // Stamina csökkentése időarányosan és teljesítmény rontása
             if (activeCareerTeam && activeCareerTeam.players) {
                 activeCareerTeam.players.forEach(p => {
                     p.stamina = Math.max(15, 100 - (minute * 0.8));
@@ -2392,39 +2433,54 @@
                 renderLiveStaminaPanel();
             }
 
-            // Vízszintes pálya koordináták (Bal és Jobb kapuk között)
-            let ballX = 15 + Math.random() * 70;
-            let ballY = 20 + Math.random() * 60;
-            if (ballToken) {
-                ballToken.style.left = `${ballX}%`;
-                ballToken.style.top = `${ballY}%`;
-            }
-
+            let homeForm = liveMatchData.homeTeam.formation || "4-4-2";
+            let awayForm = liveMatchData.awayTeam.formation || "4-4-2";
             let homeStarters = liveMatchData.homeTeam.players.slice(0, 11);
             let awayStarters = liveMatchData.awayTeam.players.slice(0, 11);
 
+            // Labda mozgása a meccs folyamán dinamikusan
+            let ballX = 25 + Math.sin(minute * 0.4) * 35 + (Math.random() * 10 - 5);
+            let ballY = 50 + Math.cos(minute * 0.3) * 25;
+            if (ballToken) {
+                ballToken.style.left = `${Math.max(10, Math.min(90, ballX))}%`;
+                ballToken.style.top = `${Math.max(15, Math.min(85, ballY))}%`;
+            }
+
+            // Ha büntetőrúgás van, a labda és a játékosok a 16-oshoz állnak
+            if (liveMatchData.isPenaltyMode) {
+                ballX = liveMatchData.homeSide === 'left' ? 88 : 12;
+                ballY = 50;
+                if (ballToken) {
+                    ballToken.style.left = `${ballX}%`;
+                    ballToken.style.top = `${ballY}%`;
+                }
+            }
+
             homeStarters.forEach((p, idx) => {
-                let posX = 10 + Math.floor(idx / 3) * 20 + (Math.random() * 4);
-                let posY = 15 + (idx % 3) * 30 + (Math.random() * 5);
-                if (liveMatchData.homeSide === 'right') posX = 90 - posX;
+                let coords = getFormationCoordinates(homeForm, idx, true, liveMatchData.homeSide);
+                if (liveMatchData.isPenaltyMode) {
+                    if (idx === 0) coords.x = liveMatchData.homeSide === 'left' ? 95 : 5; // Kapus a gólvonalon
+                    else if (idx === 10) coords.x = liveMatchData.homeSide === 'left' ? 85 : 15; // 11-es rúgó
+                }
 
                 let div = document.createElement('div');
-                div.className = 'tactical-token token-home';
-                div.style.left = `${posX}%`;
-                div.style.top = `${posY}%`;
+                div.className = `tactical-token token-home ${coords.isGk ? 'token-gk' : ''}`;
+                div.style.left = `${coords.x}%`;
+                div.style.top = `${coords.y}%`;
                 div.innerText = p.number || (idx + 1);
                 container.appendChild(div);
             });
 
             awayStarters.forEach((p, idx) => {
-                let posX = 80 - Math.floor(idx / 3) * 20 - (Math.random() * 4);
-                let posY = 15 + (idx % 3) * 30 + (Math.random() * 5);
-                if (liveMatchData.homeSide === 'right') posX = 90 - posX;
+                let coords = getFormationCoordinates(awayForm, idx, false, liveMatchData.homeSide);
+                if (liveMatchData.isPenaltyMode) {
+                    if (idx === 0) coords.x = liveMatchData.homeSide === 'left' ? 5 : 95;
+                }
 
                 let div = document.createElement('div');
-                div.className = 'tactical-token token-away';
-                div.style.left = `${posX}%`;
-                div.style.top = `${posY}%`;
+                div.className = `tactical-token token-away ${coords.isGk ? 'token-gk' : ''}`;
+                div.style.left = `${coords.x}%`;
+                div.style.top = `${coords.y}%`;
                 div.innerText = p.number || (idx + 1);
                 container.appendChild(div);
             });
@@ -2445,14 +2501,28 @@
             let currentEvents = liveMatchData.scheduledEvents.filter(e => e.minute === min);
             currentEvents.forEach(ev => {
                 if (ev.type === 'goal') {
-                    if (ev.team === liveMatchData.matchObj.home && !ev.counted) {
-                        ev.counted = true;
-                    }
                     let scoreStr = `${liveMatchData.matchObj.homeScore} - ${liveMatchData.matchObj.awayScore}`;
                     document.getElementById('live-match-score-header').innerText = scoreStr;
                     document.getElementById('live-score-display').innerText = scoreStr;
-
                     commContainer.innerHTML += `<div style="color: #fbbf24; font-weight:700; margin: 3px 0;">[${min}'] ${ev.text}</div>`;
+                } else if (ev.type === 'penalty_visual') {
+                    liveMatchData.isPenaltyMode = true;
+                    commContainer.innerHTML += `<div style="color: #f59e0b; font-weight:700; margin: 3px 0;">[${min}'] ⚠️ BÜNTETŐ! Játékos áll a labda mögé...</div>`;
+                    setTimeout(() => {
+                        liveMatchData.isPenaltyMode = false;
+                        let scored = Math.random() < 0.75;
+                        if (scored) {
+                            if (ev.team === liveMatchData.matchObj.home) liveMatchData.matchObj.homeScore++;
+                            else liveMatchData.matchObj.awayScore++;
+                            let scoreStr = `${liveMatchData.matchObj.homeScore} - ${liveMatchData.matchObj.awayScore}`;
+                            document.getElementById('live-match-score-header').innerText = scoreStr;
+                            document.getElementById('live-score-display').innerText = scoreStr;
+                            commContainer.innerHTML += `<div style="color: #fbbf24; font-weight:700; margin: 3px 0;">⚽ BÜNTETŐ GÓL! Gól született a tizenegyesből!</div>`;
+                        } else {
+                            commContainer.innerHTML += `<div style="color: #38bdf8; font-weight:700; margin: 3px 0;">🧤 KIVÉDVE! A kapus bravúrral hárította a büntetőt!</div>`;
+                        }
+                        commContainer.scrollTop = commContainer.scrollHeight;
+                    }, 3000);
                 } else {
                     commContainer.innerHTML += `<div style="color: var(--text-muted); margin: 2px 0;">[${min}'] ${ev.text}</div>`;
                 }
@@ -2983,7 +3053,7 @@
             let name = document.getElementById('p-name').value.trim();
             let number = parseInt(document.getElementById('p-number').value) || 10;
             let nat = document.getElementById('p-nat').value;
-            let pos = document.getElementById('p-pos').value;
+            let pos = document.getElementById('p-pos'].value;
             let age = parseInt(document.getElementById('p-age').value);
             let skill = parseInt(document.getElementById('p-skill').value);
             if (!name || isNaN(age) || isNaN(skill)) { showToast("Tölts ki minden mezőt!"); return; }
