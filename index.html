@@ -542,7 +542,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.6.5</div>
+    <div class="version-badge">v1.6.6</div>
 
     <audio id="bg-audio" preload="auto"></audio>
 
@@ -1230,78 +1230,267 @@
             `;
         }
 
-        const namePools = {
-            "England": {
-                first: ["Oliver", "George", "Harry", "Jack", "Charlie", "Leo", "Thomas", "Oscar", "William", "Henry", "James", "Noah", "Archie", "Lucas", "Ethan", "Mason", "Alexander", "Daniel", "Jacob", "Logan"],
-                last: ["Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Johnson", "Davies", "Robinson", "Wright", "Thompson", "Evans", "Walker", "White", "Roberts", "Green", "Hall", "Wood", "Jackson", "Clarke"]
-            },
-            "France": {
-                first: ["Lucas", "Gabriel", "Léo", "Raphaël", "Arthur", "Louis", "Jules", "Maël", "Noah", "Adam", "Ethan", "Hugo", "Liam", "Nathan", "Paul", "Enzo", "Aaron", "Antoine", "Mathieu", "Clément"],
-                last: ["Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard", "Petit", "Durand", "Leroy", "Moreau", "Simon", "Laurent", "Lefebvre", "Michel", "Garcia", "Roux", "David", "Bertrand", "Rousseau", "Girard"]
-            },
-            "Germany": {
-                first: ["Noah", "Matteo", "Elias", "Leon", "Paul", "Finn", "Elijah", "Louis", "Luca", "Ben", "Henry", "Emil", "Lian", "Friedrich", "Maximilian", "Felix", "Jonas", "Lukas", "Niklas", "Tim"],
-                last: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann", "Schäfer", "Koch", "Bauer", "Richter", "Klein", "Wolf", "Schröder", "Neumann", "Schwarz", "Zimmermann"]
-            },
-            "Spain": {
-                first: ["Mateo", "Lucas", "Martín", "Sofía", "Leo", "Daniel", "Alejandro", "Álvaro", "Manuel", "Pablo", "Adrián", "Enzo", "Ángel", "Thiago", "Marco", "Iker", "Diego", "Carlos", "Javier", "Gonzalo"],
-                last: ["García", "Rodríguez", "González", "Fernández", "López", "Martínez", "Sánchez", "Pérez", "Gómez", "Martín", "Jiménez", "Ruiz", "Hernández", "Díaz", "Moreno", "Álvarez", "Romero", "Navarro", "Torres", "Domínguez"]
-            },
-            "Italy": {
-                first: ["Leonardo", "Francesco", "Alessandro", "Lorenzo", "Mattia", "Andrea", "Gabriele", "Riccardo", "Tommaso", "Edoardo", "Emanuele", "Federico", "Matteo", "Giuseppe", "Niccolò", "Giovanni", "Pietro", "Davide", "Christian", "Luca"],
-                last: ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco", "Bruno", "Gallo", "Conti", "De Luca", "Mancini", "Costa", "Giordano", "Rizzo", "Lombardi", "Moretti"]
-            }
+        // VALÓDI ADATBÁZIS (TOP 5 LIGA: Premier League, La Liga, Bundesliga, Serie A, Ligue 1)
+        const realTeamsData = {
+            "England": [
+                { name: "Manchester City", players: [
+                    { name: "Ederson", number: 31, nat: "Brazil", pos: "GK", age: 30, skill: 89 },
+                    { name: "Rúben Dias", number: 3, nat: "Portugal", pos: "DEF", age: 26, skill: 88 },
+                    { name: "Kyle Walker", number: 2, nat: "England", pos: "DEF", age: 33, skill: 84 },
+                    { name: "John Stones", number: 5, nat: "England", pos: "DEF", age: 29, skill: 85 },
+                    { name: "Josko Gvardiol", number: 24, nat: "Croatia", pos: "DEF", age: 22, skill: 83 },
+                    { name: "Rodri", number: 16, nat: "Spain", pos: "MID", age: 27, skill: 91 },
+                    { name: "Kevin De Bruyne", number: 17, nat: "Belgium", pos: "MID", age: 32, skill: 91 },
+                    { name: "Bernardo Silva", number: 20, nat: "Portugal", pos: "MID", age: 29, skill: 88 },
+                    { name: "Phil Foden", number: 47, nat: "England", pos: "MID", age: 23, skill: 88 },
+                    { name: "Jack Grealish", number: 10, nat: "England", pos: "ATT", age: 28, skill: 85 },
+                    { name: "Erling Haaland", number: 9, nat: "Norway", pos: "ATT", age: 23, skill: 92 },
+                    { name: "Stefan Ortega", number: 18, nat: "Germany", pos: "GK", age: 31, skill: 80 },
+                    { name: "Nathan Aké", number: 6, nat: "Netherlands", pos: "DEF", age: 29, skill: 84 },
+                    { name: "Manuel Akanji", number: 25, nat: "Switzerland", pos: "DEF", age: 28, skill: 83 },
+                    { name: "Mateo Kovacic", number: 8, nat: "Croatia", pos: "MID", age: 29, skill: 82 },
+                    { name: "Matheus Nunes", number: 27, nat: "Portugal", pos: "MID", age: 25, skill: 80 },
+                    { name: "Jeremy Doku", number: 11, nat: "Belgium", pos: "ATT", age: 21, skill: 81 },
+                    { name: "Julian Alvarez", number: 19, nat: "Argentina", pos: "ATT", age: 24, skill: 84 },
+                    { name: "Rico Lewis", number: 82, nat: "England", pos: "DEF", age: 19, skill: 76 },
+                    { name: "Oscar Bobb", number: 52, nat: "Norway", pos: "ATT", age: 20, skill: 75 }
+                ]},
+                { name: "Arsenal", players: [
+                    { name: "David Raya", number: 22, nat: "Spain", pos: "GK", age: 28, skill: 85 },
+                    { name: "William Saliba", number: 2, nat: "France", pos: "DEF", age: 23, skill: 87 },
+                    { name: "Gabriel Magalhães", number: 6, nat: "Brazil", pos: "DEF", age: 26, skill: 86 },
+                    { name: "Ben White", number: 4, nat: "England", pos: "DEF", age: 26, skill: 84 },
+                    { name: "Oleksandr Zinchenko", number: 35, nat: "Ukraine", pos: "DEF", age: 27, skill: 82 },
+                    { name: "Declan Rice", number: 41, nat: "England", pos: "MID", age: 25, skill: 88 },
+                    { name: "Martin Ødegaard", number: 8, nat: "Norway", pos: "MID", age: 25, skill: 89 },
+                    { name: "Kai Havertz", number: 29, nat: "Germany", pos: "MID", age: 24, skill: 83 },
+                    { name: "Bukayo Saka", number: 7, nat: "England", pos: "ATT", age: 22, skill: 89 },
+                    { name: "Gabriel Martinelli", number: 11, nat: "Brazil", pos: "ATT", age: 22, skill: 84 },
+                    { name: "Gabriel Jesus", number: 9, nat: "Brazil", pos: "ATT", age: 27, skill: 83 },
+                    { name: "Aaron Ramsdale", number: 1, nat: "England", pos: "GK", age: 25, skill: 82 },
+                    { name: "Takehiro Tomiyasu", number: 18, nat: "Japan", pos: "DEF", age: 25, skill: 81 },
+                    { name: "Jakub Kiwior", number: 15, nat: "Poland", pos: "DEF", age: 24, skill: 79 },
+                    { name: "Jorginho", number: 20, nat: "Italy", pos: "MID", age: 32, skill: 81 },
+                    { name: "Thomas Partey", number: 5, nat: "Ghana", pos: "MID", age: 30, skill: 83 },
+                    { name: "Leandro Trossard", number: 19, nat: "Belgium", pos: "ATT", age: 29, skill: 83 },
+                    { name: "Eddie Nketiah", number: 14, nat: "England", pos: "ATT", age: 24, skill: 78 },
+                    { name: "Emile Smith Rowe", number: 10, nat: "England", pos: "MID", age: 23, skill: 79 },
+                    { name: "Fabio Vieira", number: 21, nat: "Portugal", pos: "MID", age: 23, skill: 77 }
+                ]},
+                { name: "Liverpool", players: [
+                    { name: "Alisson Becker", number: 1, nat: "Brazil", pos: "GK", age: 31, skill: 89 },
+                    { name: "Virgil van Dijk", number: 4, nat: "Netherlands", pos: "DEF", age: 32, skill: 89 },
+                    { name: "Ibrahima Konaté", number: 5, nat: "France", pos: "DEF", age: 24, skill: 83 },
+                    { name: "Trent Alexander-Arnold", number: 66, nat: "England", pos: "DEF", age: 25, skill: 86 },
+                    { name: "Andrew Robertson", number: 26, nat: "Scotland", pos: "DEF", age: 30, skill: 85 },
+                    { name: "Alexis Mac Allister", number: 10, nat: "Argentina", pos: "MID", age: 25, skill: 85 },
+                    { name: "Dominik Szoboszlai", number: 8, nat: "Hungary", pos: "MID", age: 23, skill: 84 },
+                    { name: "Wataru Endo", number: 3, nat: "Japan", pos: "MID", age: 31, skill: 81 },
+                    { name: "Mohamed Salah", number: 11, nat: "Egypt", pos: "ATT", age: 31, skill: 90 },
+                    { name: "Darwin Núñez", number: 9, nat: "Uruguay", pos: "ATT", age: 24, skill: 83 },
+                    { name: "Luis Díaz", number: 7, nat: "Colombia", pos: "ATT", age: 27, skill: 84 },
+                    { name: "Caoimhín Kelleher", number: 62, nat: "Ireland", pos: "GK", age: 25, skill: 78 },
+                    { name: "Joe Gomez", number: 2, nat: "England", pos: "DEF", age: 26, skill: 80 },
+                    { name: "Jarell Quansah", number: 78, nat: "England", pos: "DEF", age: 21, skill: 76 },
+                    { name: "Curtis Jones", number: 17, nat: "England", pos: "MID", age: 23, skill: 80 },
+                    { name: "Ryan Gravenberch", number: 38, nat: "Netherlands", pos: "MID", age: 21, skill: 79 },
+                    { name: "Harvey Elliott", number: 19, nat: "England", pos: "MID", age: 21, skill: 80 },
+                    { name: "Cody Gakpo", number: 18, nat: "Netherlands", pos: "ATT", age: 24, skill: 83 },
+                    { name: "Diogo Jota", number: 20, nat: "Portugal", pos: "ATT", age: 27, skill: 85 },
+                    { name: "Kostas Tsimikas", number: 21, nat: "Greece", pos: "DEF", age: 27, skill: 78 }
+                ]},
+                { name: "Manchester United", players: [
+                    { name: "André Onana", number: 24, nat: "Cameroon", pos: "GK", age: 28, skill: 84 },
+                    { name: "Lisandro Martínez", number: 6, nat: "Argentina", pos: "DEF", age: 26, skill: 84 },
+                    { name: "Raphaël Varane", number: 19, nat: "France", pos: "DEF", age: 30, skill: 85 },
+                    { name: "Diogo Dalot", number: 20, nat: "Portugal", pos: "DEF", age: 25, skill: 82 },
+                    { name: "Luke Shaw", number: 23, nat: "England", pos: "DEF", age: 28, skill: 83 },
+                    { name: "Casemiro", number: 18, nat: "Brazil", pos: "MID", age: 32, skill: 86 },
+                    { name: "Kobbie Mainoo", number: 37, nat: "England", pos: "MID", age: 18, skill: 79 },
+                    { name: "Bruno Fernandes", number: 8, nat: "Portugal", pos: "MID", age: 29, skill: 88 },
+                    { name: "Alejandro Garnacho", number: 17, nat: "Argentina", pos: "ATT", age: 19, skill: 81 },
+                    { name: "Antony", number: 21, nat: "Brazil", pos: "ATT", age: 24, skill: 79 },
+                    { name: "Rasmus Højlund", number: 11, nat: "Denmark", pos: "ATT", age: 21, skill: 82 },
+                    { name: "Altay Bayindir", number: 1, nat: "Turkey", pos: "GK", age: 26, skill: 77 },
+                    { name: "Harry Maguire", number: 5, nat: "England", pos: "DEF", age: 31, skill: 80 },
+                    { name: "Victor Lindelöf", number: 2, nat: "Sweden", pos: "DEF", age: 29, skill: 79 },
+                    { name: "Aaron Wan-Bissaka", number: 29, nat: "England", pos: "DEF", age: 26, skill: 80 },
+                    { name: "Scott McTominay", number: 39, nat: "Scotland", pos: "MID", age: 27, skill: 80 },
+                    { name: "Christian Eriksen", number: 14, nat: "Denmark", pos: "MID", age: 32, skill: 81 },
+                    { name: "Mason Mount", number: 7, nat: "England", pos: "MID", age: 25, skill: 81 },
+                    { name: "Marcus Rashford", number: 10, nat: "England", pos: "ATT", age: 26, skill: 84 },
+                    { name: "Amad Diallo", number: 16, nat: "Ivory Coast", pos: "ATT", age: 21, skill: 76 }
+                ]}
+            ],
+            "Spain": [
+                { name: "Real Madrid", players: [
+                    { name: "Thibaut Courtois", number: 1, nat: "Belgium", pos: "GK", age: 31, skill: 90 },
+                    { name: "Antonio Rüdiger", number: 22, nat: "Germany", pos: "DEF", age: 31, skill: 88 },
+                    { name: "Éder Militão", number: 3, nat: "Brazil", pos: "DEF", age: 26, skill: 86 },
+                    { name: "Dani Carvajal", number: 2, nat: "Spain", pos: "DEF", age: 32, skill: 84 },
+                    { name: "Ferland Mendy", number: 23, nat: "France", pos: "DEF", age: 28, skill: 83 },
+                    { name: "Aurélien Tchouaméni", number: 18, nat: "France", pos: "MID", age: 24, skill: 85 },
+                    { name: "Federico Valverde", number: 15, nat: "Uruguay", pos: "MID", age: 25, skill: 88 },
+                    { name: "Jude Bellingham", number: 5, nat: "England", pos: "MID", age: 20, skill: 90 },
+                    { name: "Toni Kroos", number: 8, nat: "Germany", pos: "MID", age: 34, skill: 87 },
+                    { name: "Vinícius Júnior", number: 7, nat: "Brazil", pos: "ATT", age: 23, skill: 91 },
+                    { name: "Rodrygo", number: 11, nat: "Brazil", pos: "ATT", age: 23, skill: 86 },
+                    { name: "Andriy Lunin", number: 13, nat: "Ukraine", pos: "GK", age: 25, skill: 81 },
+                    { name: "David Alaba", number: 4, nat: "Austria", pos: "DEF", age: 31, skill: 85 },
+                    { name: "Nacho", number: 6, nat: "Spain", pos: "DEF", age: 34, skill: 80 },
+                    { name: "Eduardo Camavinga", number: 12, nat: "France", pos: "MID", age: 21, skill: 85 },
+                    { name: "Luka Modric", number: 10, nat: "Croatia", pos: "MID", age: 38, skill: 86 },
+                    { name: "Brahim Díaz", number: 21, nat: "Morocco", pos: "MID", age: 24, skill: 82 },
+                    { name: "Arda Güler", number: 24, nat: "Turkey", pos: "MID", age: 19, skill: 79 },
+                    { name: "Joselu", number: 14, nat: "Spain", pos: "ATT", age: 34, skill: 81 },
+                    { name: "Kylian Mbappé", number: 9, nat: "France", pos: "ATT", age: 25, skill: 92 }
+                ]},
+                { name: "Barcelona", players: [
+                    { name: "Marc-André ter Stegen", number: 1, nat: "Germany", pos: "GK", age: 31, skill: 89 },
+                    { name: "Ronald Araújo", number: 4, nat: "Uruguay", pos: "DEF", age: 25, skill: 86 },
+                    { name: "Pau Cubarsí", number: 33, nat: "Spain", pos: "DEF", age: 17, skill: 79 },
+                    { name: "Jules Koundé", number: 23, nat: "France", pos: "DEF", age: 25, skill: 85 },
+                    { name: "João Cancelo", number: 2, nat: "Portugal", pos: "DEF", age: 29, skill: 85 },
+                    { name: "Ilkay Gündoğan", number: 22, nat: "Germany", pos: "MID", age: 33, skill: 87 },
+                    { name: "Frenkie de Jong", number: 21, nat: "Netherlands", pos: "MID", age: 26, skill: 87 },
+                    { name: "Pedri", number: 8, nat: "Spain", pos: "MID", age: 21, skill: 86 },
+                    { name: "Lamine Yamal", number: 27, nat: "Spain", pos: "ATT", age: 16, skill: 84 },
+                    { name: "Raphinha", number: 11, nat: "Brazil", pos: "ATT", age: 27, skill: 84 },
+                    { name: "Robert Lewandowski", number: 9, nat: "Poland", pos: "ATT", age: 35, skill: 88 },
+                    { name: "Iñaki Peña", number: 13, nat: "Spain", pos: "GK", age: 25, skill: 78 },
+                    { name: "Andreas Christensen", number: 15, nat: "Denmark", pos: "DEF", age: 28, skill: 83 },
+                    { name: "Íñigo Martínez", number: 5, nat: "Spain", pos: "DEF", age: 32, skill: 81 },
+                    { name: "Alejandro Balde", number: 3, nat: "Spain", pos: "DEF", age: 20, skill: 81 },
+                    { name: "Gavi", number: 6, nat: "Spain", pos: "MID", age: 19, skill: 84 },
+                    { name: "Fermín López", number: 16, nat: "Spain", pos: "MID", age: 20, skill: 79 },
+                    { name: "Ferran Torres", number: 7, nat: "Spain", pos: "ATT", age: 24, skill: 82 },
+                    { name: "João Félix", number: 14, nat: "Portugal", pos: "ATT", age: 24, skill: 83 },
+                    { name: "Vitor Roque", number: 19, nat: "Brazil", pos: "ATT", age: 19, skill: 78 }
+                ]}
+            ],
+            "Germany": [
+                { name: "Bayern München", players: [
+                    { name: "Manuel Neuer", number: 1, nat: "Germany", pos: "GK", age: 38, skill: 87 },
+                    { name: "Kim Min-jae", number: 3, nat: "South Korea", pos: "DEF", age: 27, skill: 84 },
+                    { name: "Matthijs de Ligt", number: 4, nat: "Netherlands", pos: "DEF", age: 24, skill: 86 },
+                    { name: "Joshua Kimmich", number: 6, nat: "Germany", pos: "DEF", age: 29, skill: 88 },
+                    { name: "Alphonso Davies", number: 19, nat: "Canada", pos: "DEF", age: 23, skill: 84 },
+                    { name: "Leon Goretzka", number: 8, nat: "Germany", pos: "MID", age: 29, skill: 85 },
+                    { name: "Aleksandar Pavlovic", number: 45, nat: "Germany", pos: "MID", age: 19, skill: 78 },
+                    { name: "Jamal Musiala", number: 42, nat: "Germany", pos: "MID", age: 21, skill: 88 },
+                    { name: "Leroy Sané", number: 10, nat: "Germany", pos: "ATT", age: 28, skill: 85 },
+                    { name: "Serge Gnabry", number: 7, nat: "Germany", pos: "ATT", age: 28, skill: 83 },
+                    { name: "Harry Kane", number: 9, nat: "England", pos: "ATT", age: 30, skill: 91 },
+                    { name: "Sven Ulreich", number: 26, nat: "Germany", pos: "GK", age: 35, skill: 77 },
+                    { name: "Dayot Upamecano", number: 2, nat: "France", pos: "DEF", age: 25, skill: 83 },
+                    { name: "Eric Dier", number: 15, nat: "England", pos: "DEF", age: 30, skill: 81 },
+                    { name: "Raphaël Guerreiro", number: 22, nat: "Portugal", pos: "MID", age: 30, skill: 82 },
+                    { name: "Konrad Laimer", number: 27, nat: "Austria", pos: "MID", age: 26, skill: 81 },
+                    { name: "Kingsley Coman", number: 11, nat: "France", pos: "ATT", age: 27, skill: 84 },
+                    { name: "Mathys Tel", number: 39, nat: "France", pos: "ATT", age: 19, skill: 79 },
+                    { name: "Thomas Müller", number: 25, nat: "Germany", pos: "MID", age: 34, skill: 84 },
+                    { name: "Bryan Zaragoza", number: 17, nat: "Spain", pos: "ATT", age: 22, skill: 78 }
+                ]},
+                { name: "Bayer Leverkusen", players: [
+                    { name: "Lukáš Hrádecký", number: 1, nat: "Finland", pos: "GK", age: 34, skill: 84 },
+                    { name: "Jonathan Tah", number: 4, nat: "Germany", pos: "DEF", age: 28, skill: 85 },
+                    { name: "Edmond Tapsoba", number: 12, nat: "Burkina Faso", pos: "DEF", age: 25, skill: 83 },
+                    { name: "Piero Hincapié", number: 3, nat: "Ecuador", pos: "DEF", age: 22, skill: 83 },
+                    { name: "Jeremie Frimpong", number: 30, nat: "Netherlands", pos: "DEF", age: 23, skill: 85 },
+                    { name: "Granit Xhaka", number: 34, nat: "Switzerland", pos: "MID", age: 31, skill: 86 },
+                    { name: "Exequiel Palacios", number: 25, nat: "Argentina", pos: "MID", age: 25, skill: 83 },
+                    { name: "Alejandro Grimaldo", number: 20, nat: "Spain", pos: "MID", age: 28, skill: 86 },
+                    { name: "Florian Wirtz", number: 10, nat: "Germany", pos: "MID", age: 21, skill: 89 },
+                    { name: "Amine Adli", number: 21, nat: "Morocco", pos: "ATT", age: 24, skill: 81 },
+                    { name: "Victor Boniface", number: 22, nat: "Nigeria", pos: "ATT", age: 23, skill: 83 },
+                    { name: "Matěj Kovář", number: 17, nat: "Czech Republic", pos: "GK", age: 24, skill: 78 },
+                    { name: "Odilon Kossounou", number: 6, nat: "Ivory Coast", pos: "DEF", age: 23, skill: 82 },
+                    { name: "Josip Stanišić", number: 2, nat: "Croatia", pos: "DEF", age: 24, skill: 79 },
+                    { name: "Robert Andrich", number: 8, nat: "Germany", pos: "MID", age: 29, skill: 82 },
+                    { name: "Gustavo Puerta", number: 32, nat: "Colombia", pos: "MID", age: 20, skill: 75 },
+                    { name: "Nathan Tella", number: 19, nat: "Nigeria", pos: "ATT", age: 24, skill: 80 },
+                    { name: "Patrik Schick", number: 14, nat: "Czech Republic", pos: "ATT", age: 28, skill: 82 },
+                    { name: "Borja Iglesias", number: 9, nat: "Spain", pos: "ATT", age: 31, skill: 80 },
+                    { name: "Jonas Hofmann", number: 7, nat: "Germany", pos: "MID", age: 31, skill: 83 }
+                ]}
+            ],
+            "Italy": [
+                { name: "Inter Milan", players: [
+                    { name: "Yann Sommer", number: 1, nat: "Switzerland", pos: "GK", age: 35, skill: 86 },
+                    { name: "Alessandro Bastoni", number: 95, nat: "Italy", pos: "DEF", age: 25, skill: 87 },
+                    { name: "Benjamin Pavard", number: 28, nat: "France", pos: "DEF", age: 28, skill: 85 },
+                    { name: "Francesco Acerbi", number: 15, nat: "Italy", pos: "DEF", age: 36, skill: 83 },
+                    { name: "Federico Dimarco", number: 32, nat: "Italy", pos: "DEF", age: 26, skill: 85 },
+                    { name: "Hakan Çalhanoğlu", number: 20, nat: "Turkey", pos: "MID", age: 30, skill: 88 },
+                    { name: "Nicolò Barella", number: 23, nat: "Italy", pos: "MID", age: 27, skill: 88 },
+                    { name: "Henrikh Mkhitaryan", number: 22, nat: "Armenia", pos: "MID", age: 35, skill: 83 },
+                    { name: "Matteo Darmian", number: 36, nat: "Italy", pos: "DEF", age: 34, skill: 81 },
+                    { name: "Marcus Thuram", number: 9, nat: "France", pos: "ATT", age: 26, skill: 86 },
+                    { name: "Lautaro Martínez", number: 10, nat: "Argentina", pos: "ATT", age: 26, skill: 89 },
+                    { name: "Emil Audero", number: 77, nat: "Italy", pos: "GK", age: 27, skill: 78 },
+                    { name: "Stefan de Vrij", number: 6, nat: "Netherlands", pos: "DEF", age: 32, skill: 82 },
+                    { name: "Yann Bisseck", number: 31, nat: "Germany", pos: "DEF", age: 23, skill: 78 },
+                    { name: "Denzel Dumfries", number: 2, nat: "Netherlands", pos: "DEF", age: 28, skill: 83 },
+                    { name: "Davide Frattesi", number: 16, nat: "Italy", pos: "MID", age: 24, skill: 82 },
+                    { name: "Kristjan Asllani", number: 21, nat: "Albania", pos: "MID", age: 22, skill: 78 },
+                    { name: "Carlos Augusto", number: 30, nat: "Brazil", pos: "DEF", age: 25, skill: 81 },
+                    { name: "Marko Arnautovic", number: 8, nat: "Austria", pos: "ATT", age: 35, skill: 80 },
+                    { name: "Alexis Sánchez", number: 70, nat: "Chile", pos: "ATT", age: 35, skill: 80 }
+                ]},
+                { name: "Juventus", players: [
+                    { name: "Wojciech Szczęsny", number: 1, nat: "Poland", pos: "GK", age: 34, skill: 86 },
+                    { name: "Bremer", number: 3, nat: "Brazil", pos: "DEF", age: 27, skill: 86 },
+                    { name: "Danilo", number: 6, nat: "Brazil", pos: "DEF", age: 32, skill: 83 },
+                    { name: "Federico Gatti", number: 4, nat: "Italy", pos: "DEF", age: 25, skill: 80 },
+                    { name: "Andrea Cambiaso", number: 27, nat: "Italy", pos: "DEF", age: 24, skill: 81 },
+                    { name: "Manuel Locatelli", number: 5, nat: "Italy", pos: "MID", age: 26, skill: 83 },
+                    { name: "Adrien Rabiot", number: 25, nat: "France", pos: "MID", age: 29, skill: 84 },
+                    { name: "Weston McKennie", number: 16, nat: "United States", pos: "MID", age: 25, skill: 81 },
+                    { name: "Federico Chiesa", number: 7, nat: "Italy", pos: "ATT", age: 26, skill: 84 },
+                    { name: "Kenan Yıldız", number: 15, nat: "Turkey", pos: "ATT", age: 19, skill: 79 },
+                    { name: "Dusan Vlahovic", number: 9, nat: "Serbia", pos: "ATT", age: 24, skill: 85 },
+                    { name: "Mattia Perin", number: 36, nat: "Italy", pos: "GK", age: 31, skill: 80 },
+                    { name: "Daniele Rugani", number: 24, nat: "Italy", pos: "DEF", age: 29, skill: 78 },
+                    { name: "Alex Sandro", number: 12, nat: "Brazil", pos: "DEF", age: 33, skill: 77 },
+                    { name: "Timothy Weah", number: 22, nat: "United States", pos: "DEF", age: 24, skill: 79 },
+                    { name: "Fabio Miretti", number: 47, nat: "Italy", pos: "MID", age: 20, skill: 77 },
+                    { name: "Carlos Alcaraz", number: 26, nat: "Argentina", pos: "MID", age: 21, skill: 78 },
+                    { name: "Arkadiusz Milik", number: 14, nat: "Poland", pos: "ATT", age: 30, skill: 81 },
+                    { name: "Moise Kean", number: 18, nat: "Italy", pos: "ATT", age: 24, skill: 80 },
+                    { name: "Nicolussi Caviglia", number: 41, nat: "Italy", pos: "MID", age: 23, skill: 76 }
+                ]}
+            ],
+            "France": [
+                { name: "Paris Saint-Germain", players: [
+                    { name: "Gianluigi Donnarumma", number: 99, nat: "Italy", pos: "GK", age: 25, skill: 88 },
+                    { name: "Marquinhos", number: 5, nat: "Brazil", pos: "DEF", age: 29, skill: 87 },
+                    { name: "Lucas Beraldo", number: 35, nat: "Brazil", pos: "DEF", age: 20, skill: 80 },
+                    { name: "Achraf Hakimi", number: 2, nat: "Morocco", pos: "DEF", age: 25, skill: 86 },
+                    { name: "Lucas Hernández", number: 21, nat: "France", pos: "DEF", age: 28, skill: 84 },
+                    { name: "Vitinha", number: 17, nat: "Portugal", pos: "MID", age: 24, skill: 85 },
+                    { name: "Warren Zaïre-Emery", number: 33, nat: "France", pos: "MID", age: 18, skill: 83 },
+                    { name: "Fabian Ruiz", number: 8, nat: "Spain", pos: "MID", age: 28, skill: 83 },
+                    { name: "Ousmane Dembélé", number: 10, nat: "France", pos: "ATT", age: 26, skill: 86 },
+                    { name: "Bradley Barcola", number: 29, nat: "France", pos: "ATT", age: 21, skill: 82 },
+                    { name: "Gonçalo Ramos", number: 39, nat: "Portugal", pos: "ATT", age: 22, skill: 83 },
+                    { name: "Keylor Navas", number: 1, nat: "Costa Rica", pos: "GK", age: 37, skill: 82 },
+                    { name: "Danilo Pereira", number: 15, nat: "Portugal", pos: "DEF", age: 32, skill: 82 },
+                    { name: "Milan Skriniar", number: 37, nat: "Slovakia", pos: "DEF", age: 29, skill: 84 },
+                    { name: "Nuno Mendes", number: 25, nat: "Portugal", pos: "DEF", age: 21, skill: 83 },
+                    { name: "Manuel Ugarte", number: 4, nat: "Uruguay", pos: "MID", age: 23, skill: 82 },
+                    { name: "Lee Kang-in", number: 19, nat: "South Korea", pos: "MID", age: 23, skill: 81 },
+                    { name: "Marco Asensio", number: 11, nat: "Spain", pos: "ATT", age: 28, skill: 82 },
+                    { name: "Randal Kolo Muani", number: 23, nat: "France", pos: "ATT", age: 25, skill: 83 },
+                    { name: "Senny Mayulu", number: 38, nat: "France", pos: "MID", age: 17, skill: 75 }
+                ]}
+            ]
         };
 
-        function generateSquadForCountry(countryName) {
-            let rawPlayers = [];
-
-            function getRandomName(nat) {
-                let pool = namePools[nat] || namePools["England"];
-                let f = pool.first[Math.floor(Math.random() * pool.first.length)];
-                let l = pool.last[Math.floor(Math.random() * pool.last.length)];
-                return `${f} ${l}`;
-            }
-
-            let usedNumbers = [];
-            function getUniqueNumber() {
-                let num = Math.floor(Math.random() * 98) + 1;
-                while (usedNumbers.includes(num)) {
-                    num = Math.floor(Math.random() * 98) + 1;
-                }
-                usedNumbers.push(num);
-                return num;
-            }
-
-            for(let i=0; i<4; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "GK", age: Math.floor(Math.random()*15) + 19, skill: Math.floor(Math.random()*22) + 65, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
-            }
-            for(let i=0; i<8; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "DEF", age: Math.floor(Math.random()*15) + 18, skill: Math.floor(Math.random()*24) + 63, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
-            }
-            for(let i=0; i<8; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "MID", age: Math.floor(Math.random()*16) + 18, skill: Math.floor(Math.random()*25) + 62, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
-            }
-            for(let i=0; i<5; i++) {
-                rawPlayers.push({ name: getRandomName(countryName), number: getUniqueNumber(), nat: countryName, pos: "ATT", age: Math.floor(Math.random()*14) + 19, skill: Math.floor(Math.random()*25) + 66, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
-            }
-
-            let gks = rawPlayers.filter(p => p.pos === 'GK').sort((a,b) => b.skill - a.skill);
-            let defs = rawPlayers.filter(p => p.pos === 'DEF').sort((a,b) => b.skill - a.skill);
-            let mids = rawPlayers.filter(p => p.pos === 'MID').sort((a,b) => b.skill - a.skill);
-            let atts = rawPlayers.filter(p => p.pos === 'ATT').sort((a,b) => b.skill - a.skill);
-
-            let starters = [gks[0], defs[0], defs[1], defs[2], defs[3], mids[0], mids[1], mids[2], mids[3], atts[0], atts[1]];
-            let subs = [gks[1], defs[4], defs[5], mids[4], mids[5], atts[2], atts[3]];
-            let reserves = [...gks.slice(2), ...defs.slice(6), ...mids.slice(6), ...atts.slice(4)].sort((a,b) => b.skill - a.skill);
-
-            return [...starters, ...subs, ...reserves];
-        }
-
-        function buildLeagueTeams(countryName, teamNames) {
-            return teamNames.map(name => ({
-                name: name,
-                players: generateSquadForCountry(countryName),
+        function buildRealLeagueTeams(countryName) {
+            let teamsArr = realTeamsData[countryName] || [];
+            return teamsArr.map(t => ({
+                name: t.name,
+                players: t.players.map(p => ({ ...p, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 })),
                 formation: "4-4-2"
             }));
         }
@@ -1310,86 +1499,36 @@
             {
                 country: "England",
                 leagues: [
-                    {
-                        name: "Premier Alliance",
-                        level: 1,
-                        teams: buildLeagueTeams("England", [
-                            "London City FC", "Northampton United", "Westbridge Athletic", "Capital Rovers",
-                            "Ironbridge Wanderers", "Crown FC", "Blue Star Brighton", "Redwood Albion",
-                            "Thames Dynamo", "Yorkshire Phoenix", "East Coast Mariners", "Highland FC",
-                            "Midland Lions", "Northern Shield", "Southern Knights", "Blackfriars FC",
-                            "Oldbury Athletic", "Riverbank Rangers", "Silverstone FC", "Wessex Victoria"
-                        ])
-                    }
+                    { name: "Premier League", level: 1, teams: buildRealLeagueTeams("England") }
                 ]
             },
             {
                 country: "Spain",
                 leagues: [
-                    {
-                        name: "Primera Division",
-                        level: 1,
-                        teams: buildLeagueTeams("Spain", [
-                            "Real Capital FC", "Costa Sol Athletic", "Catalonia Rovers", "Andalucia FC",
-                            "Valencia Tigers", "Sevilla Stars", "Basque Athletic", "Galicia Mariners",
-                            "Islas Real", "Madrid Union", "Sol FC", "Espana Victoria",
-                            "Aragon FC", "Castilla Wanderers", "Navarra Athletic", "Cordoba Lions",
-                            "Toledo Imperial", "Granada Knights", "Girona Coast", "Palma FC"
-                        ])
-                    }
+                    { name: "La Liga", level: 1, teams: buildRealLeagueTeams("Spain") }
                 ]
             },
             {
                 country: "Germany",
                 leagues: [
-                    {
-                        name: "Bundes Liga Pro",
-                        level: 1,
-                        teams: buildLeagueTeams("Germany", [
-                            "Bavaria München", "Rheinland Borussia", "Capital Berlin FC", "Saxony Red Bulls",
-                            "Hanseatic Hamburg", "Black Forest Stuttgart", "Westphalia Express", "Frankfurt Eagle FC",
-                            "Ruhr Union", "Lower Saxony Wolves", "Bremen Mariners", "Cologne FC",
-                            "Swabia FC", "Palatinate Rovers", "Nuremberg Iron", "Augsburg Lions",
-                            "Bochum Miners", "Mainz City"
-                        ])
-                    }
+                    { name: "Bundesliga", level: 1, teams: buildRealLeagueTeams("Germany") }
                 ]
             },
             {
                 country: "Italy",
                 leagues: [
-                    {
-                        name: "Serie Premium",
-                        level: 1,
-                        teams: buildLeagueTeams("Italy", [
-                            "Milano Eagle FC", "Turin Zebras", "Roma Imperial", "Napoli Coast FC",
-                            "Florence Violet", "Lombardy Blue Stars", "Liguria Genoa", "Bologna Red-Blue",
-                            "Verona Knights", "Atalanta Goddess", "Udine Black-White", "Sardinia FC",
-                            "Sicily Palermo", "Venice Gondolas", "Parma Cross", "Torino Bulls",
-                            "Empoli City", "Lecce Lions", "Monza Circuit", "Salerno Sea"
-                        ])
-                    }
+                    { name: "Serie A", level: 1, teams: buildRealLeagueTeams("Italy") }
                 ]
             },
             {
                 country: "France",
                 leagues: [
-                    {
-                        name: "Ligue Élite",
-                        level: 1,
-                        teams: buildLeagueTeams("France", [
-                            "Paris Saint-Capitale", "Riviera Coast FC", "Rhône Olympic", "Marseille Port",
-                            "Lille North FC", "Brittany Rennes", "Monaco Crown", "Alsace Strasbourg",
-                            "Normandy Lens", "Loire Nantes", "Toulouse Violet", "Montpellier South",
-                            "Reims Kings", "Auvergne Clermont", "Brest Mariners", "Lorient Coast",
-                            "Metz Dragons", "Nice Azure"
-                        ])
-                    }
+                    { name: "Ligue 1", level: 1, teams: buildRealLeagueTeams("France") }
                 ]
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v165')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v166')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1514,7 +1653,7 @@
                 jobOffers: jobOffers,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v165', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v166', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -2470,7 +2609,7 @@
                 });
                 league.currentRound = rIdx + 1;
 
-                // 2. FONTOS: A többi ország ÉS bajnokság meccseinek szimulációja a háttérben, hogy mindenhol haladjon a szezon!
+                // 2. A többi ország ÉS bajnokság meccseinek szimulációja a háttérben
                 db.forEach((country, cIdx) => {
                     country.leagues.forEach((l, lIdx) => {
                         let lRound = l.currentRound || 0;
@@ -2943,7 +3082,7 @@
             else if (modalActionType === "edit_league") db[currentCountryIdx].leagues[currentLeagueIdx].name = val;
             else if (modalActionType === "add_team") {
                 let league = db[currentCountryIdx].leagues[currentLeagueIdx];
-                league.teams.push({ name: val, players: generateSquadForCountry(db[currentCountryIdx].country), formation: "4-4-2" });
+                league.teams.push({ name: val, players: [], formation: "4-4-2" });
                 league.fixtures = generateFixtures(league.teams);
                 league.currentRound = 0;
                 league.table = league.teams.map(t => ({ name: t.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }));
