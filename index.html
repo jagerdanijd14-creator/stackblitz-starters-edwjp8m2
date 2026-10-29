@@ -11,7 +11,7 @@
 
     <!-- Font Awesome Ikonok -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Inter & Outfit -->
+    <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Outfit:wght@600;800;900&display=swap">
     
     <!-- Firebase SDK-k -->
@@ -177,7 +177,6 @@
             overflow-y: auto;
         }
 
-        /* Optimalizált szélességek, hogy minden telefonon tökéletesen kiférjenek */
         .card.wide-dashboard { max-width: 410px; }
         .card.extra-wide { max-width: 410px; }
         .card.editor-card { max-width: 410px; }
@@ -301,7 +300,6 @@
             filter: drop-shadow(0 3px 8px rgba(16, 185, 129, 0.3));
         }
 
-        /* Dashboard kompakt rács, hogy tökéletesen beférjen a keretbe */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -362,7 +360,7 @@
         .table-styled { width: 100%; border-collapse: collapse; font-size: 0.65rem; }
         .table-styled th { color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 3px; text-align: center; font-weight: 600; }
         .table-styled th:nth-child(2) { text-align: left; }
-        .table-styled td { padding: 3px 2px; border-bottom: 1px solid rgba(255,255,255,0.03); text-align: center; vertical-align: middle; }
+        .table-styled td { padding: 4px 2px; border-bottom: 1px solid rgba(255,255,255,0.03); text-align: center; vertical-align: middle; }
         .table-styled td:nth-child(2) { text-align: left; }
         .table-styled tr.my-team { background: rgba(16, 185, 129, 0.15); font-weight: 700; }
         
@@ -375,7 +373,7 @@
 
         .pitch-container {
             width: 100%;
-            height: 230px;
+            height: 220px;
             background: linear-gradient(180deg, #104a28 0%, #0d381e 100%);
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 10px;
@@ -412,13 +410,13 @@
         .player-pos-badge { position: absolute; top: -3px; left: -3px; background: rgba(16, 185, 129, 0.9); color: #ffffff; font-size: 0.4rem; font-weight: 800; padding: 1px 2px; border-radius: 2px; }
         .player-name-badge { background: rgba(9, 13, 22, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); padding: 1px 2px; border-radius: 3px; font-size: 0.48rem; font-weight: 700; color: #ffffff; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 52px; text-align: center; }
 
-        .squad-section-title { font-family: var(--font-title); font-size: 0.68rem; font-weight: 700; color: var(--logo-green); margin: 2px 0; text-align: left; width: 100%; }
+        .squad-section-title { font-family: var(--font-title); font-size: 0.68rem; font-weight: 700; color: var(--logo-green); margin: 3px 0 1px 0; text-align: left; width: 100%; }
         
-        /* Megnövelt magasságú cserék és tartalékok dobozok, hogy ne lógjanak össze */
-        .squad-box-container { width: 100%; background: rgba(9, 13, 22, 0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 6px; max-height: 95px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
+        /* Még magasabbra vett cserék és tartalékok dobozok */
+        .squad-box-container { width: 100%; background: rgba(9, 13, 22, 0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 6px; max-height: 115px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
         
-        .squad-list { width: 100%; margin-top: 4px; max-height: 110px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
-        .player-row { background: rgba(255, 255, 255, 0.04); padding: 4px 6px; border-radius: 5px; font-size: 0.68rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .squad-list { width: 100%; margin-top: 4px; max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+        .player-row { background: rgba(255, 255, 255, 0.04); padding: 5px 8px; border-radius: 5px; font-size: 0.68rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
         .player-row:hover { background: rgba(16, 185, 129, 0.1); border-color: var(--logo-green); }
 
         .button-group { width: 100%; display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
@@ -439,10 +437,9 @@
         .slot-actions { display: flex; gap: 4px; align-items: center; }
 
         .tabs-row { display: flex; gap: 4px; margin-bottom: 6px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
-        .tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 3px 6px; border-radius: 5px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: all 0.2s; flex: 1; text-align: center; }
+        .tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 4px 6px; border-radius: 5px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: all 0.2s; flex: 1; text-align: center; }
         .tab-btn.active { background: var(--logo-green); color: #ffffff; border-color: var(--logo-green); }
 
-        /* Kompakt, mobilbarát szűrő doboz az átigazolásokhoz */
         .filter-box {
             background: rgba(9, 13, 22, 0.6);
             border: 1px solid var(--card-border);
@@ -699,7 +696,7 @@
         </div>
     </div>
 
-    <!-- Átigazolási Piac Modál (Mobilbarát, keskenyebb elemekkel) -->
+    <!-- Átigazolási Piac Modál -->
     <div id="transfer-modal" class="modal-overlay hidden">
         <div class="modal-card transfer-card">
             <div class="modal-title">💸 Átigazolási Piac</div>
@@ -783,27 +780,67 @@
         </div>
     </div>
 
-    <!-- Játékoskeret & Taktika (Magasabb cseredobozokkal) -->
+    <!-- Játékoskeret & Taktika ALMENÜS NÉZET -->
     <div id="squad-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 3px;">
             <div class="studio-tag">Vezetőedző / Taktika</div>
-            <h1 class="main-title" id="squad-view-title" style="font-size: 0.9rem;">Kezdőcsapat & Cserék</h1>
+            <h1 class="main-title" id="squad-view-title" style="font-size: 0.9rem;">Keret & Taktika</h1>
         </div>
-        <div class="pitch-container">
-            <div class="pitch-line-center"></div>
-            <div class="pitch-circle-center"></div>
-            <div class="pitch-grid">
-                <div class="pitch-row" id="pitch-row-att"></div>
-                <div class="pitch-row" id="pitch-row-mid"></div>
-                <div class="pitch-row" id="pitch-row-def"></div>
-                <div class="pitch-row" id="pitch-row-gk"></div>
+
+        <!-- Almenü fülek -->
+        <div class="tabs-row" style="margin-bottom: 4px;">
+            <button class="tab-btn active" id="squad-tab-lineup" onclick="switchSquadTab('lineup')">🏟️ Felállás</button>
+            <button class="tab-btn" id="squad-tab-formation" onclick="switchSquadTab('formation')">📋 Formáció</button>
+            <button class="tab-btn" id="squad-tab-list" onclick="switchSquadTab('list')">👥 Keret</button>
+        </div>
+
+        <!-- 1. Felállás fül -->
+        <div id="squad-content-lineup" style="width: 100%;">
+            <div class="pitch-container">
+                <div class="pitch-line-center"></div>
+                <div class="pitch-circle-center"></div>
+                <div class="pitch-grid">
+                    <div class="pitch-row" id="pitch-row-att"></div>
+                    <div class="pitch-row" id="pitch-row-mid"></div>
+                    <div class="pitch-row" id="pitch-row-def"></div>
+                    <div class="pitch-row" id="pitch-row-gk"></div>
+                </div>
+            </div>
+            <div class="squad-section-title">Cserék (Substitutes):</div>
+            <div class="squad-box-container" id="subs-container-box"></div>
+            <div class="squad-section-title">Tartalékok (Reserves):</div>
+            <div class="squad-box-container" id="reserves-container-box"></div>
+        </div>
+
+        <!-- 2. Formáció fül -->
+        <div id="squad-content-formation" class="hidden" style="width: 100%;">
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px; margin-bottom: 4px;">
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--logo-green); margin-bottom: 6px;">Válassz Formációt:</div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <button class="btn btn-secondary" onclick="setFormation('4-4-2')"><strong>4-4-2</strong> — Klasszikus kiegyensúlyozott felállás</button>
+                    <button class="btn btn-secondary" onclick="setFormation('4-3-3')"><strong>4-3-3</strong> — Támadó szellemű formáció</button>
+                    <button class="btn btn-secondary" onclick="setFormation('3-5-2')"><strong>3-5-2</strong> — Erős középpályás kontroll</button>
+                    <button class="btn btn-secondary" onclick="setFormation('5-3-2')"><strong>5-3-2</strong> — Biztos védekezés, stabil kontrák</button>
+                </div>
+            </div>
+            <div style="font-size: 0.62rem; color: var(--text-muted); text-align: center; padding: 4px;">
+                Aktív formáció: <span id="active-formation-lbl" style="color: #ffffff; font-weight: 700;">4-4-2</span>
             </div>
         </div>
-        <div class="squad-section-title">Cserék (Substitutes):</div>
-        <div class="squad-box-container" id="subs-container-box"></div>
-        <div class="squad-section-title">Tartalékok (Reserves):</div>
-        <div class="squad-box-container" id="reserves-container-box"></div>
-        <div class="button-group" style="margin-top: 4px;">
+
+        <!-- 3. Keret (Játékoslista minden adattal) fül -->
+        <div id="squad-content-list" class="hidden" style="width: 100%;">
+            <div style="overflow-x: auto; width: 100%; max-height: 250px;">
+                <table class="table-styled">
+                    <thead>
+                        <tr><th>Játékos</th><th>Poszt</th><th>Skill</th><th>Kor</th><th>Gól</th><th>Sárga</th><th>Piros</th></tr>
+                    </thead>
+                    <tbody id="squad-full-list-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="button-group" style="margin-top: 6px;">
             <button class="btn btn-secondary" onclick="closeTeamSquad()">Vissza a Menübe</button>
         </div>
     </div>
@@ -962,7 +999,7 @@
     </div>
 
     <script>
-        // Háttérzene lejátszási lista robusztus kezeléssel
+        // Háttérzene lejátszási lista robusztus kezeléssel (autoplay / stream fix)
         const musicTracks = [
             { title: "1. Energetic Sport", url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=energetic-hip-hop-sport-112071.mp3" },
             { title: "2. Action Rock Drive", url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a81630.mp3?filename=action-sport-rock-10332.mp3" },
@@ -986,7 +1023,6 @@
             }
         }
 
-        // Biztosítjuk, hogy a szám végén a következő is le tudjon játszódni
         bgAudio.addEventListener('ended', () => {
             currentTrackIdx = (currentTrackIdx + 1) % musicTracks.length;
             loadTrack(currentTrackIdx, true);
@@ -1168,16 +1204,16 @@
                         name: "Premier Alliance",
                         level: 1,
                         teams: [
-                            { name: "London City FC", players: generateSquad() },
-                            { name: "Northampton United", players: generateSquad() },
-                            { name: "Westbridge Athletic", players: generateSquad() },
-                            { name: "Capital Rovers", players: generateSquad() },
-                            { name: "Ironbridge Wanderers", players: generateSquad() },
-                            { name: "Crown FC", players: generateSquad() },
-                            { name: "Blue Star Brighton", players: generateSquad() },
-                            { name: "Redwood Albion", players: generateSquad() },
-                            { name: "Thames Dynamo", players: generateSquad() },
-                            { name: "Yorkshire Phoenix", players: generateSquad() }
+                            { name: "London City FC", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Northampton United", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Westbridge Athletic", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Capital Rovers", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Ironbridge Wanderers", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Crown FC", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Blue Star Brighton", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Redwood Albion", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Thames Dynamo", players: generateSquad(), formation: "4-4-2" },
+                            { name: "Yorkshire Phoenix", players: generateSquad(), formation: "4-4-2" }
                         ]
                     }
                 ]
@@ -1200,6 +1236,7 @@
         let currentStatsTab = 'scorers';
         let currentTransferTab = 'buy';
         let currentBidTarget = null;
+        let currentSquadTab = 'lineup';
 
         function generateFixtures(teams) {
             let list = [...teams];
@@ -1252,6 +1289,7 @@
                         });
                     }
                     l.teams.forEach(t => {
+                        if (!t.formation) t.formation = "4-4-2";
                         if (t.players) t.players.forEach(p => { if (p.transferListed === undefined) p.transferListed = false; });
                     });
                 });
@@ -1888,7 +1926,7 @@
                 startNewSeason();
                 return;
             }
-            let matchDayPlayers = activeCareerTeam.players.slice(0, 18);
+            let matchDayPlayers = activeCareerTeam.players.slice(0, 11);
             let suspendedInMatchDay = matchDayPlayers.filter(p => p.suspendedMatches > 0);
             if (suspendedInMatchDay.length > 0) {
                 let names = suspendedInMatchDay.map(p => p.name).join(', ');
@@ -2152,17 +2190,69 @@
             }
         }
 
+        // --- Keret & Taktika almenüs kezelés ---
         function openTeamSquad() {
             activeCareerTeam = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx].teams[activeCareerTeamIdx];
             selectedPlayerIndexForSwap = null;
             document.getElementById('game-dashboard').classList.add('hidden');
             document.getElementById('squad-view').classList.remove('hidden');
-            renderPitchAndSubs();
+            switchSquadTab('lineup');
         }
 
         function closeTeamSquad() {
             document.getElementById('squad-view').classList.add('hidden');
             document.getElementById('game-dashboard').classList.remove('hidden');
+        }
+
+        function switchSquadTab(tabName) {
+            currentSquadTab = tabName;
+            ['lineup', 'formation', 'list'].forEach(t => {
+                let btn = document.getElementById(`squad-tab-${t}`);
+                let content = document.getElementById(`squad-content-${t}`);
+                if (btn) btn.className = t === tabName ? 'tab-btn active' : 'tab-btn';
+                if (content) {
+                    if (t === tabName) content.classList.remove('hidden');
+                    else content.classList.add('hidden');
+                }
+            });
+
+            if (tabName === 'lineup') {
+                renderPitchAndSubs();
+            } else if (tabName === 'formation') {
+                let lbl = document.getElementById('active-formation-lbl');
+                if (lbl && activeCareerTeam) lbl.innerText = activeCareerTeam.formation || "4-4-2";
+            } else if (tabName === 'list') {
+                renderFullSquadList();
+            }
+        }
+
+        function setFormation(formName) {
+            if (!activeCareerTeam) return;
+            activeCareerTeam.formation = formName;
+            saveToLocalStorage();
+            let lbl = document.getElementById('active-formation-lbl');
+            if (lbl) lbl.innerText = formName;
+            showToast(`✅ Formáció beállítva: ${formName}`);
+        }
+
+        function renderFullSquadList() {
+            let tbody = document.getElementById('squad-full-list-tbody');
+            tbody.innerHTML = '';
+            if (!activeCareerTeam || !activeCareerTeam.players) return;
+
+            activeCareerTeam.players.forEach(p => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.pos}</td>
+                    <td style="color:var(--logo-green); font-weight:700;">${p.skill}</td>
+                    <td>${p.age}</td>
+                    <td>${p.goals || 0}</td>
+                    <td style="color:#fbbf24;">${p.yellowCards || 0}</td>
+                    <td style="color:#ef4444;">${p.redCards || 0}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         function renderPitchAndSubs() {
