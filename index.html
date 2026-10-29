@@ -178,7 +178,7 @@
         }
 
         .card.wide-dashboard { max-width: 420px; }
-        .card.extra-wide { max-width: 420px; }
+        .card.extra-wide { max-width: 430px; }
         .card.editor-card { max-width: 420px; }
         .hidden { display: none !important; }
 
@@ -405,11 +405,11 @@
         .pitch-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 6px; z-index: 2; }
         .pitch-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
 
-        /* Élő meccs 2D felülnézetes pálya */
-        .live-pitch-canvas-box {
+        /* Vízszintes 2D Felülnézetes Pálya (Bal és Jobb oldali kapukkal) */
+        .live-pitch-horizontal-box {
             width: 100%;
-            height: 150px;
-            background: linear-gradient(180deg, #104a28 0%, #0d381e 100%);
+            height: 160px;
+            background: linear-gradient(90deg, #0e3f22 0%, #104a28 50%, #0e3f22 100%);
             border: 2px solid rgba(255,255,255,0.4);
             border-radius: 10px;
             position: relative;
@@ -417,22 +417,28 @@
             margin-bottom: 6px;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
         }
-        .live-pitch-center-line { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.3); }
-        .live-pitch-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; }
+        .live-pitch-v-center-line { position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: rgba(255,255,255,0.3); }
+        .live-pitch-v-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 45px; height: 45px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; }
         
+        /* Kapuk a széleken */
+        .goal-left { position: absolute; top: 35%; left: 0; width: 6px; height: 30%; background: #ffffff; border-radius: 0 4px 4px 0; box-shadow: 0 0 8px #ffffff; }
+        .goal-right { position: absolute; top: 35%; right: 0; width: 6px; height: 30%; background: #ffffff; border-radius: 4px 0 0 4px; box-shadow: 0 0 8px #ffffff; }
+
         .tactical-token {
             position: absolute;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             font-weight: 800;
             color: #ffffff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            transition: all 0.6s linear;
+            /* Rendkívül folyékony, sima animáció */
+            transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 5;
         }
         .token-home { background: #38bdf8; border: 1px solid #ffffff; }
         .token-away { background: #ef4444; border: 1px solid #ffffff; }
@@ -442,8 +448,8 @@
             height: 10px;
             background: #ffffff;
             border-radius: 50%;
-            box-shadow: 0 0 6px #ffffff;
-            transition: all 0.5s linear;
+            box-shadow: 0 0 8px #ffffff;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 10;
         }
 
@@ -540,7 +546,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.6.0</div>
+    <div class="version-badge">v1.6.2</div>
 
     <!-- Zenelejátszó -->
     <audio id="bg-audio" preload="auto"></audio>
@@ -704,7 +710,7 @@
         </div>
     </div>
 
-    <!-- Élő Meccs Nézet (2D Pályával és Staminával) -->
+    <!-- Élő Meccs Nézet (Vízszintes 2D Pályával és Folyékony Animációval) -->
     <div id="live-match-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag" id="live-match-league-title">BAJNOKI MÉRKŐZÉS</div>
@@ -724,12 +730,13 @@
             </div>
         </div>
 
-        <!-- 2D Felülnézetes Pálya -->
-        <div class="live-pitch-canvas-box" id="live-pitch-box">
-            <div class="live-pitch-center-line"></div>
-            <div class="live-pitch-center-circle"></div>
+        <!-- Vízszintes 2D Felülnézetes Pálya (Kapuk a széleken) -->
+        <div class="live-pitch-horizontal-box" id="live-pitch-box">
+            <div class="goal-left"></div>
+            <div class="goal-right"></div>
+            <div class="live-pitch-v-center-line"></div>
+            <div class="live-pitch-v-center-circle"></div>
             <div class="token-ball" id="match-ball-token" style="top: 50%; left: 50%;"></div>
-            <!-- Dinamikus korongok -->
             <div id="match-tokens-container"></div>
         </div>
 
@@ -785,14 +792,13 @@
         </div>
     </div>
 
-    <!-- Különálló Tabella Nézet (Összes Bajnokság Váltóval) -->
+    <!-- Különálló Tabella Nézet -->
     <div id="standings-only-view" class="card extra-wide hidden">
         <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Nemzetközi Tabellák</div>
             <h1 class="main-title" style="font-size: 1rem;">Tabella</h1>
         </div>
         
-        <!-- Ország / Bajnokság Váltó Sáv -->
         <div class="nav-row" style="margin-bottom: 6px;">
             <button class="nav-btn" onclick="changeStandingsCountry(-1)"><i class="fa-solid fa-chevron-left"></i></button>
             <div class="nav-label" id="standings-lbl-country">Ország / Bajnokság</div>
@@ -1150,7 +1156,6 @@
         function openSettingsModal() { document.getElementById('settings-modal').classList.remove('hidden'); }
         function closeSettingsModal() { document.getElementById('settings-modal').classList.add('hidden'); }
 
-        // Max 10 másodperces időkorlát a SplashScreenhez
         let splashDismissed = false;
 
         function startAppDirectly() {
@@ -1395,7 +1400,7 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v160')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v162')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1426,7 +1431,7 @@
             isPaused: false,
             timer: null,
             events: [],
-            homeSide: 'left' // 'left' vagy 'right' térfélcsere miatt
+            homeSide: 'left'
         };
 
         const seasonMonths = [
@@ -1519,7 +1524,7 @@
                 jobOffers: jobOffers,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v160', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v162', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -1754,7 +1759,6 @@
         }
 
         function checkAndGenerateJobOffers() {
-            // Generáljon állásajánlatot a menedzser teljesítménye (győzelmek vagy jó helyezés) alapján
             if (Math.random() < 0.35 && jobOffers.length < 3) {
                 let randCountryIdx = Math.floor(Math.random() * db.length);
                 let randLeagueIdx = Math.floor(Math.random() * db[randCountryIdx].leagues.length);
@@ -2240,7 +2244,6 @@
                 return;
             }
 
-            // Meccs előtt mindenki staminája 100%
             activeCareerTeam.players.forEach(p => p.stamina = 100);
 
             simulateBotOffersForListedPlayers();
@@ -2312,21 +2315,55 @@
                 match.awayScore = baseHome + (Math.random() < 0.4 ? 1 : 0);
             }
 
-            let allGoals = [];
+            let allEvents = [];
+            // Gólok
             for (let i = 0; i < match.homeScore; i++) {
                 let min = Math.floor(Math.random() * 85) + 3;
                 let scorer = getRandomPlayerFromTeam(liveMatchData.homeTeam, 'ATT');
-                allGoals.push({ minute: min, team: match.home, text: `⚽ GÓL! #${scorer.number||''} ${scorer.name} (${match.home}) talált be!` });
+                allEvents.push({ minute: min, type: 'goal', team: match.home, text: `⚽ GÓL! #${scorer.number||''} ${scorer.name} (${match.home}) talált be!` });
                 scorer.goals = (scorer.goals || 0) + 1;
             }
             for (let i = 0; i < match.awayScore; i++) {
                 let min = Math.floor(Math.random() * 85) + 3;
                 let scorer = getRandomPlayerFromTeam(liveMatchData.awayTeam, 'ATT');
-                allGoals.push({ minute: min, team: match.away, text: `⚽ GÓL! #${scorer.number||''} ${scorer.name} (${match.away}) talált be!` });
+                allEvents.push({ minute: min, type: 'goal', team: match.away, text: `⚽ GÓL! #${scorer.number||''} ${scorer.name} (${match.away}) talált be!` });
                 scorer.goals = (scorer.goals || 0) + 1;
             }
-            allGoals.sort((a, b) => a.minute - b.minute);
-            liveMatchData.scheduledGoals = allGoals;
+
+            // Szabálytalanságok, büntetők, szabadrúgások, passzok, lövések
+            for (let m = 10; m < 90; m += 12) {
+                let r = Math.random();
+                if (r < 0.35) {
+                    let team = Math.random() < 0.5 ? match.home : match.away;
+                    let p = getRandomPlayerFromTeam(team == match.home ? liveMatchData.homeTeam : liveMatchData.awayTeam);
+                    allEvents.push({ minute: m, type: 'pass', text: `🔄 Szép passzjáték ${team} részéről.` });
+                } else if (r < 0.55) {
+                    let team = Math.random() < 0.5 ? match.home : match.away;
+                    allEvents.push({ minute: m, type: 'shot', text: `🎯 Veszélyes lövés kapura (${team})!` });
+                } else if (r < 0.70) {
+                    let team = Math.random() < 0.5 ? match.home : match.away;
+                    let foulTeam = team === match.home ? match.away : match.home;
+                    let foulPlayer = getRandomPlayerFromTeam(foulTeam === match.home ? liveMatchData.homeTeam : liveMatchData.awayTeam);
+                    
+                    // 16-oson belül van-e szabálytalanság? (Büntető)
+                    if (Math.random() < 0.25) {
+                        allEvents.push({ minute: m, type: 'penalty', team: team, text: `⚠️ BÜNTETŐ! Szabálytalanság a 16-oson belül ${foulTeam} részéről (${foulPlayer.name})! 11-es!` });
+                        if (Math.random() < 0.8) { // Gól 11-esből
+                            let penaltyTaker = getRandomPlayerFromTeam(team === match.home ? liveMatchData.homeTeam : liveMatchData.awayTeam, 'ATT');
+                            allEvents.push({ minute: m + 1, type: 'goal', team: team, text: `⚽ BÜNTETŐ GÓL! #${penaltyTaker.number||''} ${penaltyTaker.name} értékesíti a tizenegyest!` });
+                            penaltyTaker.goals = (penaltyTaker.goals || 0) + 1;
+                            if (team === match.home) match.homeScore++; else match.awayScore++;
+                        } else {
+                            allEvents.push({ minute: m + 1, type: 'saved', text: `🧤 HÍRES VÉDÉS! A kapus védi a tizenegyest!` });
+                        }
+                    } else {
+                        allEvents.push({ minute: m, type: 'foul', text: `🟨 Szabálytalanság (${foulTeam}: #${foulPlayer.number||''} ${foulPlayer.name}). Szabadrúgás kifelé.` });
+                    }
+                }
+            }
+
+            allEvents.sort((a, b) => a.minute - b.minute);
+            liveMatchData.scheduledEvents = allEvents;
         }
 
         function renderLiveStaminaPanel() {
@@ -2355,21 +2392,20 @@
                 renderLiveStaminaPanel();
             }
 
-            // Pálya koordináták kalkulálása a 2D felülnézetes meccsen
-            let ballX = 20 + Math.random() * 60;
+            // Vízszintes pálya koordináták (Bal és Jobb kapuk között)
+            let ballX = 15 + Math.random() * 70;
             let ballY = 20 + Math.random() * 60;
             if (ballToken) {
                 ballToken.style.left = `${ballX}%`;
                 ballToken.style.top = `${ballY}%`;
             }
 
-            // Kezdő 11 tokenek elhelyezése
             let homeStarters = liveMatchData.homeTeam.players.slice(0, 11);
             let awayStarters = liveMatchData.awayTeam.players.slice(0, 11);
 
             homeStarters.forEach((p, idx) => {
-                let posX = 10 + (idx % 4) * 20 + (Math.random() * 5);
-                let posY = 15 + Math.floor(idx / 4) * 25 + (Math.random() * 5);
+                let posX = 10 + Math.floor(idx / 3) * 20 + (Math.random() * 4);
+                let posY = 15 + (idx % 3) * 30 + (Math.random() * 5);
                 if (liveMatchData.homeSide === 'right') posX = 90 - posX;
 
                 let div = document.createElement('div');
@@ -2381,8 +2417,8 @@
             });
 
             awayStarters.forEach((p, idx) => {
-                let posX = 80 - (idx % 4) * 20 - (Math.random() * 5);
-                let posY = 85 - Math.floor(idx / 4) * 25 - (Math.random() * 5);
+                let posX = 80 - Math.floor(idx / 3) * 20 - (Math.random() * 4);
+                let posY = 15 + (idx % 3) * 30 + (Math.random() * 5);
                 if (liveMatchData.homeSide === 'right') posX = 90 - posX;
 
                 let div = document.createElement('div');
@@ -2406,19 +2442,24 @@
 
             let commContainer = document.getElementById('live-match-commentary');
 
-            let goalEvent = liveMatchData.scheduledGoals.find(g => g.minute === min);
-            if (goalEvent) {
-                if (goalEvent.team === liveMatchData.matchObj.home) liveMatchData.homeScore++;
-                else liveMatchData.awayScore++;
+            let currentEvents = liveMatchData.scheduledEvents.filter(e => e.minute === min);
+            currentEvents.forEach(ev => {
+                if (ev.type === 'goal') {
+                    if (ev.team === liveMatchData.matchObj.home && !ev.counted) {
+                        ev.counted = true;
+                    }
+                    let scoreStr = `${liveMatchData.matchObj.homeScore} - ${liveMatchData.matchObj.awayScore}`;
+                    document.getElementById('live-match-score-header').innerText = scoreStr;
+                    document.getElementById('live-score-display').innerText = scoreStr;
 
-                let scoreStr = `${liveMatchData.homeScore} - ${liveMatchData.awayScore}`;
-                document.getElementById('live-match-score-header').innerText = scoreStr;
-                document.getElementById('live-score-display').innerText = scoreStr;
-
-                commContainer.innerHTML += `<div style="color: #fbbf24; font-weight:700; margin: 3px 0;">[${min}'] ${goalEvent.text}</div>`;
+                    commContainer.innerHTML += `<div style="color: #fbbf24; font-weight:700; margin: 3px 0;">[${min}'] ${ev.text}</div>`;
+                } else {
+                    commContainer.innerHTML += `<div style="color: var(--text-muted); margin: 2px 0;">[${min}'] ${ev.text}</div>`;
+                }
                 commContainer.scrollTop = commContainer.scrollHeight;
-            } else if (min === 45) {
-                // Félidő: Megállás, térfélcsere, csere/taktika ablak megnyitása
+            });
+
+            if (min === 45) {
                 togglePauseLiveMatch();
                 liveMatchData.homeSide = liveMatchData.homeSide === 'left' ? 'right' : 'left';
                 commContainer.innerHTML += `<div style="color: var(--text-muted); margin: 2px 0;">[45'] Félidő! Térfélcsere történt. Cserélj vagy állíts be taktikát!</div>`;
@@ -2476,11 +2517,6 @@
             document.getElementById('live-match-view').classList.add('hidden');
             document.getElementById('game-dashboard').classList.remove('hidden');
             updateDashboardMatchCard();
-        }
-
-        function processSuspensionsForTeam(team) {
-            if (!team || !team.players) return;
-            team.players.forEach(p => { if (p.suspendedMatches > 0) p.suspendedMatches--; });
         }
 
         function getTeamAverageSkill(teamName, league) {
