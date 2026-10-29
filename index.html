@@ -72,7 +72,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            padding: 10px;
+            padding: 8px;
             position: relative;
         }
 
@@ -98,13 +98,13 @@
 
         .version-badge {
             position: fixed;
-            bottom: 10px;
-            right: 15px;
+            bottom: 6px;
+            right: 12px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 6px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             z-index: 10000;
             backdrop-filter: blur(5px);
@@ -127,8 +127,8 @@
         }
 
         .splash-logo {
-            width: 140px;
-            height: 140px;
+            width: 130px;
+            height: 130px;
             object-fit: contain;
             margin-bottom: 15px;
             animation: pulseLogo 1.5s infinite alternate;
@@ -154,11 +154,7 @@
             padding: 0 20px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulseLogo {
             0% { transform: scale(0.95); opacity: 0.85; filter: drop-shadow(0 0 10px var(--logo-green-glow)); }
             100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 20px var(--logo-green-glow)); }
@@ -167,11 +163,11 @@
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 16px 20px;
+            border-radius: 16px;
+            padding: 12px 14px;
             width: 100%;
-            max-width: 440px;
-            max-height: 96vh;
+            max-width: 400px;
+            max-height: 97vh;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(16, 185, 129, 0.06);
             backdrop-filter: blur(12px);
             display: flex;
@@ -181,9 +177,10 @@
             overflow-y: auto;
         }
 
-        .card.wide-dashboard { max-width: 820px; }
-        .card.extra-wide { max-width: 920px; }
-        .card.editor-card { max-width: 860px; }
+        /* Optimalizált szélességek, hogy minden telefonon tökéletesen kiférjenek */
+        .card.wide-dashboard { max-width: 410px; }
+        .card.extra-wide { max-width: 410px; }
+        .card.editor-card { max-width: 410px; }
         .hidden { display: none !important; }
 
         @keyframes fadeIn {
@@ -192,16 +189,16 @@
         }
 
         .logo-img {
-            width: 110px;
-            height: 110px;
+            width: 90px;
+            height: 90px;
             object-fit: contain;
-            margin-bottom: 6px;
-            filter: drop-shadow(0 0 15px var(--logo-green-glow));
+            margin-bottom: 4px;
+            filter: drop-shadow(0 0 12px var(--logo-green-glow));
         }
 
         .header {
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -210,16 +207,16 @@
 
         .studio-tag {
             color: var(--logo-green);
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             margin-bottom: 2px;
         }
 
         .main-title {
             font-family: var(--font-title);
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 900;
             color: #ffffff;
             letter-spacing: 1px;
@@ -232,19 +229,19 @@
             justify-content: space-between;
             background: rgba(9, 13, 22, 0.6);
             border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 5px 10px;
+            border-radius: 8px;
+            padding: 4px 8px;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .nav-btn {
             background: rgba(16, 185, 129, 0.15);
             border: 1px solid rgba(16, 185, 129, 0.3);
             color: var(--logo-green);
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -256,11 +253,11 @@
 
         .nav-label {
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #ffffff;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             text-align: center;
         }
 
@@ -270,14 +267,14 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-muted);
-            width: 22px;
-            height: 22px;
-            border-radius: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             transition: all 0.2s;
         }
 
@@ -288,35 +285,36 @@
             width: 100%;
             background: rgba(9, 13, 22, 0.7);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 10px;
+            padding: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 2px 0 6px 0;
+            margin: 2px 0 4px 0;
         }
 
         .team-emblem-svg {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             margin-bottom: 2px;
             filter: drop-shadow(0 3px 8px rgba(16, 185, 129, 0.3));
         }
 
+        /* Dashboard kompakt rács, hogy tökéletesen beférjen a keretbe */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 6px;
             width: 100%;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .menu-card {
             background: rgba(20, 29, 48, 0.7);
             border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 12px;
-            padding: 10px 8px;
+            border-radius: 10px;
+            padding: 8px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -328,8 +326,8 @@
         .menu-card:hover {
             background: rgba(16, 185, 129, 0.12);
             border-color: var(--logo-green);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
         }
 
         .menu-card.save-card:hover { background: rgba(56, 189, 248, 0.12); border-color: #38bdf8; }
@@ -352,54 +350,54 @@
         .menu-card.danger:hover { background: rgba(239, 68, 68, 0.12); border-color: var(--btn-red); }
 
         .menu-card-icon {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: var(--logo-green);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .menu-card.danger .menu-card-icon { color: var(--btn-red); }
-        .menu-card-title { font-family: var(--font-title); font-size: 0.78rem; font-weight: 700; color: #ffffff; margin-bottom: 1px; }
-        .menu-card-desc { font-size: 0.6rem; color: var(--text-muted); }
+        .menu-card-title { font-family: var(--font-title); font-size: 0.72rem; font-weight: 700; color: #ffffff; margin-bottom: 1px; }
+        .menu-card-desc { font-size: 0.55rem; color: var(--text-muted); line-height: 1.1; }
 
-        .table-styled { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
-        .table-styled th { color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; text-align: center; font-weight: 600; }
+        .table-styled { width: 100%; border-collapse: collapse; font-size: 0.65rem; }
+        .table-styled th { color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 3px; text-align: center; font-weight: 600; }
         .table-styled th:nth-child(2) { text-align: left; }
-        .table-styled td { padding: 4px 2px; border-bottom: 1px solid rgba(255,255,255,0.03); text-align: center; vertical-align: middle; }
+        .table-styled td { padding: 3px 2px; border-bottom: 1px solid rgba(255,255,255,0.03); text-align: center; vertical-align: middle; }
         .table-styled td:nth-child(2) { text-align: left; }
         .table-styled tr.my-team { background: rgba(16, 185, 129, 0.15); font-weight: 700; }
         
-        .table-team-cell { display: flex; align-items: center; gap: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
-        .table-emblem-box { width: 18px; height: 18px; flex-shrink: 0; }
+        .table-team-cell { display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+        .table-emblem-box { width: 16px; height: 16px; flex-shrink: 0; }
 
-        .fixture-nav-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border-radius: 6px; padding: 4px 8px; margin-bottom: 8px; width: 100%; }
+        .fixture-nav-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border-radius: 6px; padding: 3px 6px; margin-bottom: 6px; width: 100%; }
         .fixture-list { display: flex; flex-direction: column; gap: 4px; width: 100%; }
-        .fixture-item { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 6px; padding: 6px 8px; font-size: 0.72rem; display: flex; justify-content: space-between; align-items: center; }
+        .fixture-item { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 6px; padding: 5px 6px; font-size: 0.68rem; display: flex; justify-content: space-between; align-items: center; }
 
         .pitch-container {
             width: 100%;
-            height: 260px;
+            height: 230px;
             background: linear-gradient(180deg, #104a28 0%, #0d381e 100%);
             border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 12px;
+            border-radius: 10px;
             position: relative;
             overflow: hidden;
-            margin-bottom: 6px;
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
+            margin-bottom: 4px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
 
         .pitch-line-center { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.25); }
-        .pitch-circle-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%; }
-        .pitch-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 8px; z-index: 2; }
+        .pitch-circle-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%; }
+        .pitch-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-around; padding: 6px; z-index: 2; }
         .pitch-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
 
-        .player-card-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s, filter 0.2s; width: 60px; position: relative; }
+        .player-card-node { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s, filter 0.2s; width: 52px; position: relative; }
         .player-card-node:hover { transform: scale(1.06); }
-        .player-card-node.selected { filter: drop-shadow(0 0 8px #fbbf24); }
+        .player-card-node.selected { filter: drop-shadow(0 0 6px #fbbf24); }
         .player-card-node.selected .player-avatar-box { border-color: #fbbf24; background: rgba(251, 191, 36, 0.2); }
 
         .player-avatar-box {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             background: rgba(15, 23, 42, 0.85);
             border: 2px solid var(--logo-green);
             border-radius: 50%;
@@ -407,64 +405,68 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
         }
-        .player-avatar-box i.fa-user { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
-        .player-rating-badge { position: absolute; bottom: -3px; right: -3px; background: #ffffff; color: #090d16; font-size: 0.5rem; font-weight: 800; padding: 1px 3px; border-radius: 3px; border: 1px solid var(--logo-green); }
-        .player-pos-badge { position: absolute; top: -3px; left: -3px; background: rgba(16, 185, 129, 0.9); color: #ffffff; font-size: 0.45rem; font-weight: 800; padding: 1px 2px; border-radius: 3px; }
-        .player-name-badge { background: rgba(9, 13, 22, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); padding: 1px 3px; border-radius: 4px; font-size: 0.52rem; font-weight: 700; color: #ffffff; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 62px; text-align: center; }
+        .player-avatar-box i.fa-user { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+        .player-rating-badge { position: absolute; bottom: -3px; right: -3px; background: #ffffff; color: #090d16; font-size: 0.45rem; font-weight: 800; padding: 1px 2px; border-radius: 3px; border: 1px solid var(--logo-green); }
+        .player-pos-badge { position: absolute; top: -3px; left: -3px; background: rgba(16, 185, 129, 0.9); color: #ffffff; font-size: 0.4rem; font-weight: 800; padding: 1px 2px; border-radius: 2px; }
+        .player-name-badge { background: rgba(9, 13, 22, 0.85); border: 1px solid rgba(255, 255, 255, 0.15); padding: 1px 2px; border-radius: 3px; font-size: 0.48rem; font-weight: 700; color: #ffffff; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 52px; text-align: center; }
 
-        .squad-section-title { font-family: var(--font-title); font-size: 0.72rem; font-weight: 700; color: var(--logo-green); margin: 3px 0; text-align: left; width: 100%; }
-        .squad-box-container { width: 100%; background: rgba(9, 13, 22, 0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 4px; max-height: 75px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-start; }
+        .squad-section-title { font-family: var(--font-title); font-size: 0.68rem; font-weight: 700; color: var(--logo-green); margin: 2px 0; text-align: left; width: 100%; }
+        
+        /* Megnövelt magasságú cserék és tartalékok dobozok, hogy ne lógjanak össze */
+        .squad-box-container { width: 100%; background: rgba(9, 13, 22, 0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 6px; max-height: 95px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
+        
         .squad-list { width: 100%; margin-top: 4px; max-height: 110px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
-        .player-row { background: rgba(255, 255, 255, 0.04); padding: 4px 6px; border-radius: 5px; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .player-row { background: rgba(255, 255, 255, 0.04); padding: 4px 6px; border-radius: 5px; font-size: 0.68rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
         .player-row:hover { background: rgba(16, 185, 129, 0.1); border-color: var(--logo-green); }
 
-        .button-group { width: 100%; display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
-        .btn { width: 100%; padding: 8px 12px; border-radius: 9px; border: 1px solid rgba(255, 255, 255, 0.05); font-family: var(--font-body); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; outline: none; }
-        .btn-primary { background: var(--logo-green); color: #ffffff; border-color: var(--logo-green); box-shadow: 0 4px 12px var(--logo-green-glow); }
+        .button-group { width: 100%; display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+        .btn { width: 100%; padding: 7px 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; outline: none; }
+        .btn-primary { background: var(--logo-green); color: #ffffff; border-color: var(--logo-green); box-shadow: 0 4px 10px var(--logo-green-glow); }
         .btn-primary:hover { background: var(--logo-green-hover); transform: translateY(-1px); }
         .btn-secondary { background: var(--btn-grey); color: var(--text-main); }
         .btn-secondary:hover { background: var(--btn-grey-hover); border-color: rgba(16, 185, 129, 0.3); transform: translateY(-1px); color: #ffffff; }
         .btn-danger { background: var(--btn-red); color: #ffffff; }
         .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
-        .btn-icon { font-size: 0.8rem; opacity: 0.9; }
+        .btn-icon { font-size: 0.75rem; opacity: 0.9; }
 
-        .slot-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
+        .slot-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s; }
         .slot-card:hover { background: rgba(16, 185, 129, 0.15); border-color: var(--logo-green); }
-        .slot-info { display: flex; flex-direction: column; gap: 2px; }
-        .slot-title { font-family: var(--font-title); font-weight: 700; font-size: 0.8rem; color: #ffffff; }
-        .slot-details { font-size: 0.65rem; color: var(--text-muted); }
-        .slot-actions { display: flex; gap: 6px; align-items: center; }
+        .slot-info { display: flex; flex-direction: column; gap: 1px; }
+        .slot-title { font-family: var(--font-title); font-weight: 700; font-size: 0.75rem; color: #ffffff; }
+        .slot-details { font-size: 0.6rem; color: var(--text-muted); }
+        .slot-actions { display: flex; gap: 4px; align-items: center; }
 
-        .tabs-row { display: flex; gap: 6px; margin-bottom: 8px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-        .tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .tabs-row { display: flex; gap: 4px; margin-bottom: 6px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
+        .tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 3px 6px; border-radius: 5px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: all 0.2s; flex: 1; text-align: center; }
         .tab-btn.active { background: var(--logo-green); color: #ffffff; border-color: var(--logo-green); }
 
+        /* Kompakt, mobilbarát szűrő doboz az átigazolásokhoz */
         .filter-box {
             background: rgba(9, 13, 22, 0.6);
             border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 8px;
-            margin-bottom: 8px;
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 6px;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
         }
-        .filter-group { display: flex; flex-direction: column; gap: 2px; }
-        .filter-group label { font-size: 0.6rem; color: var(--text-muted); font-weight: 600; }
-        .filter-input { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; color: #ffffff; font-size: 0.7rem; padding: 4px; outline: none; }
+        .filter-group { display: flex; flex-direction: column; gap: 1px; }
+        .filter-group label { font-size: 0.55rem; color: var(--text-muted); font-weight: 600; }
+        .filter-input { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #ffffff; font-size: 0.65rem; padding: 3px; outline: none; width: 100%; }
         .filter-input:focus { border-color: var(--logo-green); }
 
-        .inbox-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 8px 10px; margin-bottom: 5px; font-size: 0.72rem; display: flex; flex-direction: column; gap: 3px; cursor: pointer; transition: all 0.2s; width: 100%; }
+        .inbox-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 6px 8px; margin-bottom: 4px; font-size: 0.68rem; display: flex; flex-direction: column; gap: 2px; cursor: pointer; transition: all 0.2s; width: 100%; }
         .inbox-item.unread { border-left: 3px solid var(--logo-green); background: rgba(16, 185, 129, 0.05); }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(6px); }
-        .modal-card { background: var(--card-bg); border: 1px solid var(--logo-green); border-radius: 18px; padding: 16px; width: 90%; max-width: 360px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-        .modal-card.match-result-card { max-width: 540px; padding: 18px; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(13, 20, 33, 0.98); }
-        .modal-card.transfer-card { max-width: 760px; }
-        .modal-title { font-family: var(--font-title); font-size: 1rem; font-weight: 800; color: #ffffff; text-align: center; }
-        .modal-input { background: rgba(9, 13, 22, 0.9); border: 1px solid var(--card-border); padding: 7px 9px; border-radius: 7px; color: #ffffff; font-size: 0.82rem; outline: none; width: 100%; }
+        .modal-card { background: var(--card-bg); border: 1px solid var(--logo-green); border-radius: 16px; padding: 14px; width: 92%; max-width: 350px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        .modal-card.match-result-card { max-width: 380px; padding: 16px; border: 1px solid rgba(16, 185, 129, 0.4); background: rgba(13, 20, 33, 0.98); }
+        .modal-card.transfer-card { max-width: 390px; }
+        .modal-title { font-family: var(--font-title); font-size: 0.95rem; font-weight: 800; color: #ffffff; text-align: center; }
+        .modal-input { background: rgba(9, 13, 22, 0.9); border: 1px solid var(--card-border); padding: 6px 8px; border-radius: 6px; color: #ffffff; font-size: 0.78rem; outline: none; width: 100%; }
         .modal-input:focus { border-color: var(--logo-green); }
 
         select.modal-input, select.filter-input {
@@ -472,12 +474,12 @@
             -webkit-appearance: none;
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2310b981%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
-            background-position: right 8px center;
-            background-size: 8px auto;
+            background-position: right 6px center;
+            background-size: 7px auto;
             cursor: pointer;
         }
 
-        .footer { margin-top: 6px; color: var(--text-muted); font-size: 0.62rem; text-align: center; }
+        .footer { margin-top: 4px; color: var(--text-muted); font-size: 0.58rem; text-align: center; }
     </style>
 </head>
 <body>
@@ -527,9 +529,9 @@
 
     <!-- Új játék csapatválasztó -->
     <div id="teamselect-view" class="card hidden">
-        <div class="header" style="margin-bottom: 5px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Új Játék Indítása</div>
-            <h1 class="main-title" style="font-size: 1.05rem;">Válaszd ki a csapatod:</h1>
+            <h1 class="main-title" style="font-size: 1rem;">Válaszd ki a csapatod:</h1>
         </div>
 
         <div class="nav-row">
@@ -547,7 +549,7 @@
         <div class="emblem-container">
             <div class="nav-row" style="background: transparent; border: none; margin-bottom: 2px; padding: 0;">
                 <button class="nav-btn" onclick="changeSelectTeam(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                <div class="nav-label" id="sel-lbl-team" style="font-size: 0.85rem; color: var(--logo-green);">Csapat</div>
+                <div class="nav-label" id="sel-lbl-team" style="font-size: 0.8rem; color: var(--logo-green);">Csapat</div>
                 <button class="nav-btn" onclick="changeSelectTeam(1)"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
             <div id="sel-emblem-box" class="team-emblem-svg"></div>
@@ -566,71 +568,71 @@
 
     <!-- Játékmenü (Dashboard) -->
     <div id="game-dashboard" class="card wide-dashboard hidden">
-        <div class="header" style="margin-bottom: 6px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag" id="dash-date">Szezon 1 (2026/2027)</div>
-            <h1 class="main-title" id="dash-team-name" style="font-size: 1.1rem;">Csapat Neve</h1>
-            <div style="font-size: 0.72rem; color: #fbbf24; margin-top: 1px; font-weight: 700;" id="dash-budget">Kassza: $15.000.000</div>
+            <h1 class="main-title" id="dash-team-name" style="font-size: 1rem;">Csapat Neve</h1>
+            <div style="font-size: 0.68rem; color: #fbbf24; margin-top: 1px; font-weight: 700;" id="dash-budget">Kassza: $15.000.000</div>
         </div>
 
         <div class="dashboard-grid">
             <div class="menu-card match-card" id="match-menu-card" onclick="handleDashboardMainCardClick()">
                 <div class="menu-card-icon" id="match-card-icon"><i class="fa-solid fa-futbol"></i></div>
                 <div class="menu-card-title" id="match-card-title">Következő Meccs</div>
-                <div class="menu-card-desc" id="match-card-desc">Ellenfél: - | 1. Forduló</div>
+                <div class="menu-card-desc" id="match-card-desc">Ellenfél: -</div>
             </div>
 
             <div class="menu-card table-card" onclick="openStandingsOnlyView()">
                 <div class="menu-card-icon"><i class="fa-solid fa-list-ol"></i></div>
-                <div class="menu-card-title">Bajnoki Tabella</div>
-                <div class="menu-card-desc">Helyezések, pontok</div>
+                <div class="menu-card-title">Tabella</div>
+                <div class="menu-card-desc">Helyezések</div>
             </div>
 
             <div class="menu-card" onclick="openFixturesOnlyView()">
                 <div class="menu-card-icon"><i class="fa-solid fa-calendar-days" style="color: #38bdf8;"></i></div>
-                <div class="menu-card-title">Fordulók & Meccsek</div>
-                <div class="menu-card-desc">Eredmények, sorsolás</div>
+                <div class="menu-card-title">Fordulók</div>
+                <div class="menu-card-desc">Meccsek</div>
             </div>
 
             <div class="menu-card" onclick="openTeamSquad()">
                 <div class="menu-card-icon"><i class="fa-solid fa-users"></i></div>
-                <div class="menu-card-title">Keret & Taktika</div>
-                <div class="menu-card-desc">Felállás, cserék</div>
+                <div class="menu-card-title">Keret</div>
+                <div class="menu-card-desc">Taktika</div>
             </div>
 
             <div class="menu-card" onclick="openInboxView()">
                 <div class="menu-card-icon"><i class="fa-solid fa-inbox"></i></div>
                 <div class="menu-card-title" id="dash-inbox-title">Levelek (0)</div>
-                <div class="menu-card-desc">Üzenetek, ajánlatok</div>
+                <div class="menu-card-desc">Üzenetek</div>
             </div>
 
             <div class="menu-card" onclick="checkAndOpenTransferWindow()">
                 <div class="menu-card-icon"><i class="fa-solid fa-right-left" style="color: #fbbf24;"></i></div>
-                <div class="menu-card-title">Átigazolási Piac</div>
-                <div class="menu-card-desc">Vásárlás, eladás</div>
+                <div class="menu-card-title">Piac</div>
+                <div class="menu-card-desc">Igazolás</div>
             </div>
 
             <div class="menu-card" onclick="openStatsView()">
                 <div class="menu-card-icon"><i class="fa-solid fa-chart-bar" style="color: #38bdf8;"></i></div>
-                <div class="menu-card-title">Statisztikák</div>
-                <div class="menu-card-desc">Gólszerzők, lapok</div>
+                <div class="menu-card-title">Statisztika</div>
+                <div class="menu-card-desc">Góllövők</div>
             </div>
 
             <div class="menu-card" onclick="openAchievementsView()">
                 <div class="menu-card-icon"><i class="fa-solid fa-award" style="color: #fbbf24;"></i></div>
                 <div class="menu-card-title">Rekordok</div>
-                <div class="menu-card-desc">Mérföldkövek</div>
+                <div class="menu-card-desc">Mérföldkő</div>
             </div>
 
             <div class="menu-card" onclick="openSettingsModal()">
                 <div class="menu-card-icon"><i class="fa-solid fa-gear" style="color: var(--logo-green);"></i></div>
-                <div class="menu-card-title">Beállítások</div>
-                <div class="menu-card-desc">Zene ki/be, szám váltás</div>
+                <div class="menu-card-title">Beállítás</div>
+                <div class="menu-card-desc">Zene ki/be</div>
             </div>
 
             <div class="menu-card save-card" onclick="openSaveGameModal()">
                 <div class="menu-card-icon"><i class="fa-solid fa-floppy-disk"></i></div>
                 <div class="menu-card-title">Mentés</div>
-                <div class="menu-card-desc">Slotokba</div>
+                <div class="menu-card-desc">Slotok</div>
             </div>
 
             <div class="menu-card danger" onclick="exitToMainMenu()" style="grid-column: span 4;">
@@ -645,14 +647,14 @@
     <div id="settings-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-title">⚙️ Beállítások</div>
-            <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.04); padding: 10px; border-radius: 8px;">
+            <div style="display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px;">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-size: 0.8rem; font-weight: 700;">Háttérzene</span>
-                    <button class="btn btn-primary" id="settings-music-btn" onclick="toggleMusicFromSettings()" style="width: auto; padding: 5px 10px; font-size: 0.72rem;">Be</button>
+                    <span style="font-size: 0.75rem; font-weight: 700;">Háttérzene</span>
+                    <button class="btn btn-primary" id="settings-music-btn" onclick="toggleMusicFromSettings()" style="width: auto; padding: 4px 8px; font-size: 0.68rem;">Be</button>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px;">
-                    <span style="font-size: 0.72rem; color: var(--text-muted);" id="current-track-lbl">1. szám: Energetic Sport</span>
-                    <button class="btn btn-secondary" onclick="nextTrack()" style="width: auto; padding: 4px 8px; font-size: 0.68rem;">Következő ⏭️</button>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 2px;">
+                    <span style="font-size: 0.68rem; color: var(--text-muted);" id="current-track-lbl">1. szám: Energetic Sport</span>
+                    <button class="btn btn-secondary" onclick="nextTrack()" style="width: auto; padding: 3px 6px; font-size: 0.62rem;">Következő ⏭️</button>
                 </div>
             </div>
             <div class="button-group">
@@ -663,11 +665,11 @@
 
     <!-- Különálló Tabella Nézet -->
     <div id="standings-only-view" class="card extra-wide hidden">
-        <div class="header" style="margin-bottom: 6px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Bajnoki Állás</div>
-            <h1 class="main-title" style="font-size: 1.05rem;">Tabella</h1>
+            <h1 class="main-title" style="font-size: 1rem;">Tabella</h1>
         </div>
-        <div style="overflow-x: auto; width: 100%; margin-bottom: 10px;">
+        <div style="overflow-x: auto; width: 100%; margin-bottom: 6px;">
             <table class="table-styled">
                 <thead>
                     <tr><th>#</th><th>Csapat</th><th>M</th><th>Gy</th><th>D</th><th>V</th><th>RG</th><th>KG</th><th>GK</th><th>P</th></tr>
@@ -682,29 +684,29 @@
 
     <!-- Különálló Meccsek/Fordulók Nézet -->
     <div id="fixtures-only-view" class="card extra-wide hidden">
-        <div class="header" style="margin-bottom: 6px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Sorsolás & Eredmények</div>
-            <h1 class="main-title" style="font-size: 1.05rem;">Fordulók & Meccsek</h1>
+            <h1 class="main-title" style="font-size: 1rem;">Fordulók & Meccsek</h1>
         </div>
         <div class="fixture-nav-bar">
             <button class="nav-btn" onclick="changeFixtureRound(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <span id="current-round-only-label" style="font-weight: 700; font-size: 0.78rem; color: #ffffff;">1. Forduló</span>
+            <span id="current-round-only-label" style="font-weight: 700; font-size: 0.72rem; color: #ffffff;">1. Forduló</span>
             <button class="nav-btn" onclick="changeFixtureRound(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
-        <div class="fixture-list" id="fixture-only-matches-container" style="max-height: 280px; overflow-y: auto; margin-bottom: 10px;"></div>
+        <div class="fixture-list" id="fixture-only-matches-container" style="max-height: 240px; overflow-y: auto; margin-bottom: 6px;"></div>
         <div class="button-group">
             <button class="btn btn-secondary" onclick="closeFixturesOnlyView()">Vissza a Menübe</button>
         </div>
     </div>
 
-    <!-- Átigazolási Piac Modál -->
+    <!-- Átigazolási Piac Modál (Mobilbarát, keskenyebb elemekkel) -->
     <div id="transfer-modal" class="modal-overlay hidden">
         <div class="modal-card transfer-card">
             <div class="modal-title">💸 Átigazolási Piac</div>
-            <div style="font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-bottom: 4px;" id="transfer-budget-lbl">Kassza: $15.000.000</div>
+            <div style="font-size: 0.68rem; color: var(--text-muted); text-align: center; margin-bottom: 2px;" id="transfer-budget-lbl">Kassza: $15.000.000</div>
             <div class="tabs-row">
-                <button class="tab-btn active" id="t-tab-buy" onclick="switchTransferTab('buy')">🛒 Vásárlás & Ajánlattétel</button>
-                <button class="tab-btn" id="t-tab-sell" onclick="switchTransferTab('sell')">🏷️ Saját Játékosok Listázása</button>
+                <button class="tab-btn active" id="t-tab-buy" onclick="switchTransferTab('buy')">🛒 Vásárlás</button>
+                <button class="tab-btn" id="t-tab-sell" onclick="switchTransferTab('sell')">🏷️ Listázás</button>
             </div>
             <div id="transfer-filter-section" class="filter-box">
                 <div class="filter-group">
@@ -714,25 +716,25 @@
                     </select>
                 </div>
                 <div class="filter-group">
+                    <label>Max Ár ($):</label>
+                    <input type="number" id="filter-price-max" class="filter-input" placeholder="Bármennyi" min="0" oninput="renderTransferContent()">
+                </div>
+                <div class="filter-group">
                     <label>Skill (Min - Max):</label>
-                    <div style="display: flex; gap: 4px;">
+                    <div style="display: flex; gap: 2px;">
                         <input type="number" id="filter-skill-min" class="filter-input" placeholder="0" min="0" max="100" oninput="renderTransferContent()">
                         <input type="number" id="filter-skill-max" class="filter-input" placeholder="100" min="0" max="100" oninput="renderTransferContent()">
                     </div>
                 </div>
                 <div class="filter-group">
                     <label>Kor (Min - Max):</label>
-                    <div style="display: flex; gap: 4px;">
+                    <div style="display: flex; gap: 2px;">
                         <input type="number" id="filter-age-min" class="filter-input" placeholder="15" min="15" max="50" oninput="renderTransferContent()">
                         <input type="number" id="filter-age-max" class="filter-input" placeholder="50" min="15" max="50" oninput="renderTransferContent()">
                     </div>
                 </div>
-                <div class="filter-group">
-                    <label>Ár ($ Max):</label>
-                    <input type="number" id="filter-price-max" class="filter-input" placeholder="Bármennyi" min="0" oninput="renderTransferContent()">
-                </div>
             </div>
-            <div style="width: 100%; max-height: 200px; overflow-y: auto; margin-bottom: 6px;" id="transfer-content-container"></div>
+            <div style="width: 100%; max-height: 180px; overflow-y: auto; margin-bottom: 4px;" id="transfer-content-container"></div>
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="closeTransferModal()">Vissza a Menübe</button>
             </div>
@@ -741,11 +743,11 @@
 
     <!-- Levelek Nézet -->
     <div id="inbox-view" class="card extra-wide hidden">
-        <div class="header" style="margin-bottom: 6px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Postafiók</div>
-            <h1 class="main-title" style="font-size: 1.05rem;">Beérkező Üzenetek & Ajánlatok</h1>
+            <h1 class="main-title" style="font-size: 1rem;">Beérkező Üzenetek</h1>
         </div>
-        <div style="width: 100%; max-height: 280px; overflow-y: auto; margin-bottom: 6px;" id="inbox-messages-container"></div>
+        <div style="width: 100%; max-height: 240px; overflow-y: auto; margin-bottom: 4px;" id="inbox-messages-container"></div>
         <div class="button-group">
             <button class="btn btn-secondary" onclick="closeInboxView()">Vissza a Menübe</button>
         </div>
@@ -753,17 +755,17 @@
 
     <!-- Játékos Statisztikák Nézet -->
     <div id="stats-view" class="card extra-wide hidden">
-        <div class="header" style="margin-bottom: 6px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Statisztikák</div>
-            <h1 class="main-title" style="font-size: 1.05rem;">Szezon Statisztikák</h1>
+            <h1 class="main-title" style="font-size: 1rem;">Szezon Statisztika</h1>
         </div>
         <div class="tabs-row">
-            <button class="tab-btn active" id="tab-btn-scorers" onclick="switchStatsTab('scorers')">⚽ Góllövőlista</button>
-            <button class="tab-btn" id="tab-btn-yellow" onclick="switchStatsTab('yellow')">🟨 Sárga Lapok</button>
-            <button class="tab-btn" id="tab-btn-red" onclick="switchStatsTab('red')">🟥 Piros Lapok</button>
-            <button class="tab-btn" id="tab-btn-clean" onclick="switchStatsTab('clean')">🧤 Clean Sheet</button>
+            <button class="tab-btn active" id="tab-btn-scorers" onclick="switchStatsTab('scorers')">⚽ Gól</button>
+            <button class="tab-btn" id="tab-btn-yellow" onclick="switchStatsTab('yellow')">🟨 Sárga</button>
+            <button class="tab-btn" id="tab-btn-red" onclick="switchStatsTab('red')">🟥 Piros</button>
+            <button class="tab-btn" id="tab-btn-clean" onclick="switchStatsTab('clean')">🧤 Gól nélk.</button>
         </div>
-        <div style="width: 100%; max-height: 260px; overflow-y: auto; margin-bottom: 6px;" id="stats-content-container"></div>
+        <div style="width: 100%; max-height: 220px; overflow-y: auto; margin-bottom: 4px;" id="stats-content-container"></div>
         <div class="button-group">
             <button class="btn btn-secondary" onclick="closeStatsView()">Vissza a Menübe</button>
         </div>
@@ -771,21 +773,21 @@
 
     <!-- Rekordok Nézet -->
     <div id="achievements-view" class="card extra-wide hidden">
-        <div class="header" style="margin-bottom: 6px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Menedzseri Teljesítmény</div>
-            <h1 class="main-title" style="font-size: 1.05rem;">Rekordok & Mérföldkövek</h1>
+            <h1 class="main-title" style="font-size: 1rem;">Rekordok & Mérföldkövek</h1>
         </div>
-        <div style="width: 100%; max-height: 280px; overflow-y: auto; margin-bottom: 6px;" id="achievements-container"></div>
+        <div style="width: 100%; max-height: 240px; overflow-y: auto; margin-bottom: 4px;" id="achievements-container"></div>
         <div class="button-group">
             <button class="btn btn-secondary" onclick="closeAchievementsView()">Vissza a Menübe</button>
         </div>
     </div>
 
-    <!-- Játékoskeret & Taktika -->
+    <!-- Játékoskeret & Taktika (Magasabb cseredobozokkal) -->
     <div id="squad-view" class="card extra-wide hidden">
-        <div class="header" style="margin-bottom: 4px;">
+        <div class="header" style="margin-bottom: 3px;">
             <div class="studio-tag">Vezetőedző / Taktika</div>
-            <h1 class="main-title" id="squad-view-title" style="font-size: 1rem;">Kezdőcsapat & Cserék</h1>
+            <h1 class="main-title" id="squad-view-title" style="font-size: 0.9rem;">Kezdőcsapat & Cserék</h1>
         </div>
         <div class="pitch-container">
             <div class="pitch-line-center"></div>
@@ -801,92 +803,91 @@
         <div class="squad-box-container" id="subs-container-box"></div>
         <div class="squad-section-title">Tartalékok (Reserves):</div>
         <div class="squad-box-container" id="reserves-container-box"></div>
-        <div class="button-group">
+        <div class="button-group" style="margin-top: 4px;">
             <button class="btn btn-secondary" onclick="closeTeamSquad()">Vissza a Menübe</button>
         </div>
     </div>
 
     <!-- Adatbázis Szerkesztő -->
     <div id="editor-view" class="card editor-card hidden">
-        <div class="header" style="margin-bottom: 6px;">
+        <div class="header" style="margin-bottom: 4px;">
             <div class="studio-tag">Adatbázis Szerkesztő</div>
-            <h1 class="main-title" style="font-size: 1.1rem;">Csapatok és Adatok Szerkesztése</h1>
+            <h1 class="main-title" style="font-size: 1rem;">Szerkesztő</h1>
         </div>
-        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 12px; width: 100%; margin-bottom: 6px;">
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-                <div class="nav-row" style="margin-bottom:0;">
-                    <button class="nav-btn" onclick="changeCountry(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="nav-label" id="lbl-country">Ország</div>
-                    <div class="nav-actions">
-                        <button class="action-icon-btn" onclick="editCurrentCountry()" title="Ország szerkesztése"><i class="fa-solid fa-pen"></i></button>
-                        <button class="action-icon-btn delete" onclick="deleteCurrentCountry()" title="Ország törlése"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                    <button class="nav-btn" onclick="changeCountry(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        <div style="display: flex; flex-direction: column; gap: 6px; width: 100%; margin-bottom: 4px;">
+            <div class="nav-row" style="margin-bottom:0;">
+                <button class="nav-btn" onclick="changeCountry(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="nav-label" id="lbl-country">Ország</div>
+                <div class="nav-actions">
+                    <button class="action-icon-btn" onclick="editCurrentCountry()" title="Szerkesztés"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-icon-btn delete" onclick="deleteCurrentCountry()" title="Törlés"><i class="fa-solid fa-trash"></i></button>
                 </div>
-                <div class="nav-row" style="margin-bottom:0;">
-                    <button class="nav-btn" onclick="changeLeague(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="nav-label" id="lbl-league">Bajnokság</div>
-                    <div class="nav-actions">
-                        <button class="action-icon-btn" onclick="editCurrentLeague()" title="Bajnokság szerkesztése"><i class="fa-solid fa-pen"></i></button>
-                        <button class="action-icon-btn delete" onclick="deleteCurrentLeague()" title="Bajnokság törlése"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                    <button class="nav-btn" onclick="changeLeague(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="nav-btn" onclick="changeCountry(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="nav-row" style="margin-bottom:0;">
+                <button class="nav-btn" onclick="changeLeague(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="nav-label" id="lbl-league">Bajnokság</div>
+                <div class="nav-actions">
+                    <button class="action-icon-btn" onclick="editCurrentLeague()" title="Szerkesztés"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-icon-btn delete" onclick="deleteCurrentLeague()" title="Törlés"><i class="fa-solid fa-trash"></i></button>
                 </div>
-                <div class="emblem-container" style="margin-bottom:0; padding:6px;">
-                    <div class="nav-row" style="background: transparent; border: none; margin-bottom: 2px; padding: 0;">
-                        <button class="nav-btn" onclick="changeTeam(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                        <div class="nav-label" id="lbl-team" style="font-size: 0.82rem; color: var(--logo-green);">Csapat</div>
-                        <div class="nav-actions">
-                            <button class="action-icon-btn" onclick="editTeamData()" title="Csapat név szerkesztése"><i class="fa-solid fa-pen"></i></button>
-                            <button class="action-icon-btn delete" onclick="deleteCurrentTeam()" title="Csapat törlése"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                        <button class="nav-btn" onclick="changeTeam(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="nav-btn" onclick="changeLeague(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="emblem-container" style="margin-bottom:0; padding:4px;">
+                <div class="nav-row" style="background: transparent; border: none; margin-bottom: 2px; padding: 0;">
+                    <button class="nav-btn" onclick="changeTeam(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="nav-label" id="lbl-team" style="font-size: 0.78rem; color: var(--logo-green);">Csapat</div>
+                    <div class="nav-actions">
+                        <button class="action-icon-btn" onclick="editTeamData()" title="Szerkesztés"><i class="fa-solid fa-pen"></i></button>
+                        <button class="action-icon-btn delete" onclick="deleteCurrentTeam()" title="Törlés"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                    <div id="editor-emblem-box" class="team-emblem-svg" style="width:32px; height:32px;"></div>
-                    <div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 2px; padding-top: 2px;">
-                        <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 2px;">Csapat Kerete:</div>
-                        <div id="squad-container" class="squad-list" style="max-height: 125px;">
-                            <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Nincs csapat.</div>
-                        </div>
+                    <button class="nav-btn" onclick="changeTeam(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div id="editor-emblem-box" class="team-emblem-svg" style="width:28px; height:28px;"></div>
+                <div style="width: 100%; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 2px; padding-top: 2px;">
+                    <div style="font-size: 0.6rem; color: var(--text-muted); margin-bottom: 2px;">Keret:</div>
+                    <div id="squad-container" class="squad-list" style="max-height: 90px;">
+                        <div style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Nincs csapat.</div>
                     </div>
                 </div>
             </div>
-            <div style="display: flex; flex-direction: column; justify-content: space-between;">
-                <div class="button-group" style="margin-top:0;">
-                    <button class="btn btn-primary" onclick="addNewCountry()"><span>+ Új Ország</span></button>
-                    <button class="btn btn-primary" onclick="addNewLeague()"><span>+ Új Bajnokság</span></button>
-                    <button class="btn btn-primary" onclick="addNewTeam()"><span>+ Új Csapat</span></button>
-                    <button class="btn btn-primary" onclick="addPlayerToTeam()"><span>👤 Játékos Hozzáadása</span></button>
-                    <button class="btn btn-danger" onclick="resetDatabase()"><span>🗑️ Alapértelmezett Adatbázis</span></button>
+            <div class="button-group" style="margin-top:2px;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
+                    <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addNewCountry()"><span>+ Ország</span></button>
+                    <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addNewLeague()"><span>+ Bajnokság</span></button>
+                    <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addNewTeam()"><span>+ Csapat</span></button>
+                    <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addPlayerToTeam()"><span>+ Játékos</span></button>
                 </div>
-                <button class="btn btn-secondary" onclick="closeEditor()" style="margin-top: 6px;"><span>Vissza a Főmenübe</span></button>
+                <button class="btn btn-danger" style="padding:5px; font-size:0.68rem;" onclick="resetDatabase()"><span>🗑️ Alapértelmezett Adatbázis</span></button>
             </div>
         </div>
-        <div class="footer">&copy; 2026 Jager Dev Studio. Minden jog fenntartva.</div>
+        <div class="button-group">
+            <button class="btn btn-secondary" onclick="closeEditor()">Vissza a Főmenübe</button>
+        </div>
     </div>
 
     <!-- Quick Sim Eredmény Modál -->
     <div id="quicksim-modal" class="modal-overlay hidden">
         <div class="modal-card match-result-card">
-            <div style="text-align: center; font-size: 0.68rem; color: var(--logo-green); font-weight: 800; letter-spacing: 2px;" id="sim-league-name">BUNDESLIGA</div>
-            <div style="display: flex; justify-content: space-around; align-items: center; margin: 10px 0;">
+            <div style="text-align: center; font-size: 0.65rem; color: var(--logo-green); font-weight: 800; letter-spacing: 2px;" id="sim-league-name">BUNDESLIGA</div>
+            <div style="display: flex; justify-content: space-around; align-items: center; margin: 8px 0;">
                 <div style="text-align: center; flex: 1;">
-                    <div id="sim-home-emblem" style="width: 36px; height: 36px; margin: 0 auto 3px auto;"></div>
-                    <div id="sim-home-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.85rem;">Hazai Csapat</div>
+                    <div id="sim-home-emblem" style="width: 32px; height: 32px; margin: 0 auto 2px auto;"></div>
+                    <div id="sim-home-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.78rem;">Hazai</div>
                 </div>
-                <div style="font-family: var(--font-title); font-size: 1.6rem; font-weight: 900; color: #ffffff; padding: 0 8px;" id="sim-score">3 - 2</div>
+                <div style="font-family: var(--font-title); font-size: 1.4rem; font-weight: 900; color: #ffffff; padding: 0 6px;" id="sim-score">3 - 2</div>
                 <div style="text-align: center; flex: 1;">
-                    <div id="sim-away-emblem" style="width: 36px; height: 36px; margin: 0 auto 3px auto;"></div>
-                    <div id="sim-away-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.85rem;">Vendég Csapat</div>
+                    <div id="sim-away-emblem" style="width: 32px; height: 32px; margin: 0 auto 2px auto;"></div>
+                    <div id="sim-away-name" style="font-family: var(--font-title); font-weight: 800; font-size: 0.78rem;">Vendég</div>
                 </div>
             </div>
-            <div style="text-align: center; font-size: 0.68rem; color: var(--text-muted); margin-bottom: 8px;">90:00 (Gyors Szimuláció)</div>
-            <div style="display: flex; gap: 6px; margin-bottom: 8px;">
-                <div style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 6px; max-height: 100px; overflow-y: auto; font-size: 0.68rem;" id="sim-home-events">
-                    <div style="font-weight:700; color:var(--logo-green); margin-bottom:3px; text-align:center;">Hazai Események</div>
+            <div style="text-align: center; font-size: 0.62rem; color: var(--text-muted); margin-bottom: 6px;">90:00 (Gyors Szimuláció)</div>
+            <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+                <div style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 5px; max-height: 80px; overflow-y: auto; font-size: 0.62rem;" id="sim-home-events">
+                    <div style="font-weight:700; color:var(--logo-green); margin-bottom:2px; text-align:center;">Hazai Események</div>
                 </div>
-                <div style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 6px; max-height: 100px; overflow-y: auto; font-size: 0.68rem;" id="sim-away-events">
-                    <div style="font-weight:700; color:#38bdf8; margin-bottom:3px; text-align:center;">Vendég Események</div>
+                <div style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; padding: 5px; max-height: 80px; overflow-y: auto; font-size: 0.62rem;" id="sim-away-events">
+                    <div style="font-weight:700; color:#38bdf8; margin-bottom:2px; text-align:center;">Vendég Események</div>
                 </div>
             </div>
             <div class="button-group">
@@ -899,8 +900,8 @@
     <div id="slot-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-title" id="slot-modal-title">Játék Mentése Slotba</div>
-            <div style="display: flex; flex-direction: column; gap: 5px;" id="slots-container"></div>
-            <div style="margin-top: 4px;"><button class="btn btn-secondary" onclick="closeSlotModal()">Mégse</button></div>
+            <div style="display: flex; flex-direction: column; gap: 4px;" id="slots-container"></div>
+            <div style="margin-top: 2px;"><button class="btn btn-secondary" onclick="closeSlotModal()">Mégse</button></div>
         </div>
     </div>
 
@@ -908,14 +909,14 @@
     <div id="bid-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-title" id="bid-modal-title">Ajánlat Tétele</div>
-            <div style="font-size: 0.72rem; color: var(--text-muted); text-align: center;" id="bid-player-info">Játékos neve - Klub</div>
-            <div style="font-size: 0.72rem; color: #fbbf24; text-align: center; font-weight: 700;" id="bid-player-value">Becsült érték: $0</div>
-            <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 3px;">
-                <label style="font-size: 0.68rem; color: var(--text-muted);">Ajánlott Összeg ($):</label>
+            <div style="font-size: 0.68rem; color: var(--text-muted); text-align: center;" id="bid-player-info">Játékos neve - Klub</div>
+            <div style="font-size: 0.68rem; color: #fbbf24; text-align: center; font-weight: 700;" id="bid-player-value">Becsült érték: $0</div>
+            <div style="display: flex; flex-direction: column; gap: 3px; margin-top: 2px;">
+                <label style="font-size: 0.62rem; color: var(--text-muted);">Ajánlott Összeg ($):</label>
                 <input type="text" id="bid-input-amount" class="modal-input" placeholder="Írd be az összeget..." oninput="formatBidInputLive(this)">
-                <div id="bid-formatted-preview" style="font-size: 0.7rem; color: var(--logo-green); font-weight: 700; text-align: right;">$0</div>
+                <div id="bid-formatted-preview" style="font-size: 0.65rem; color: var(--logo-green); font-weight: 700; text-align: right;">$0</div>
             </div>
-            <div style="display: flex; gap: 6px; margin-top: 4px;">
+            <div style="display: flex; gap: 4px; margin-top: 4px;">
                 <button class="btn btn-primary" onclick="submitTransferBid()">Ajánlat Küldése</button>
                 <button class="btn btn-secondary" onclick="closeBidModal()">Mégse</button>
             </div>
@@ -927,7 +928,7 @@
         <div class="modal-card">
             <div class="modal-title" id="modal-title">Adat szerkesztése</div>
             <input type="text" id="modal-input" class="modal-input" placeholder="Írd be az értéket...">
-            <div style="display: flex; gap: 6px;">
+            <div style="display: flex; gap: 4px;">
                 <button class="btn btn-primary" onclick="submitModal()">Mentés</button>
                 <button class="btn btn-secondary" onclick="closeModal()">Mégse</button>
             </div>
@@ -938,21 +939,21 @@
     <div id="player-modal" class="modal-overlay hidden">
         <div class="modal-card" id="player-form-card">
             <div class="modal-title" id="player-modal-title">Új Játékos Hozzáadása</div>
-            <div style="display: flex; flex-direction: column; gap: 4px;">
-                <label style="font-size: 0.7rem; color: var(--text-muted);">Játékos Neve:</label>
+            <div style="display: flex; flex-direction: column; gap: 3px;">
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Játékos Neve:</label>
                 <input type="text" id="p-name" class="modal-input" placeholder="pl. Kovács Péter">
-                <label style="font-size: 0.7rem; color: var(--text-muted);">Nemzetiség:</label>
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Nemzetiség:</label>
                 <select id="p-nat" class="modal-input">
                     <option value="">Válassz...</option><option value="England">England</option><option value="France">France</option><option value="Germany">Germany</option><option value="Spain">Spain</option><option value="Brazil">Brazil</option><option value="Netherlands">Netherlands</option>
                 </select>
-                <label style="font-size: 0.7rem; color: var(--text-muted);">Poszt:</label>
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Poszt:</label>
                 <select id="p-pos" class="modal-input"><option value="GK">GK</option><option value="DEF">DEF</option><option value="MID" selected>MID</option><option value="ATT">ATT</option></select>
-                <label style="font-size: 0.7rem; color: var(--text-muted);">Kor:</label>
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Kor:</label>
                 <input type="number" id="p-age" class="modal-input" placeholder="25" min="15" max="50">
-                <label style="font-size: 0.7rem; color: var(--text-muted);">Skill (0-100):</label>
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Skill (0-100):</label>
                 <input type="number" id="p-skill" class="modal-input" placeholder="85" min="0" max="100">
             </div>
-            <div style="display: flex; gap: 6px; margin-top: 4px;">
+            <div style="display: flex; gap: 4px; margin-top: 4px;">
                 <button class="btn btn-primary" onclick="submitPlayerModal()">Mentés</button>
                 <button id="btn-delete-player" class="btn btn-danger hidden" onclick="deletePlayer()">Törlés</button>
                 <button class="btn btn-secondary" onclick="closePlayerModal()">Mégse</button>
@@ -961,7 +962,7 @@
     </div>
 
     <script>
-        // Lejátszási lista ingyenes háttérzenékből
+        // Háttérzene lejátszási lista robusztus kezeléssel
         const musicTracks = [
             { title: "1. Energetic Sport", url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=energetic-hip-hop-sport-112071.mp3" },
             { title: "2. Action Rock Drive", url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a81630.mp3?filename=action-sport-rock-10332.mp3" },
@@ -985,7 +986,7 @@
             }
         }
 
-        // Automatikus továbblépés a következő számra
+        // Biztosítjuk, hogy a szám végén a következő is le tudjon játszódni
         bgAudio.addEventListener('ended', () => {
             currentTrackIdx = (currentTrackIdx + 1) % musicTracks.length;
             loadTrack(currentTrackIdx, true);
@@ -1498,7 +1499,7 @@
             let container = document.getElementById('inbox-messages-container');
             container.innerHTML = '';
             if (inboxMessages.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.72rem;">Nincsenek üzenetek.</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.68rem;">Nincsenek üzenetek.</div>';
                 return;
             }
             inboxMessages.forEach((msg, idx) => {
@@ -1507,16 +1508,16 @@
                 let actionHtml = '';
                 if (msg.isOffer && msg.status === 'pending') {
                     actionHtml = `
-                        <div style="display:flex; gap:6px; margin-top:4px;">
-                            <button class="btn btn-primary" style="padding:3px 8px; font-size:0.65rem;" onclick="event.stopPropagation(); acceptSellOffer(${idx})">Elfogad</button>
-                            <button class="btn btn-danger" style="padding:3px 8px; font-size:0.65rem;" onclick="event.stopPropagation(); rejectSellOffer(${idx})">Elutasít</button>
+                        <div style="display:flex; gap:4px; margin-top:3px;">
+                            <button class="btn btn-primary" style="padding:2px 6px; font-size:0.6rem;" onclick="event.stopPropagation(); acceptSellOffer(${idx})">Elfogad</button>
+                            <button class="btn btn-danger" style="padding:2px 6px; font-size:0.6rem;" onclick="event.stopPropagation(); rejectSellOffer(${idx})">Elutasít</button>
                         </div>
                     `;
                 }
                 div.innerHTML = `
                     <div style="display:flex; justify-content:space-between; font-weight:700;">
                         <span>${msg.sender} - ${msg.title}</span>
-                        ${msg.unread ? '<span class="unread-tag" style="color:var(--logo-green); font-size:0.6rem;">ÚJ</span>' : ''}
+                        ${msg.unread ? '<span class="unread-tag" style="color:var(--logo-green); font-size:0.55rem;">ÚJ</span>' : ''}
                     </div>
                     <div style="color:var(--text-muted);">${msg.text}</div>
                     ${actionHtml}
@@ -1634,7 +1635,7 @@
                 });
 
                 if (filtered.length === 0) {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.72rem; padding:15px;">Nincs a szűrésnek megfelelő játékos.</div>';
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.68rem; padding:12px;">Nincs találat.</div>';
                     return;
                 }
 
@@ -1644,13 +1645,13 @@
                         <tbody>
                             ${filtered.map((p) => `
                                 <tr>
-                                    <td><strong>${p.name}</strong> (${p.nat})</td>
+                                    <td><strong>${p.name}</strong></td>
                                     <td>${p.originTeam}</td>
                                     <td>${p.pos}</td>
                                     <td style="color:var(--logo-green); font-weight:700;">${p.skill}</td>
-                                    <td>${p.age} év</td>
+                                    <td>${p.age}</td>
                                     <td style="color:#fbbf24; font-weight:700;">${formatMoney(p.price)}</td>
-                                    <td><button class="btn btn-primary" style="padding:2px 5px; font-size:0.62rem;" onclick="openBidModalForPlayer('${p.name}', '${p.originTeam}', ${p.price}, ${JSON.stringify(p).replace(/"/g, '&quot;')})">Ajánlat</button></td>
+                                    <td><button class="btn btn-primary" style="padding:2px 4px; font-size:0.58rem;" onclick="openBidModalForPlayer('${p.name}', '${p.originTeam}', ${p.price}, ${JSON.stringify(p).replace(/"/g, '&quot;')})">Ajánlat</button></td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -1659,11 +1660,11 @@
             } else {
                 let myPlayers = activeCareerTeam.players;
                 container.innerHTML = `
-                    <div style="font-size:0.68rem; color:var(--text-muted); margin-bottom:5px; text-align:center;">
-                        ${windowActive ? '🟢 Átigazolási időszak van: a listázott játékosokra a botok ajánlatot tesznek!' : '🟡 Nincs átigazolási időszak: a listázott játékosokért a következő ablakban érkezhet ajánlat.'}
+                    <div style="font-size:0.62rem; color:var(--text-muted); margin-bottom:4px; text-align:center;">
+                        ${windowActive ? '🟢 Átigazolási időszak van (botok ajánlhatnak).' : '🟡 Nincs átigazolási időszak.'}
                     </div>
                     <table class="table-styled">
-                        <thead><tr><th>Játékos</th><th>Poszt</th><th>Skill</th><th>Kor</th><th>Érték</th><th>Állapot</th><th>Művelet</th></tr></thead>
+                        <thead><tr><th>Játékos</th><th>Poszt</th><th>Skill</th><th>Kor</th><th>Érték</th><th>Állapot</th><th>Akció</th></tr></thead>
                         <tbody>
                             ${myPlayers.map((p, idx) => {
                                 let estPrice = p.skill * 120000;
@@ -1672,13 +1673,13 @@
                                         <td><strong>${p.name}</strong></td>
                                         <td>${p.pos}</td>
                                         <td style="color:var(--logo-green); font-weight:700;">${p.skill}</td>
-                                        <td>${p.age} év</td>
+                                        <td>${p.age}</td>
                                         <td style="color:#fbbf24; font-weight:700;">${formatMoney(estPrice)}</td>
-                                        <td>${p.transferListed ? '<span style="color:#fbbf24; font-weight:700;">Listázva 📋</span>' : '<span style="color:var(--text-muted);">Keretben</span>'}</td>
+                                        <td>${p.transferListed ? '<span style="color:#fbbf24; font-weight:700;">Listázva</span>' : 'Keretben'}</td>
                                         <td>
                                             ${p.transferListed ? 
-                                                `<button class="btn btn-secondary" style="padding:2px 5px; font-size:0.62rem;" onclick="toggleListPlayer(${idx})">Levétel</button>` : 
-                                                `<button class="btn btn-primary" style="padding:2px 5px; font-size:0.62rem;" onclick="toggleListPlayer(${idx})">Listázás</button>`
+                                                `<button class="btn btn-secondary" style="padding:2px 4px; font-size:0.58rem;" onclick="toggleListPlayer(${idx})">Levétel</button>` : 
+                                                `<button class="btn btn-primary" style="padding:2px 4px; font-size:0.58rem;" onclick="toggleListPlayer(${idx})">Listáz</button>`
                                             }
                                         </td>
                                     </tr>
@@ -1716,7 +1717,7 @@
         function submitTransferBid() {
             let rawInput = document.getElementById('bid-input-amount').value.replace(/\D/g, '');
             let amount = parseInt(rawInput);
-            if (isNaN(amount) || amount <= 0) { showToast("❌ Adj meg érvényes összeget!"); return; }
+            if (isNaN(amount) || amount <= 0) { showToast("❌ Érvénytelen összeg!"); return; }
             if (teamBudget < amount) { showToast("❌ Nincs elég pénzed!"); return; }
 
             let p = currentBidTarget;
@@ -1724,7 +1725,7 @@
             closeBidModal();
 
             if (!windowActive) {
-                addInboxMessage(p.originTeam, "Ajánlat Elküldve", `Elküldted a(z) ${formatMoney(amount)} összegű ajánlatot ${p.name} játékosért. A klub a következő átigazolási időszakban válaszol rá.`);
+                addInboxMessage(p.originTeam, "Ajánlat Elküldve", `Ajánlat elküldve (${formatMoney(amount)}) ${p.name} játékosért.`);
                 showToast("📨 Ajánlat elküldve!");
                 return;
             }
@@ -1748,8 +1749,8 @@
                 showToast(`🎉 Sikeres igazolás: ${p.name}!`);
                 renderTransferContent();
             } else {
-                addInboxMessage(p.originTeam, "Ajánlat Elutasítva", `A(z) ${p.originTeam} elutasította az ajánlatodat (${formatMoney(amount)} túl alacsony).`);
-                showToast("❌ A klub elutasította az ajánlatot!");
+                addInboxMessage(p.originTeam, "Ajánlat Elutasítva", `A klub elutasította az ajánlatot (${formatMoney(amount)}).`);
+                showToast("❌ Elutasítva!");
             }
         }
 
@@ -1764,8 +1765,8 @@
 
                     addInboxMessage(
                         randomBuyer.name, 
-                        `Átigazolási Ajánlat: ${p.name}`, 
-                        `Ajánlat érkezett ${randomBuyer.name} csapatától ${p.name} játékosodért (${formatMoney(offerPrice)}).`, 
+                        `Ajánlat: ${p.name}`, 
+                        `Ajánlat érkezett ${randomBuyer.name} csapatától (${formatMoney(offerPrice)}).`, 
                         true, 
                         { playerIndex: idx, price: offerPrice, buyerTeamName: randomBuyer.name }
                     );
@@ -1804,20 +1805,20 @@
 
             if (currentStatsTab === 'scorers') {
                 let filtered = allPlayers.filter(p => (p.goals || 0) > 0).sort((a, b) => b.goals - a.goals);
-                if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.7rem; padding:15px;">Nincsenek gólszerzők.</div>'; return; }
+                if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
                 container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Gól</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:var(--logo-green);">${p.goals}</td></tr>`).join('')}</tbody></table>`;
             } else if (currentStatsTab === 'yellow') {
                 let filtered = allPlayers.filter(p => (p.yellowCards || 0) > 0).sort((a, b) => b.yellowCards - a.yellowCards);
-                if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.7rem; padding:15px;">Nincsenek lapok.</div>'; return; }
+                if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
                 container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Sárga</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#fbbf24;">${p.yellowCards}</td></tr>`).join('')}</tbody></table>`;
             } else if (currentStatsTab === 'red') {
                 let filtered = allPlayers.filter(p => (p.redCards || 0) > 0).sort((a, b) => b.redCards - a.redCards);
-                if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.7rem; padding:15px;">Nincsenek lapok.</div>'; return; }
+                if (filtered.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
                 container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Játékos</th><th>Csapat</th><th>Piros</th></tr></thead><tbody>${filtered.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#ef4444;">${p.redCards}</td></tr>`).join('')}</tbody></table>`;
             } else if (currentStatsTab === 'clean') {
                 let gks = allPlayers.filter(p => p.pos === 'GK' && (p.cleanSheets || 0) > 0).sort((a, b) => b.cleanSheets - a.cleanSheets);
-                if (gks.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.7rem; padding:15px;">Nincs adat.</div>'; return; }
-                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Kapus</th><th>Csapat</th><th>Clean Sheet</th></tr></thead><tbody>${gks.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#38bdf8;">${p.cleanSheets}</td></tr>`).join('')}</tbody></table>`;
+                if (gks.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.65rem; padding:12px;">Nincs adat.</div>'; return; }
+                container.innerHTML = `<table class="table-styled"><thead><tr><th>#</th><th>Kapus</th><th>Csapat</th><th>Gól nélküli</th></tr></thead><tbody>${gks.slice(0, 15).map((p, idx) => `<tr><td>${idx+1}.</td><td>${p.name}</td><td>${p.teamName}</td><td style="font-weight:700; color:#38bdf8;">${p.cleanSheets}</td></tr>`).join('')}</tbody></table>`;
             }
         }
 
@@ -1827,11 +1828,11 @@
             let bestPosDisplay = (managerStats.bestPosition === 99) ? '-' : `${managerStats.bestPosition}.`;
             let container = document.getElementById('achievements-container');
             container.innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%;">
-                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">🏆 Megnyert Meccsek</span><span class="slot-details" style="font-size:1rem; color:var(--logo-green); font-weight:800;">${managerStats.wins}</span></div></div>
-                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">🥇 Bajnoki Címek</span><span class="slot-details" style="font-size:1rem; color:#fbbf24; font-weight:800;">${managerStats.trophies}</span></div></div>
-                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">⭐ Legjobb Helyezés</span><span class="slot-details" style="font-size:1rem; color:#38bdf8; font-weight:800;">${bestPosDisplay}</span></div></div>
-                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">📅 Szezon</span><span class="slot-details" style="font-size:1rem; color:#ffffff; font-weight:800;">Szezon ${currentSeasonYear}</span></div></div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%;">
+                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">🏆 Győzelmek</span><span class="slot-details" style="font-size:0.9rem; color:var(--logo-green); font-weight:800;">${managerStats.wins}</span></div></div>
+                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">🥇 Bajnoki Cím</span><span class="slot-details" style="font-size:0.9rem; color:#fbbf24; font-weight:800;">${managerStats.trophies}</span></div></div>
+                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">⭐ Legjobb Hely</span><span class="slot-details" style="font-size:0.9rem; color:#38bdf8; font-weight:800;">${bestPosDisplay}</span></div></div>
+                    <div class="slot-card" style="cursor:default;"><div class="slot-info"><span class="slot-title">📅 Szezon</span><span class="slot-details" style="font-size:0.9rem; color:#ffffff; font-weight:800;">${currentSeasonYear}.</span></div></div>
                 </div>
             `;
         }
@@ -1869,15 +1870,14 @@
             if (!nextInfo) {
                 menuCard.className = "menu-card season-end-card";
                 cardIcon.innerHTML = '<i class="fa-solid fa-trophy" style="color: #fbbf24;"></i>';
-                cardTitle.innerText = "Szezon Vége - Új Szezon";
-                cardDesc.innerText = `Bajnokság lezárult. Kattints az új évadért!`;
+                cardTitle.innerText = "Szezon Vége";
+                cardDesc.innerText = `Kattints az új évadért!`;
             } else {
                 menuCard.className = "menu-card match-card";
                 cardIcon.innerHTML = '<i class="fa-solid fa-futbol"></i>';
                 let opponent = nextInfo.match.home === activeCareerTeam.name ? nextInfo.match.away : nextInfo.match.home;
-                let venue = nextInfo.match.home === activeCareerTeam.name ? "Hazai" : "Idegenbeli";
-                cardTitle.innerText = `Következő Meccs`;
-                cardDesc.innerText = `vs ${opponent} (${venue}) | ${nextInfo.roundIdx + 1}. Forduló`;
+                cardTitle.innerText = `Köv. Meccs`;
+                cardDesc.innerText = `vs ${opponent} (${nextInfo.roundIdx + 1}. F.)`;
             }
             updateInboxBadge();
         }
@@ -1892,7 +1892,7 @@
             let suspendedInMatchDay = matchDayPlayers.filter(p => p.suspendedMatches > 0);
             if (suspendedInMatchDay.length > 0) {
                 let names = suspendedInMatchDay.map(p => p.name).join(', ');
-                alert(`⛔ Eltiltott játékos a meccskeretben: ${names}. Cseréld le a tartalékok közé!`);
+                alert(`⛔ Eltiltott játékos: ${names}. Cseréld le!`);
                 openTeamSquad();
                 return;
             }
@@ -2041,12 +2041,12 @@
 
             let homeEventsContainer = document.getElementById('sim-home-events');
             let awayEventsContainer = document.getElementById('sim-away-events');
-            homeEventsContainer.innerHTML = `<div style="font-weight:700; color:var(--logo-green); margin-bottom:3px; text-align:center;">${match.home}</div>`;
-            awayEventsContainer.innerHTML = `<div style="font-weight:700; color:#38bdf8; margin-bottom:3px; text-align:center;">${match.away}</div>`;
+            homeEventsContainer.innerHTML = `<div style="font-weight:700; color:var(--logo-green); margin-bottom:2px; text-align:center;">${match.home}</div>`;
+            awayEventsContainer.innerHTML = `<div style="font-weight:700; color:#38bdf8; margin-bottom:2px; text-align:center;">${match.away}</div>`;
 
             if (lastSimulatedMatchResult) {
-                lastSimulatedMatchResult.home.forEach(ev => { homeEventsContainer.innerHTML += `<div style="padding:2px 0;"><strong>${ev.minute}</strong> - ${ev.text}</div>`; });
-                lastSimulatedMatchResult.away.forEach(ev => { awayEventsContainer.innerHTML += `<div style="padding:2px 0;"><strong>${ev.minute}</strong> - ${ev.text}</div>`; });
+                lastSimulatedMatchResult.home.forEach(ev => { homeEventsContainer.innerHTML += `<div style="padding:1px 0;"><strong>${ev.minute}</strong> - ${ev.text}</div>`; });
+                lastSimulatedMatchResult.away.forEach(ev => { awayEventsContainer.innerHTML += `<div style="padding:1px 0;"><strong>${ev.minute}</strong> - ${ev.text}</div>`; });
             }
             document.getElementById('quicksim-modal').classList.remove('hidden');
         }
@@ -2083,7 +2083,6 @@
             showToast(`🚀 Elindult a(z) ${currentSeasonYear}. szezon!`);
         }
 
-        // Külön nézetek renderelése
         function openStandingsOnlyView() {
             document.getElementById('game-dashboard').classList.add('hidden');
             document.getElementById('standings-only-view').classList.remove('hidden');
@@ -2147,7 +2146,7 @@
                     let div = document.createElement('div');
                     div.className = 'fixture-item';
                     let scoreText = m.played ? `${m.homeScore} - ${m.awayScore}` : `vs`;
-                    div.innerHTML = `<span style="${m.home === activeCareerTeam.name ? 'color:var(--logo-green); font-weight:700;' : ''}">${m.home}</span><span style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px;">${scoreText}</span><span style="${m.away === activeCareerTeam.name ? 'color:var(--logo-green); font-weight:700;' : ''}">${m.away}</span>`;
+                    div.innerHTML = `<span style="${m.home === activeCareerTeam.name ? 'color:var(--logo-green); font-weight:700;' : ''}">${m.home}</span><span style="background:rgba(255,255,255,0.08); padding:2px 5px; border-radius:4px;">${scoreText}</span><span style="${m.away === activeCareerTeam.name ? 'color:var(--logo-green); font-weight:700;' : ''}">${m.away}</span>`;
                     matchesContainer.appendChild(div);
                 });
             }
