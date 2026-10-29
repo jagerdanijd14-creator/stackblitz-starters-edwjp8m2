@@ -32,14 +32,14 @@ jobs:
           if [ -f "index.html" ]; then
             cp index.html www/
           else
-            echo "<h1>Tactical Manager 2026</h1>" > www/index.html
+            echo "<h1>TM26</h1>" > www/index.html
           fi
 
       - name: Create Capacitor Config
         run: |
           echo '{
             "appId": "com.tacticalmanager.app",
-            "appName": "Tactical Manager 2026",
+            "appName": "TM26",
             "webDir": "www",
             "bundledWebRuntime": false
           }' > capacitor.config.json
@@ -70,11 +70,9 @@ jobs:
           if [ -f "icon.png" ]; then
             RES_DIR="android/app/src/main/res"
             
-            # Töröljük az adaptív ikon XML fájlokat, hogy ne bírálják felül a PNG-t
             find "$RES_DIR" -name "ic_launcher.xml" -delete
             find "$RES_DIR" -name "ic_launcher_round.xml" -delete
             
-            # Minden mipmap mappába bemásoljuk és átnevezzük az ikont
             for folder in mipmap-mdpi mipmap-hdpi mipmap-xhdpi mipmap-xxhdpi mipmap-xxxhdpi; do
               mkdir -p "$RES_DIR/$folder"
               cp icon.png "$RES_DIR/$folder/ic_launcher.png"
@@ -89,8 +87,13 @@ jobs:
         working-directory: ./android
         run: ./gradlew assembleDebug
 
+      # Itt átnevezzük az elkészült APK fájlt tm26.apk-ra!
+      - name: Rename APK File
+        run: |
+          mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/tm26.apk
+
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: tm26-apk
+          path: android/app/build/outputs/apk/debug/tm26.apk
