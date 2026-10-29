@@ -65,10 +65,14 @@ jobs:
       - name: Copy Custom App Icon
         run: |
           if [ -f "icon.png" ]; then
-            mkdir -p android/app/src/main/res/mipmap-xxhdpi
-            cp icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-            cp icon.png android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
-            echo "Egyedi ikon sikeresen bemásolva az APK-ba!"
+            for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+              mkdir -p android/app/src/main/res/mipmap-$density
+              cp icon.png android/app/src/main/res/mipmap-$density/ic_launcher.png
+              cp icon.png android/app/src/main/res/mipmap-$density/ic_launcher_round.png 2>/dev/null || true
+            done
+            mkdir -p android/app/src/main/res/drawable
+            cp icon.png android/app/src/main/res/drawable/ic_launcher_foreground.png
+            echo "Egyedi ikon sikeresen felülírva minden méretben!"
           fi
 
       - name: Sync Capacitor
