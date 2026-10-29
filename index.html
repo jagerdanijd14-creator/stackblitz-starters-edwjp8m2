@@ -542,7 +542,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.6.3</div>
+    <div class="version-badge">v1.6.4</div>
 
     <audio id="bg-audio" preload="auto"></audio>
 
@@ -1389,7 +1389,7 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v163')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v164')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1472,6 +1472,7 @@
             db.forEach((c) => {
                 c.leagues.forEach((l) => {
                     if (!l.fixtures || l.fixtures.length === 0) { l.fixtures = generateFixtures(l.teams); }
+                    if (l.currentRound === undefined) l.currentRound = 0;
                     if (!l.table || l.table.length !== l.teams.length) {
                         l.table = l.teams.map(t => ({ name: t.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }));
                     } else {
@@ -1513,7 +1514,7 @@
                 jobOffers: jobOffers,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v163', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v164', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -1689,6 +1690,8 @@
             activeCareerTeam = l.teams[selTeamIdx];
             currentSeasonYear = 1;
             teamBudget = 15000000;
+            l.currentRound = 0;
+
             inboxMessages = [
                 { id: 1, sender: "Ligaszövetség", title: "Üdv a bajnokságban!", text: `Köszöntünk a(z) ${l.name} mezőnyében! Vezesd győzelemre a ${activeCareerTeam.name} csapatát!`, unread: true },
                 { id: 2, sender: "Igazgatóság", title: "Átigazolási büdzsé", text: "Megkaptad a szezonra szóló $15.000.000 transzfer kasszát.", unread: true }
@@ -1696,11 +1699,14 @@
             jobOffers = [];
             managerStats = { wins: 0, trophies: 0, bestPosition: 99 };
             
-            db.forEach(country => country.leagues.forEach(league => league.teams.forEach(team => {
-                if (team.players) {
-                    team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; p.stamina = 100; });
-                }
-            })));
+            db.forEach(country => country.leagues.forEach(league => {
+                league.currentRound = 0;
+                league.teams.forEach(team => {
+                    if (team.players) {
+                        team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; p.stamina = 100; });
+                    }
+                });
+            }));
 
             saveToLocalStorage();
 
@@ -1903,9 +1909,8 @@
 
         function isTransferWindowActive() {
             let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
-            let nextInfo = getNextUnplayedMatchInfo();
-            if (!nextInfo) return false;
-            let dateStr = getMatchDate(nextInfo.roundIdx, league.fixtures.length);
+            let rIdx = league.currentRound || 0;
+            let dateStr = getMatchDate(rIdx, league.fixtures.length);
             return dateStr.includes("Július") || dateStr.includes("Augusztus") || dateStr.includes("Január");
         }
 
@@ -2169,28 +2174,25 @@
             document.getElementById('game-dashboard').classList.remove('hidden');
         }
 
-        function getNextUnplayedMatchInfo() {
+        function getCurrentRoundMatchInfo() {
             let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
             ensureLeagueSetup();
-            for (let r = 0; r < league.fixtures.length; r++) {
-                let round = league.fixtures[r];
-                for (let m of round) {
-                    if (!m.played && (m.home === activeCareerTeam.name || m.away === activeCareerTeam.name)) {
-                        return { roundIdx: r, match: m };
-                    }
-                }
-            }
-            return null;
+            let rIdx = league.currentRound || 0;
+            if (rIdx >= league.fixtures.length) return null;
+
+            let roundMatches = league.fixtures[rIdx];
+            let myMatch = roundMatches.find(m => m.home === activeCareerTeam.name || m.away === activeCareerTeam.name);
+            return { roundIdx: rIdx, match: myMatch, roundMatches: roundMatches };
         }
 
         function updateDashboardMatchCard() {
             let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
-            let nextInfo = getNextUnplayedMatchInfo();
+            let info = getCurrentRoundMatchInfo();
             let dashDate = document.getElementById('dash-date');
             
             if (dashDate) {
-                if (nextInfo) {
-                    let dateStr = getMatchDate(nextInfo.roundIdx, league.fixtures.length);
+                if (info) {
+                    let dateStr = getMatchDate(info.roundIdx, league.fixtures.length);
                     dashDate.innerText = `${currentSeasonYear}. Szezon — ${dateStr}`;
                 } else {
                     dashDate.innerText = `${currentSeasonYear}. Szezon — Vége`;
@@ -2202,7 +2204,7 @@
             let cardIcon = document.getElementById('match-card-icon');
             let menuCard = document.getElementById('match-menu-card');
 
-            if (!nextInfo) {
+            if (!info || !info.match) {
                 if (menuCard) menuCard.className = "menu-card season-end-card";
                 if (cardIcon) cardIcon.innerHTML = '<i class="fa-solid fa-trophy" style="color: #fbbf24;"></i>';
                 if (cardTitle) cardTitle.innerText = "Szezon Vége";
@@ -2210,17 +2212,17 @@
             } else {
                 if (menuCard) menuCard.className = "menu-card match-card";
                 if (cardIcon) cardIcon.innerHTML = '<i class="fa-solid fa-futbol"></i>';
-                let opponent = nextInfo.match.home === activeCareerTeam.name ? nextInfo.match.away : nextInfo.match.home;
+                let opponent = info.match.home === activeCareerTeam.name ? info.match.away : info.match.home;
                 if (cardTitle) cardTitle.innerText = `Köv. Meccs`;
-                if (cardDesc) cardDesc.innerText = `vs ${opponent} (${nextInfo.roundIdx + 1}. F.)`;
+                if (cardDesc) cardDesc.innerText = `vs ${opponent} (${info.roundIdx + 1}. F.)`;
             }
             updateInboxBadge();
             updateJobOffersBadge();
         }
 
         function handleDashboardMainCardClick() {
-            let nextInfo = getNextUnplayedMatchInfo();
-            if (!nextInfo) {
+            let info = getCurrentRoundMatchInfo();
+            if (!info || !info.match) {
                 startNewSeason();
                 return;
             }
@@ -2236,12 +2238,12 @@
             activeCareerTeam.players.forEach(p => p.stamina = 100);
 
             simulateBotOffersForListedPlayers();
-            startLiveMatch(nextInfo);
+            startLiveMatch(info);
         }
 
-        function startLiveMatch(nextInfo) {
+        function startLiveMatch(info) {
             let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
-            let match = nextInfo.match;
+            let match = info.match;
             let homeTeamObj = league.teams.find(t => t.name === match.home);
             let awayTeamObj = league.teams.find(t => t.name === match.away);
 
@@ -2458,16 +2460,16 @@
 
                 checkAndGenerateJobOffers();
 
-                // SZINKRONIZÁCIÓS JAVÍTÁS:
-                // Pontosan a jelenlegi forduló többi lejátszatlan meccsét szimuláljuk le!
-                let currentRoundInfo = getNextUnplayedMatchInfo();
-                let currentRoundIdx = currentRoundInfo ? currentRoundInfo.roundIdx : 0;
-
-                league.fixtures[currentRoundIdx].forEach(m => {
+                // FONTOS FIX: Szigorúan az AKTUÁLIS forduló többi meccsét szimuláljuk le, és csak utána léptetünk!
+                let rIdx = league.currentRound || 0;
+                league.fixtures[rIdx].forEach(m => {
                     if (!m.played) {
                         simulateAIMatch(m, league, league.teams.find(t => t.name === m.home), league.teams.find(t => t.name === m.away));
                     }
                 });
+
+                // Most lépünk előre a következő fordulóra
+                league.currentRound = rIdx + 1;
 
                 saveToLocalStorage();
                 commContainer.innerHTML += `<div style="color: var(--logo-green); font-weight:700; margin-top: 5px;">Vége a mérkőzésnek! Végeredmény: ${match.homeScore} - ${match.awayScore}</div>`;
@@ -2566,11 +2568,15 @@
             }
 
             league.fixtures = generateFixtures(league.teams);
+            league.currentRound = 0;
             league.table = league.teams.map(t => ({ name: t.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }));
             
-            db.forEach(country => country.leagues.forEach(l => l.teams.forEach(team => {
-                if (team.players) team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; p.stamina = 100; });
-            })));
+            db.forEach(country => country.leagues.forEach(l => {
+                l.currentRound = 0;
+                l.teams.forEach(team => {
+                    if (team.players) team.players.forEach(p => { p.goals = 0; p.yellowCards = 0; p.redCards = 0; p.suspendedMatches = 0; p.cleanSheets = 0; p.transferListed = false; p.stamina = 100; });
+                });
+            }));
 
             saveToLocalStorage();
             document.getElementById('dash-budget').innerText = `Kassza: ${formatMoney(teamBudget)}`;
@@ -2621,10 +2627,8 @@
             document.getElementById('game-dashboard').classList.add('hidden');
             document.getElementById('fixtures-only-view').classList.remove('hidden');
             let league = db[activeCareerCountryIdx].leagues[activeCareerLeagueIdx];
-            viewingRoundIndex = 0;
-            for (let r = 0; r < league.fixtures.length; r++) {
-                if (!league.fixtures[r].every(m => m.played)) { viewingRoundIndex = r; break; }
-            }
+            viewingRoundIndex = league.currentRound || 0;
+            if (viewingRoundIndex >= league.fixtures.length) viewingRoundIndex = league.fixtures.length - 1;
             renderFixturesOnly();
         }
         function closeFixturesOnlyView() {
@@ -2918,12 +2922,13 @@
             if (!val) return;
             if (modalActionType === "add_country") db.push({ country: val, leagues: [] });
             else if (modalActionType === "edit_country") db[currentCountryIdx].country = val;
-            else if (modalActionType === "add_league") db[currentCountryIdx].leagues.push({ name: val, teams: [], fixtures: [], table: [] });
+            else if (modalActionType === "add_league") db[currentCountryIdx].leagues.push({ name: val, teams: [], fixtures: [], table: [], currentRound: 0 });
             else if (modalActionType === "edit_league") db[currentCountryIdx].leagues[currentLeagueIdx].name = val;
             else if (modalActionType === "add_team") {
                 let league = db[currentCountryIdx].leagues[currentLeagueIdx];
                 league.teams.push({ name: val, players: generateSquadForCountry(db[currentCountryIdx].country), formation: "4-4-2" });
                 league.fixtures = generateFixtures(league.teams);
+                league.currentRound = 0;
                 league.table = league.teams.map(t => ({ name: t.name, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, points: 0 }));
             } else if (modalActionType === "edit_team_name") {
                 db[currentCountryIdx].leagues[currentLeagueIdx].teams[currentTeamIdx].name = val;
