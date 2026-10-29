@@ -542,7 +542,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.6.4</div>
+    <div class="version-badge">v1.6.5</div>
 
     <audio id="bg-audio" preload="auto"></audio>
 
@@ -1389,7 +1389,7 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v164')) || JSON.parse(JSON.stringify(defaultDB));
+        let db = JSON.parse(localStorage.getItem('tm26_db_v165')) || JSON.parse(JSON.stringify(defaultDB));
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1514,7 +1514,7 @@
                 jobOffers: jobOffers,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v164', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v165', JSON.stringify(saveObj));
         }
 
         function openSaveGameModal() {
@@ -2277,6 +2277,7 @@
             let commContainer = document.getElementById('live-match-commentary');
             commContainer.innerHTML = `<div style="color: var(--logo-green); font-weight:700;">A játékvezető sípszóval indítja a mérkőzést!</div>`;
 
+            document.getElementById('live-match-controls').style.display = 'flex';
             document.getElementById('btn-pause-match').style.display = 'block';
             document.getElementById('btn-resume-match').style.display = 'none';
             document.getElementById('btn-finish-live-match').classList.add('hidden');
@@ -2460,16 +2461,32 @@
 
                 checkAndGenerateJobOffers();
 
-                // FONTOS FIX: Szigorúan az AKTUÁLIS forduló többi meccsét szimuláljuk le, és csak utána léptetünk!
+                // 1. Saját liga többi meccsének szimulációja
                 let rIdx = league.currentRound || 0;
                 league.fixtures[rIdx].forEach(m => {
                     if (!m.played) {
                         simulateAIMatch(m, league, league.teams.find(t => t.name === m.home), league.teams.find(t => t.name === m.away));
                     }
                 });
-
-                // Most lépünk előre a következő fordulóra
                 league.currentRound = rIdx + 1;
+
+                // 2. FONTOS: A többi ország ÉS bajnokság meccseinek szimulációja a háttérben, hogy mindenhol haladjon a szezon!
+                db.forEach((country, cIdx) => {
+                    country.leagues.forEach((l, lIdx) => {
+                        let lRound = l.currentRound || 0;
+                        if (lRound < l.fixtures.length) {
+                            let lRoundMatches = l.fixtures[lRound];
+                            if (lRoundMatches) {
+                                lRoundMatches.forEach(lm => {
+                                    if (!lm.played) {
+                                        simulateAIMatch(lm, l, l.teams.find(t => t.name === lm.home), l.teams.find(t => t.name === lm.away));
+                                    }
+                                });
+                            }
+                            l.currentRound = lRound + 1;
+                        }
+                    });
+                });
 
                 saveToLocalStorage();
                 commContainer.innerHTML += `<div style="color: var(--logo-green); font-weight:700; margin-top: 5px;">Vége a mérkőzésnek! Végeredmény: ${match.homeScore} - ${match.awayScore}</div>`;
