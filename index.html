@@ -431,8 +431,8 @@
                     <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addNewTeam()"><span>+ Csapat</span></button>
                     <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addPlayerToTeam()"><span>+ Játékos</span></button>
                 </div>
-                <!-- APK KOMPATIBILIS LETÖLTÉS ÉS BETÖLTÉS GOMBOK -->
-                <button class="btn btn-primary" style="background:#38bdf8; border-color:#38bdf8; padding:5px; font-size:0.68rem;" onclick="downloadDatabaseJSON()"><span>📥 Letöltés (JSON)</span></button>
+                <!-- APK BIZTOS EXPORT / MÁSOLÁS ÉS BETÖLTÉS GOMBOK -->
+                <button class="btn btn-primary" style="background:#38bdf8; border-color:#38bdf8; padding:5px; font-size:0.68rem;" onclick="downloadDatabaseJSON()"><span>📋 Exportálás (Másolás)</span></button>
                 <button class="btn btn-primary" style="background:#fbbf24; border-color:#fbbf24; color:#090d16; padding:5px; font-size:0.68rem;" onclick="document.getElementById('import-db-file').click()"><span>📂 Betöltés</span></button>
                 <input type="file" id="import-db-file" accept=".json,.txt" class="hidden" onchange="importDatabaseJSON(event)">
                 
@@ -461,6 +461,19 @@
             <div style="display: flex; gap: 4px;">
                 <button class="btn btn-primary" onclick="submitModal()">Mentés</button>
                 <button class="btn btn-secondary" onclick="closeModal()">Mégse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export / Másolás Modál -->
+    <div id="export-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-title">📋 Adatbázis Export</div>
+            <div style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Másold ki az alábbi JSON kódot, vagy illeszd be egy fájlba:</div>
+            <textarea id="export-textarea" class="modal-input" style="height: 120px; font-size: 0.65rem; resize: none;" readonly></textarea>
+            <div style="display: flex; gap: 4px;">
+                <button class="btn btn-primary" onclick="copyExportText()">📋 Másolás Vágólapra</button>
+                <button class="btn btn-secondary" onclick="closeExportModal()">Bezárás</button>
             </div>
         </div>
     </div>
@@ -676,27 +689,29 @@
             localStorage.setItem('tm26_db_v161', JSON.stringify(db));
         }
 
-        // APK / WEBVIEW KOMPATIBILIS LETÖLTÉS (Base64 Data URI)
+        // APK-BIZTOS EXPORT / MÁSOLÁS FUNKCIÓ
         function downloadDatabaseJSON() {
-            try {
-                let jsonString = JSON.stringify(db, null, 2);
-                let base64Data = btoa(unescape(encodeURIComponent(jsonString)));
-                let dataUrl = "data:application/json;charset=utf-8;base64," + base64Data;
-                
-                let a = document.createElement("a");
-                a.href = dataUrl;
-                a.download = "tm26_db.json";
-                document.body.appendChild(a);
-                a.click();
-                
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                }, 300);
+            let jsonString = JSON.stringify(db, null, 2);
+            document.getElementById('export-textarea').value = jsonString;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
 
-                showToast("📥 JSON fájl letöltése elindítva!");
-            } catch(e) {
-                showToast("❌ Hiba a letöltés során!");
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+
+        function copyExportText() {
+            let textarea = document.getElementById('export-textarea');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            try {
+                navigator.clipboard.writeText(textarea.value);
+                showToast("📋 Sikeresen a vágólapra másolva!");
+            } catch (err) {
+                document.execCommand('copy');
+                showToast("📋 Sikeresen a vágólapra másolva!");
             }
+            closeExportModal();
         }
 
         function importDatabaseJSON(event) {
