@@ -331,7 +331,7 @@
 <body>
 
     <div id="toast-notification">Művelet sikeres!</div>
-    <div class="version-badge">v1.6.1</div>
+    <div class="version-badge">v1.6.2</div>
 
     <div id="splash-screen" onclick="startAppDirectly()">
         <img src="https://www.dropbox.com/scl/fi/b8p0linr5z3s5jf32pkxw/file_00000000e41881f49ae16355c8824db0.png?rlkey=gvhib7sumek2mm2g51vhqqd2k&st=vqichxld&raw=1" alt="Loading Logo" class="splash-logo">
@@ -478,16 +478,17 @@
         </div>
     </div>
 
-    <!-- Játékos Szerkesztő Modál -->
+    <!-- Játékos Szerkesztő Modál (Új sorrend és mezők) -->
     <div id="player-modal" class="modal-overlay hidden">
         <div class="modal-card" id="player-form-card">
             <div class="modal-title" id="player-modal-title">Új Játékos Hozzáadása</div>
-            <div style="display: flex; flex-direction: column; gap: 3px; max-height: 280px; overflow-y: auto; padding-right: 2px;">
-                <label style="font-size: 0.65rem; color: var(--text-muted);">Játékos Neve:</label>
-                <input type="text" id="p-name" class="modal-input" placeholder="pl. Kovács Péter">
+            <div style="display: flex; flex-direction: column; gap: 3px; max-height: 290px; overflow-y: auto; padding-right: 2px;">
                 
                 <label style="font-size: 0.65rem; color: var(--text-muted);">Mezszám:</label>
                 <input type="number" id="p-number" class="modal-input" placeholder="9" min="1" max="99">
+
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Név:</label>
+                <input type="text" id="p-name" class="modal-input" placeholder="pl. Kovács Péter">
                 
                 <label style="font-size: 0.65rem; color: var(--text-muted);">Nemzetiség:</label>
                 <select id="p-nat" class="modal-input">
@@ -567,15 +568,28 @@
                     <option value="Zambia">Zambia</option><option value="Zimbabwe">Zimbabwe</option>
                 </select>
 
-                <label style="font-size: 0.65rem; color: var(--text-muted);">Poszt:</label>
-                <select id="p-pos" class="modal-input"><option value="GK">GK</option><option value="DEF">DEF</option><option value="MID" selected>MID</option><option value="ATT">ATT</option></select>
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Pozíció (szabad mező):</label>
+                <input type="text" id="p-pos" class="modal-input" placeholder="pl. ST, CM, GK">
                 
                 <label style="font-size: 0.65rem; color: var(--text-muted);">Kor:</label>
                 <input type="number" id="p-age" class="modal-input" placeholder="25" min="15" max="50">
                 
-                <label style="font-size: 0.65rem; color: var(--text-muted);">Skill (0-100):</label>
-                <input type="number" id="p-skill" class="modal-input" placeholder="85" min="0" max="100">
+                <label style="font-size: 0.65rem; color: var(--text-muted);">OVR (Rating):</label>
+                <input type="number" id="p-ovr" class="modal-input" placeholder="85" min="1" max="99">
+
+                <label style="font-size: 0.65rem; color: var(--text-muted);">POT (Potenciál):</label>
+                <input type="number" id="p-pot" class="modal-input" placeholder="90" min="1" max="99">
+
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Szerződés (Év):</label>
+                <input type="text" id="p-contract" class="modal-input" placeholder="2029">
+
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Érték (€):</label>
+                <input type="text" id="p-value" class="modal-input" placeholder="€97,000,000">
+
+                <label style="font-size: 0.65rem; color: var(--text-muted);">Heti Fizetés (€):</label>
+                <input type="text" id="p-wage" class="modal-input" placeholder="€150,000">
             </div>
+
             <div style="display: flex; gap: 4px; margin-top: 4px;">
                 <button class="btn btn-primary" onclick="submitPlayerModal()">Mentés</button>
                 <button id="btn-delete-player" class="btn btn-danger hidden" onclick="deletePlayer()">Törlés</button>
@@ -625,7 +639,7 @@
                 });
             }
 
-            let playerInputs = ['p-name', 'p-number', 'p-age', 'p-skill'];
+            let playerInputs = ['p-name', 'p-number', 'p-age', 'p-ovr', 'p-pot', 'p-contract', 'p-value', 'p-wage'];
             playerInputs.forEach(id => {
                 let el = document.getElementById(id);
                 if (el) {
@@ -674,7 +688,7 @@
 
         let db = [];
         try {
-            let savedDB = localStorage.getItem('tm26_db_v161');
+            let savedDB = localStorage.getItem('tm26_db_v162');
             if (savedDB) {
                 db = JSON.parse(savedDB);
             }
@@ -686,7 +700,7 @@
         let modalActionType = null, editingPlayerIdx = null;
 
         function saveToLocalStorage() {
-            localStorage.setItem('tm26_db_v161', JSON.stringify(db));
+            localStorage.setItem('tm26_db_v162', JSON.stringify(db));
         }
 
         // APK-BIZTOS EXPORT / MÁSOLÁS FUNKCIÓ
@@ -824,7 +838,8 @@
                 t.players.forEach((p, index) => {
                     let row = document.createElement('div');
                     row.className = 'player-row';
-                    row.innerHTML = `<span><strong>#${p.number||''} ${p.name}</strong> [${p.pos}]</span> <span style="color:var(--logo-green);">Skill: ${p.skill}</span>`;
+                    let ratingDisplay = p.ovr !== undefined ? p.ovr : (p.skill !== undefined ? p.skill : '-');
+                    row.innerHTML = `<span><strong>#${p.number||''} ${p.name}</strong> [${p.pos}]</span> <span style="color:var(--logo-green);">OVR: ${ratingDisplay}</span>`;
                     row.onclick = () => openEditPlayerModal(index);
                     squadContainer.appendChild(row);
                 });
@@ -907,15 +922,19 @@
             if (!l || l.teams.length === 0) { showToast("Előbb hozz létre egy csapatot!"); return; }
             editingPlayerIdx = null;
             document.getElementById('player-modal-title').innerText = "Új Játékos";
-            document.getElementById('p-name').value = "";
             document.getElementById('p-number').value = Math.floor(Math.random() * 98) + 1;
+            document.getElementById('p-name').value = "";
             document.getElementById('p-nat').selectedIndex = 0;
-            document.getElementById('p-pos').selectedIndex = 2;
+            document.getElementById('p-pos').value = "CM";
             document.getElementById('p-age').value = "";
-            document.getElementById('p-skill').value = "";
+            document.getElementById('p-ovr').value = "";
+            document.getElementById('p-pot').value = "";
+            document.getElementById('p-contract').value = "2029";
+            document.getElementById('p-value').value = "€50,000,000";
+            document.getElementById('p-wage').value = "€100,000";
             document.getElementById('btn-delete-player').classList.add('hidden');
             document.getElementById('player-modal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('p-name').focus(), 100);
+            setTimeout(() => document.getElementById('p-number').focus(), 100);
         }
 
         function openEditPlayerModal(index) {
@@ -923,43 +942,56 @@
             let team = db[currentCountryIdx].leagues[currentLeagueIdx].teams[currentTeamIdx];
             let p = team.players[index];
             document.getElementById('player-modal-title').innerText = "Játékos Szerkesztése";
-            document.getElementById('p-name').value = p.name;
             document.getElementById('p-number').value = p.number || 10;
+            document.getElementById('p-name').value = p.name || "";
             document.getElementById('p-nat').value = p.nat || "";
-            document.getElementById('p-pos').value = p.pos;
-            document.getElementById('p-age').value = p.age;
-            document.getElementById('p-skill').value = p.skill;
+            document.getElementById('p-pos').value = p.pos || "CM";
+            document.getElementById('p-age').value = p.age || "";
+            document.getElementById('p-ovr').value = p.ovr !== undefined ? p.ovr : (p.skill || "");
+            document.getElementById('p-pot').value = p.pot || "";
+            document.getElementById('p-contract').value = p.contract || "";
+            document.getElementById('p-value').value = p.value || "";
+            document.getElementById('p-wage').value = p.wage || "";
             document.getElementById('btn-delete-player').classList.remove('hidden');
             document.getElementById('player-modal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('p-name').focus(), 100);
+            setTimeout(() => document.getElementById('p-number').focus(), 100);
         }
 
         function closePlayerModal() { document.getElementById('player-modal').classList.add('hidden'); }
 
         function submitPlayerModal() {
-            let name = document.getElementById('p-name').value.trim();
             let number = parseInt(document.getElementById('p-number').value) || 10;
+            let name = document.getElementById('p-name').value.trim();
             let nat = document.getElementById('p-nat').value;
-            let pos = document.getElementById('p-pos').value;
-            let age = parseInt(document.getElementById('p-age').value);
-            let skill = parseInt(document.getElementById('p-skill').value);
-            if (!name || isNaN(age) || isNaN(skill)) { showToast("Tölts ki minden mezőt!"); return; }
+            let pos = document.getElementById('p-pos').value.trim().toUpperCase() || "CM";
+            let age = parseInt(document.getElementById('p-age').value) || 20;
+            let ovr = parseInt(document.getElementById('p-ovr').value) || 75;
+            let pot = parseInt(document.getElementById('p-pot').value) || 80;
+            let contract = document.getElementById('p-contract').value.trim() || "2029";
+            let value = document.getElementById('p-value').value.trim() || "€10,000,000";
+            let wage = document.getElementById('p-wage').value.trim() || "€20,000";
+
+            if (!name) { showToast("Add meg a játékos nevét!"); return; }
 
             let team = db[currentCountryIdx].leagues[currentLeagueIdx].teams[currentTeamIdx];
             if (!team.players) team.players = [];
 
-            if (editingPlayerIdx === null) team.players.push({ name, number, nat, pos, age, skill, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
-            else {
-                team.players[editingPlayerIdx].name = name;
-                team.players[editingPlayerIdx].number = number;
-                team.players[editingPlayerIdx].nat = nat;
-                team.players[editingPlayerIdx].pos = pos;
-                team.players[editingPlayerIdx].age = age;
-                team.players[editingPlayerIdx].skill = skill;
+            let playerData = {
+                name, number, nat, pos, age, ovr, pot, contract, value, wage,
+                skill: ovr, // Kompatibilitás miatt megőrizzük
+                goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100
+            };
+
+            if (editingPlayerIdx === null) {
+                team.players.push(playerData);
+            } else {
+                team.players[editingPlayerIdx] = { ...team.players[editingPlayerIdx], ...playerData };
             }
+
             saveToLocalStorage();
             closePlayerModal();
             updateEditorUI();
+            showToast("💾 Játékos sikeresen mentve!");
         }
 
         function deletePlayer() {
@@ -969,12 +1001,13 @@
             saveToLocalStorage();
             closePlayerModal();
             updateEditorUI();
+            showToast("🗑️ Játékos törölve!");
         }
 
         function resetDatabase() {
             if (confirm("Biztosan törlöd a teljes adatbázist?")) {
                 db = [];
-                localStorage.removeItem('tm26_db_v161');
+                localStorage.removeItem('tm26_db_v162');
                 currentCountryIdx = 0; currentLeagueIdx = 0; currentTeamIdx = 0;
                 updateEditorUI();
                 showToast("🗑️ Adatbázis teljesen törölve!");
