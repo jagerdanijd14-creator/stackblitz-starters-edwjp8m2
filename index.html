@@ -542,7 +542,7 @@
 <body>
 
     <div id="toast-notification">Játék sikeresen elmentve!</div>
-    <div class="version-badge">v1.7.0 (Export Database Edition)</div>
+    <div class="version-badge">v1.7.1 (Stable Editor Edition)</div>
 
     <audio id="bg-audio" preload="auto"></audio>
 
@@ -556,7 +556,7 @@
     <div id="main-menu" class="card">
         <div class="header">
             <img src="https://www.dropbox.com/scl/fi/b8p0linr5z3s5jf32pkxw/file_00000000e41881f49ae16355c8824db0.png?rlkey=gvhib7sumek2mm2g51vhqqd2k&st=vqichxld&raw=1" alt="Logo" class="logo-img">
-            <div class="studio-tag">{emoji} [Jager Dev Studio](https://notebooklm.google.com)</div>
+            <div class="studio-tag">⚽ [Jager Dev Studio](https://gemini.google.com/notebook/13c0caee-1e0c-4bbc-b2a8-b480ad79becf)</div>
             <h1 class="main-title">TM26</h1>
         </div>
 
@@ -574,7 +574,7 @@
                 <i class="fa-solid fa-gear btn-icon" style="color: var(--logo-green);"></i>
             </button>
             <button class="btn btn-secondary" onclick="openEditor()">
-                <span>Szerkesztő & Exportálás</span>
+                <span>Szerkesztő & Export/Import</span>
                 <i class="fa-solid fa-wrench btn-icon" style="color: #38bdf8;"></i>
             </button>
         </div>
@@ -1018,8 +1018,11 @@
                     <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addNewTeam()"><span>+ Csapat</span></button>
                     <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addPlayerToTeam()"><span>+ Játékos</span></button>
                 </div>
-                <!-- ÚJ ADATBÁZIS LETÖLTÉSE GOMB -->
-                <button class="btn btn-primary" style="background:#38bdf8; border-color:#38bdf8; padding:5px; font-size:0.68rem; grid-column: span 2;" onclick="exportDatabaseJSON()"><span>📥 Adatbázis Letöltése (JSON)</span></button>
+                <!-- ADATBÁZIS LETÖLTÉSE ÉS BETÖLTÉSE GOMBOK -->
+                <button class="btn btn-primary" style="background:#38bdf8; border-color:#38bdf8; padding:5px; font-size:0.68rem; grid-column: span 1;" onclick="exportDatabaseJSON()"><span>📥 Letöltés (JSON)</span></button>
+                <button class="btn btn-primary" style="background:#fbbf24; border-color:#fbbf24; color:#090d16; padding:5px; font-size:0.68rem; grid-column: span 1;" onclick="document.getElementById('import-db-file').click()"><span>📂 Betöltés (JSON)</span></button>
+                <input type="file" id="import-db-file" accept=".json" class="hidden" onchange="importDatabaseJSON(event)">
+                
                 <button class="btn btn-danger" style="padding:5px; font-size:0.68rem; grid-column: span 2;" onclick="resetDatabase()"><span>🗑️ Alapértelmezett Adatbázis</span></button>
             </div>
         </div>
@@ -1350,7 +1353,20 @@
             }
         ];
 
-        let db = JSON.parse(localStorage.getItem('tm26_db_v170')) || JSON.parse(JSON.stringify(defaultDB));
+        // --- BIZTONSÁGOS ADATBÁZIS BETÖLTÉS ---
+        let db = [];
+        try {
+            let savedDB = localStorage.getItem('tm26_db_v171');
+            if (savedDB) {
+                db = JSON.parse(savedDB);
+            }
+        } catch (e) {
+            console.log("Hiba a mentett adatbázis olvasásakor, alapértelmezett betöltése.");
+        }
+
+        if (!Array.isArray(db) || db.length === 0) {
+            db = JSON.parse(JSON.stringify(defaultDB));
+        }
 
         let currentCountryIdx = 0, currentLeagueIdx = 0, currentTeamIdx = 0;
         let selCountryIdx = 0, selLeagueIdx = 0, selTeamIdx = 0;
@@ -1431,10 +1447,10 @@
         function ensureLeagueSetup() {
             if (!db || db.length === 0) { db = JSON.parse(JSON.stringify(defaultDB)); }
             db.forEach((c) => {
+                if (!c.leagues) c.leagues = [];
                 c.leagues.forEach((l) => {
-                    if (l.teams && l.teams.length > 0) {
-                        l.teams.sort((a, b) => a.name.localeCompare(b.name));
-                    }
+                    if (!l.teams) l.teams = [];
+                    l.teams.sort((a, b) => a.name.localeCompare(b.name));
                     if (!l.fixtures || l.fixtures.length === 0) { l.fixtures = generateFixtures(l.teams); }
                     if (l.currentRound === undefined) l.currentRound = 0;
                     if (!l.table || l.table.length !== l.teams.length) {
@@ -1452,14 +1468,13 @@
                     }
                     l.teams.forEach(t => {
                         if (!t.formation) t.formation = "4-4-2";
-                        if (t.players) {
-                            let numCounter = 1;
-                            t.players.forEach(p => { 
-                                if (p.transferListed === undefined) p.transferListed = false; 
-                                if (p.stamina === undefined) p.stamina = 100;
-                                if (p.number === undefined) p.number = numCounter++;
-                            });
-                        }
+                        if (!t.players) t.players = [];
+                        let numCounter = 1;
+                        t.players.forEach(p => { 
+                            if (p.transferListed === undefined) p.transferListed = false; 
+                            if (p.stamina === undefined) p.stamina = 100;
+                            if (p.number === undefined) p.number = numCounter++;
+                        });
                     });
                 });
             });
@@ -1478,10 +1493,10 @@
                 jobOffers: jobOffers,
                 managerStats: managerStats
             };
-            localStorage.setItem('tm26_db_v170', JSON.stringify(saveObj));
+            localStorage.setItem('tm26_db_v171', JSON.stringify(db));
         }
 
-        // --- ÚJ FUNKCIÓ: ADATBÁZIS EXPORTÁLÁSA JSON FÁJLKÉNT ---
+        // --- ADATBÁZIS EXPORTÁLÁSA JSON FÁJLKÉNT ---
         function exportDatabaseJSON() {
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
             let downloadAnchor = document.createElement('a');
@@ -1491,6 +1506,32 @@
             downloadAnchor.click();
             downloadAnchor.remove();
             showToast("📥 Adatbázis JSON letöltve!");
+        }
+
+        // --- ADATBÁZIS IMPORTÁLÁSA JSON FÁJLBÓL ---
+        function importDatabaseJSON(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported) && imported.length > 0) {
+                        db = imported;
+                        ensureLeagueSetup();
+                        saveToLocalStorage();
+                        currentCountryIdx = 0; currentLeagueIdx = 0; currentTeamIdx = 0;
+                        updateEditorUI();
+                        showToast("📂 Adatbázis sikeresen betöltve!");
+                    } else {
+                        showToast("❌ Érvénytelen JSON struktúra!");
+                    }
+                } catch(err) {
+                    showToast("❌ Hiba a fájl olvasásakor!");
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
         }
 
         function openSaveGameModal() {
@@ -1598,7 +1639,6 @@
             activeCareerCountryIdx = null;
             activeCareerLeagueIdx = null;
             activeCareerTeamIdx = null;
-            db = JSON.parse(JSON.stringify(defaultDB));
             ensureLeagueSetup();
 
             document.getElementById('main-menu').classList.add('hidden');
@@ -1621,10 +1661,12 @@
             if (db.length === 0) return;
             if (selCountryIdx >= db.length) selCountryIdx = 0;
             let c = db[selCountryIdx];
+            if (!c.leagues) c.leagues = [];
             if (selLeagueIdx >= c.leagues.length) selLeagueIdx = 0;
             let l = c.leagues[selLeagueIdx];
+            if (l && !l.teams) l.teams = [];
             if (l && selTeamIdx >= l.teams.length) selTeamIdx = 0;
-            let t = l ? l.teams[selTeamIdx] : null;
+            let t = l && l.teams ? l.teams[selTeamIdx] : null;
 
             lblC.innerText = c.country;
             lblL.innerText = l ? l.name : "";
@@ -1640,7 +1682,7 @@
         }
 
         function changeSelectLeague(dir) {
-            if (db.length === 0 || !db[selCountryIdx].leagues.length) return;
+            if (db.length === 0 || !db[selCountryIdx].leagues || !db[selCountryIdx].leagues.length) return;
             let leagues = db[selCountryIdx].leagues;
             selLeagueIdx = (selLeagueIdx + dir + leagues.length) % leagues.length;
             selTeamIdx = 0;
@@ -1648,7 +1690,7 @@
         }
 
         function changeSelectTeam(dir) {
-            if (db.length === 0 || !db[selCountryIdx].leagues[selLeagueIdx]) return;
+            if (db.length === 0 || !db[selCountryIdx].leagues[selLeagueIdx] || !db[selCountryIdx].leagues[selLeagueIdx].teams) return;
             let teams = db[selCountryIdx].leagues[selLeagueIdx].teams;
             if (teams.length === 0) return;
             selTeamIdx = (selTeamIdx + dir + teams.length) % teams.length;
@@ -2836,9 +2878,12 @@
             let emblemBox = document.getElementById('editor-emblem-box');
             let squadContainer = document.getElementById('squad-container');
 
-            if (db.length === 0) return;
+            if (!db || db.length === 0) {
+                db = JSON.parse(JSON.stringify(defaultDB));
+            }
             if (currentCountryIdx >= db.length) currentCountryIdx = 0;
             let c = db[currentCountryIdx];
+            if (!c.leagues) c.leagues = [];
             if (currentLeagueIdx >= c.leagues.length) currentLeagueIdx = 0;
             let l = c.leagues[currentLeagueIdx];
             
@@ -2846,12 +2891,12 @@
                 l.teams.sort((a, b) => a.name.localeCompare(b.name));
             }
 
-            if (l && currentTeamIdx >= l.teams.length) currentTeamIdx = 0;
-            let t = l ? l.teams[currentTeamIdx] : null;
+            if (l && l.teams && currentTeamIdx >= l.teams.length) currentTeamIdx = 0;
+            let t = l && l.teams ? l.teams[currentTeamIdx] : null;
 
-            lblCountry.innerText = c.country;
-            lblLeague.innerText = l ? l.name : "";
-            lblTeam.innerText = t ? t.name : "";
+            lblCountry.innerText = c.country || "Ország";
+            lblLeague.innerText = l ? l.name : "Bajnokság";
+            lblTeam.innerText = t ? t.name : "Csapat";
             if (t) { emblemBox.innerHTML = getTeamEmblemSVG(t.name); } else { emblemBox.innerHTML = ""; }
 
             squadContainer.innerHTML = '';
@@ -2863,18 +2908,20 @@
                     row.onclick = () => openEditPlayerModal(index);
                     squadContainer.appendChild(row);
                 });
+            } else {
+                squadContainer.innerHTML = '<div style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Nincs játékos.</div>';
             }
         }
 
         function changeCountry(dir) {
-            if (db.length === 0) return;
+            if (!db || db.length === 0) return;
             currentCountryIdx = (currentCountryIdx + dir + db.length) % db.length;
             currentLeagueIdx = 0; currentTeamIdx = 0;
             updateEditorUI();
         }
 
         function changeLeague(dir) {
-            if (db.length === 0 || !db[currentCountryIdx].leagues.length) return;
+            if (!db || db.length === 0 || !db[currentCountryIdx].leagues || !db[currentCountryIdx].leagues.length) return;
             let leagues = db[currentCountryIdx].leagues;
             currentLeagueIdx = (currentLeagueIdx + dir + leagues.length) % leagues.length;
             currentTeamIdx = 0;
@@ -2882,7 +2929,7 @@
         }
 
         function changeTeam(dir) {
-            if (db.length === 0 || !db[currentCountryIdx].leagues[currentLeagueIdx]) return;
+            if (!db || db.length === 0 || !db[currentCountryIdx].leagues[currentLeagueIdx] || !db[currentCountryIdx].leagues[currentLeagueIdx].teams) return;
             let teams = db[currentCountryIdx].leagues[currentLeagueIdx].teams;
             if (teams.length === 0) return;
             currentTeamIdx = (currentTeamIdx + dir + teams.length) % teams.length;
@@ -2922,6 +2969,7 @@
             else if (modalActionType === "edit_league") db[currentCountryIdx].leagues[currentLeagueIdx].name = val;
             else if (modalActionType === "add_team") {
                 let league = db[currentCountryIdx].leagues[currentLeagueIdx];
+                if (!league.teams) league.teams = [];
                 league.teams.push({ name: val, players: [], formation: "4-4-2" });
                 league.teams.sort((a, b) => a.name.localeCompare(b.name));
                 league.fixtures = generateFixtures(league.teams);
@@ -2977,6 +3025,8 @@
             if (!name || isNaN(age) || isNaN(skill)) { showToast("Tölts ki minden mezőt!"); return; }
 
             let team = db[currentCountryIdx].leagues[currentLeagueIdx].teams[currentTeamIdx];
+            if (!team.players) team.players = [];
+
             if (editingPlayerIdx === null) team.players.push({ name, number, nat, pos, age, skill, goals: 0, yellowCards: 0, redCards: 0, suspendedMatches: 0, cleanSheets: 0, transferListed: false, stamina: 100 });
             else {
                 team.players[editingPlayerIdx].name = name;
