@@ -368,7 +368,7 @@
         <div class="footer">&copy; 2026 Jager Dev Studio. Minden jog fenntartva.</div>
     </div>
 
-    <!-- Beállítások Modál (Üres) -->
+    <!-- Beállítások Modál -->
     <div id="settings-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-title">⚙️ Beállítások</div>
@@ -431,7 +431,7 @@
                     <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addNewTeam()"><span>+ Csapat</span></button>
                     <button class="btn btn-primary" style="padding:5px; font-size:0.68rem;" onclick="addPlayerToTeam()"><span>+ Játékos</span></button>
                 </div>
-                <!-- LETÖLTÉS ÉS BETÖLTÉS GOMBOK -->
+                <!-- APK KOMPATIBILIS LETÖLTÉS ÉS BETÖLTÉS GOMBOK -->
                 <button class="btn btn-primary" style="background:#38bdf8; border-color:#38bdf8; padding:5px; font-size:0.68rem;" onclick="downloadDatabaseJSON()"><span>📥 Letöltés (JSON)</span></button>
                 <button class="btn btn-primary" style="background:#fbbf24; border-color:#fbbf24; color:#090d16; padding:5px; font-size:0.68rem;" onclick="document.getElementById('import-db-file').click()"><span>📂 Betöltés</span></button>
                 <input type="file" id="import-db-file" accept=".json,.txt" class="hidden" onchange="importDatabaseJSON(event)">
@@ -676,44 +676,27 @@
             localStorage.setItem('tm26_db_v161', JSON.stringify(db));
         }
 
-        // KÖZVETLEN MENTÉSI HELY VÁLASZTÓ A BÖNGÉSZŐBEN (.JSON FÁJLKÉNT)
-        async function downloadDatabaseJSON() {
-            let jsonString = JSON.stringify(db, null, 2);
+        // APK / WEBVIEW KOMPATIBILIS LETÖLTÉS (Base64 Data URI)
+        function downloadDatabaseJSON() {
+            try {
+                let jsonString = JSON.stringify(db, null, 2);
+                let base64Data = btoa(unescape(encodeURIComponent(jsonString)));
+                let dataUrl = "data:application/json;charset=utf-8;base64," + base64Data;
+                
+                let a = document.createElement("a");
+                a.href = dataUrl;
+                a.download = "tm26_db.json";
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                }, 300);
 
-            // Ha a böngésző támogatja a fájlmentési ablakot (Hova szeretnéd menteni?)
-            if (window.showSaveFilePicker) {
-                try {
-                    const handle = await window.showSaveFilePicker({
-                        suggestedName: 'tm26_db.json',
-                        types: [{
-                            description: 'JSON Adatbázis Fájl',
-                            accept: { 'application/json': ['.json'] },
-                        }],
-                    });
-                    const writable = await handle.createWritable();
-                    await writable.write(jsonString);
-                    await writable.close();
-                    showToast("💾 Adatbázis elmentve!");
-                    return;
-                } catch (err) {
-                    if (err.name === 'AbortError') return; // Ha a felhasználó Mégsem-et nyomott
-                }
+                showToast("📥 JSON fájl letöltése elindítva!");
+            } catch(e) {
+                showToast("❌ Hiba a letöltés során!");
             }
-
-            // Ha nem támogatott, hagyományos letöltés fallback
-            let blob = new Blob([jsonString], { type: "application/json" });
-            let url = URL.createObjectURL(blob);
-            let a = document.createElement("a");
-            a.href = url;
-            a.download = "tm26_db.json";
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 150);
-
-            showToast("📥 JSON fájl letöltve!");
         }
 
         function importDatabaseJSON(event) {
