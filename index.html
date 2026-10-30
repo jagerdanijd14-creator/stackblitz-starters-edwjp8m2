@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TM26</title>
+    <title>Tactical Manager 2026</title>
     
     <!-- Játék saját ikonja -->
     <link rel="icon" type="image/png" href="https://www.dropbox.com/scl/fi/b8p0linr5z3s5jf32pkxw/file_00000000e41881f49ae16355c8824db0.png?rlkey=gvhib7sumek2mm2g51vhqqd2k&st=vqichxld&raw=1">
@@ -189,26 +189,17 @@
             width: 90px;
             height: 90px;
             object-fit: contain;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             filter: drop-shadow(0 0 12px var(--logo-green-glow));
         }
 
         .header {
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .studio-tag {
-            color: var(--logo-green);
-            font-size: 0.58rem;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 2px;
         }
 
         .main-title {
@@ -317,7 +308,6 @@
         .slot-info { display: flex; flex-direction: column; gap: 1px; }
         .slot-title { font-family: var(--font-title); font-weight: 700; font-size: 0.75rem; color: #ffffff; }
         .slot-details { font-size: 0.6rem; color: var(--text-muted); }
-        .slot-actions { display: flex; gap: 4px; align-items: center; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(6px); }
         .modal-card { background: var(--card-bg); border: 1px solid var(--logo-green); border-radius: 16px; padding: 14px; width: 92%; max-width: 350px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
@@ -341,7 +331,7 @@
 <body>
 
     <div id="toast-notification">Művelet sikeres!</div>
-    <div class="version-badge">v1.6.1 (Stable Clean Edition)</div>
+    <div class="version-badge">v1.6.1</div>
 
     <div id="splash-screen" onclick="startAppDirectly()">
         <img src="https://www.dropbox.com/scl/fi/b8p0linr5z3s5jf32pkxw/file_00000000e41881f49ae16355c8824db0.png?rlkey=gvhib7sumek2mm2g51vhqqd2k&st=vqichxld&raw=1" alt="Loading Logo" class="splash-logo">
@@ -353,8 +343,7 @@
     <div id="main-menu" class="card">
         <div class="header">
             <img src="https://www.dropbox.com/scl/fi/b8p0linr5z3s5jf32pkxw/file_00000000e41881f49ae16355c8824db0.png?rlkey=gvhib7sumek2mm2g51vhqqd2k&st=vqichxld&raw=1" alt="Logo" class="logo-img">
-            <div class="studio-tag">⚽ [Jager Dev Studio](https://gemini.google.com/notebook/13c0caee-1e0c-4bbc-b2a8-b480ad79becf)</div>
-            <h1 class="main-title">TM26</h1>
+            <h1 class="main-title">Tactical Manager 2026</h1>
         </div>
 
         <div class="button-group">
@@ -476,7 +465,7 @@
         </div>
     </div>
 
-    <!-- Játékos Szerkesztő Modál (Teljes Országlistával a képek alapján) -->
+    <!-- Játékos Szerkesztő Modál -->
     <div id="player-modal" class="modal-overlay hidden">
         <div class="modal-card" id="player-form-card">
             <div class="modal-title" id="player-modal-title">Új Játékos Hozzáadása</div>
@@ -608,7 +597,37 @@
                     if (txt) txt.innerText = "Kattints a folytatáshoz...";
                 }
             }, 1000);
+
+            // Enter billentyű eseménykezelők beállítása az input mezőkhöz
+            setupEnterKeySupport();
         });
+
+        function setupEnterKeySupport() {
+            // Általános modál input
+            let customInput = document.getElementById('modal-input');
+            if (customInput) {
+                customInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        submitModal();
+                    }
+                });
+            }
+
+            // Játékos szerkesztő inputok
+            let playerInputs = ['p-name', 'p-number', 'p-age', 'p-skill'];
+            playerInputs.forEach(id => {
+                let el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            submitPlayerModal();
+                        }
+                    });
+                }
+            });
+        }
 
         function showToast(msg) {
             let toast = document.getElementById('toast-notification');
@@ -643,7 +662,7 @@
             `;
         }
 
-        // Üres alapértelmezett adatbázis
+        // Adatbázis inicializálása
         let db = [];
         try {
             let savedDB = localStorage.getItem('tm26_db_v161');
@@ -661,23 +680,51 @@
             localStorage.setItem('tm26_db_v161', JSON.stringify(db));
         }
 
-        function downloadDatabaseJSON() {
+        // JAVÍTOTT & MENTÉSI HELY VÁLASZTÓ LETÖLTÉS
+        async function downloadDatabaseJSON() {
             let jsonString = JSON.stringify(db, null, 2);
-            let blob = new Blob([jsonString], { type: "application/json" });
-            let url = URL.createObjectURL(blob);
-            
-            let a = document.createElement("a");
-            a.href = url;
-            a.download = "tm26_db.json";
-            document.body.appendChild(a);
-            a.click();
-            
-            setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 100);
 
-            showToast("📥 Adatbázis JSON letöltve!");
+            // Ha a modern File System Access API támogatott (lehetővé teszi a mentési hely kiválasztását)
+            if (window.showSaveFilePicker) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'tm26_db.json',
+                        types: [{
+                            description: 'JSON Adatbázis Fájl',
+                            accept: { 'application/json': ['.json'] },
+                        }],
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(jsonString);
+                    await writable.close();
+                    showToast("📥 Adatbázis sikeresen elmentve!");
+                    return;
+                } catch (err) {
+                    // Ha a felhasználó megszakította a mentési ablakot
+                    if (err.name === 'AbortError') return;
+                }
+            }
+
+            // MÁSODLAGOS LÉPÉS: Sima klasszikus letöltési link
+            try {
+                let blob = new Blob([jsonString], { type: "application/json" });
+                let url = URL.createObjectURL(blob);
+                
+                let a = document.createElement("a");
+                a.href = url;
+                a.download = "tm26_db.json";
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 150);
+
+                showToast("📥 Adatbázis JSON letöltve!");
+            } catch(e) {
+                showToast("❌ Nem sikerült a letöltés!");
+            }
         }
 
         function importDatabaseJSON(event) {
@@ -829,7 +876,7 @@
             input.placeholder = placeholder;
             modalActionType = action;
             document.getElementById('custom-modal').classList.remove('hidden');
-            input.focus();
+            setTimeout(() => input.focus(), 100);
         }
 
         function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
@@ -881,6 +928,7 @@
             document.getElementById('p-skill').value = "";
             document.getElementById('btn-delete-player').classList.add('hidden');
             document.getElementById('player-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('p-name').focus(), 100);
         }
 
         function openEditPlayerModal(index) {
@@ -896,6 +944,7 @@
             document.getElementById('p-skill').value = p.skill;
             document.getElementById('btn-delete-player').classList.remove('hidden');
             document.getElementById('player-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('p-name').focus(), 100);
         }
 
         function closePlayerModal() { document.getElementById('player-modal').classList.add('hidden'); }
